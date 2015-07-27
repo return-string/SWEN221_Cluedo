@@ -1,12 +1,10 @@
 package game;
 
-import game.Game.Characters;
-import game.Game.Rooms;
-import game.Game.Weapons;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.xml.stream.events.Characters;
 
 /** The Player class models each active player in a game of Cluedo.
  *
@@ -21,24 +19,27 @@ import java.util.List;
  */
 public class Player {
 	public final Characters character;
-	private final GuiltCheck guiltCheck = new GuiltCheck();
 	private boolean isPlaying = true;
-	private List<Card> hand = new ArrayList<Card>();
+	private HashMap<Card,Boolean> guiltMap;
+	private List<Card> hand;
 
 	public Player(Characters c) {
 		character = c;
+		hand = new ArrayList<Card>();
+		guiltMap = new HashMap<Card, Boolean>();
 	}
 
-	/** Construct a player with a premade hand.
+	/** Construct a player with a given hand and mark all the cards as innocent.
 	 *
 	 * @param c
 	 * @param h
 	 */
 	public Player(Characters c, List<Card> h) {
+		guiltMap = new HashMap<Card, Boolean>();
 		character = c;
 		hand = h;
-		for (Card card : hand) {
-			guiltCheck.vindicate(card);
+		for (Card Card : hand) {
+			vindicate(Card);
 		}
 	}
 
@@ -51,7 +52,7 @@ public class Player {
 	public boolean giveCard(Card c) {
 		if (c != null && !hand.contains(c)) {
 			if (hand.add(c)) {
-				guiltCheck.vindicate(c);
+				vindicate(c);
 				return true;
 			}
 		}
@@ -68,42 +69,28 @@ public class Player {
 
 	/** Vindicating occurs when a player is shown that a
 	 * character, weapon or room is innocent.
-	 * @param card Card to vindicate for this Player
+	 * @param Card Card to vindicate for this Player
 	 */
-	public void vindicate(Card card) {
-		guiltCheck.vindicate(card);
+	public void vindicate(Card c) {
+		guiltMap.put(c,true);
 	}
 
-
-	private class GuiltCheck{
-		private HashMap<Card,Boolean> guiltMap = new HashMap<Card,Boolean>();
-
-		public void vindicate(Card c) {
-			guiltMap.put(c,true);
+	public boolean isInnocent(Card c) {
+		if (!guiltMap.containsKey(c)) {
+			return false;
 		}
-
-		public boolean isInnocent(Card c) {
-			if (!guiltMap.containsKey(c)) {
-				return false;
-			}
-			return guiltMap.get(c) == true;
-		}
+		return guiltMap.get(c) == true;
 	}
 
-
-	public boolean isInnocent(Card card) {
-		return guiltCheck.isInnocent(card);
+	public boolean isInnocent(Card.Character c) {
+		return isInnocent(new Card(c));
 	}
 
-	public boolean isInnocent(Characters c) {
-		return guiltCheck.isInnocent(new CharacterCard(c));
+	public boolean isInnocent(Card.Weapon w) {
+		return isInnocent(new Card(w));
 	}
 
-	public boolean isInnocent(Weapons w) {
-		return guiltCheck.isInnocent(new WeaponCard(w));
-	}
-
-	public boolean isInnocent(Rooms r) {
-		return guiltCheck.isInnocent(new RoomCard(r));
+	public boolean isInnocent(Card.Room r) {
+		return isInnocent(new Card(r));
 	}
 }

@@ -2,12 +2,16 @@
  *
  */
 package tests;
-import org.junit.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import game.Board;
+import game.Game;
+import game.Player;
 
-import static org.junit.Assert.*;
-import game.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.util.*;
+import org.junit.Test;
 /**
  * @author Vicki
  *
@@ -20,7 +24,7 @@ public class GameTests {
 
 	@Test
 	public void test2_createHand() {
-		List<Card> hand = new ArrayList<Card>();
+		List<CardInter> hand = new ArrayList<CardInter>();
 		Player p = new Player(Game.Characters.WHITE,hand);
 		assertFalse("Player should have a hand!",p.getHand()==null);
 		assertTrue("Player must have a colour!",p.character==Game.Characters.WHITE);
@@ -38,7 +42,7 @@ public class GameTests {
 
 	@Test
 	public void test4_guiltOfInnocentTypes() {
-		List<Card> hand = new ArrayList<Card>();
+		List<CardInter> hand = new ArrayList<CardInter>();
 		hand.add(new CharacterCard(Game.Characters.GREEN));
 		hand.add(new WeaponCard(Game.Weapons.ROPE));
 		hand.add(new RoomCard(Game.Rooms.DINING));
@@ -50,7 +54,7 @@ public class GameTests {
 
 	@Test
 	public void test5_guiltOfUnprovenTypes() {
-		List<Card> hand = new ArrayList<Card>();
+		List<CardInter> hand = new ArrayList<CardInter>();
 		hand.add(new CharacterCard(Game.Characters.GREEN));
 		hand.add(new WeaponCard(Game.Weapons.ROPE));
 		hand.add(new RoomCard(Game.Rooms.DINING));
@@ -66,7 +70,7 @@ public class GameTests {
 
 	// ========= helper methods! =============
 
-	private List<Card> fillHand(List<Card> list, Card[] cards) {
+	private List<CardInter> fillHand(List<CardInter> list, CardInter[] cards) {
 		for (int i = 0; i < cards.length; i++) {
 			list.add(cards[i]);
 		}

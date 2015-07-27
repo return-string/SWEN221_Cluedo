@@ -2,23 +2,21 @@ package game;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
-/** The Game class is used to model the Cluedo game.
- * It has fields to remember the guilty person, weapon and room and
+import javax.xml.stream.events.Characters;
+
+/** The Game class is used to model the Cluedo game, which
+ * manages turn progression (calling takeTurn() on each player
+ * while the game is in progress) and the guilty cards.
  *
  * @author mckayvick
  *
  */
 public class Game {
-	public static enum Characters { WHITE, SCARLET, MUSTARD, GREEN, PEACOCK, PLUM };
-	public static enum Weapons { CANDLESTICK, DAGGER, REVOLVER, ROPE, PIPE, WRENCH };
-	public static enum Rooms { CONSERVATORY, BALL, BILLIARD, DINING, HALL, KITCHEN, LOUNGE, STUDY };
-	public static final int DECK_SIZE = Characters.values().length + Weapons.values().length + Rooms.values().length;
-	private CharacterCard guiltyChar;
-	private WeaponCard guiltyWeap;
-	private RoomCard guiltyRoom;
+	private Card guiltyChar;
+	private Card guiltyWeap;
+	private Card guiltyRoom;
 	private int handSize;
 	public final List<Player> players;
 
@@ -26,9 +24,9 @@ public class Game {
 	 *
 	 * @param players
 	 */
-	public Game(List<Game.Characters> players) {
+	public Game(List<Card.Character> players) {
 		this.players = new ArrayList<Player>();
-		for (Game.Characters c : players) {
+		for (Card.Character c : players) {
 			this.players.add(new Player(c));
 		}
 		handSize = (int) Math.floor((DECK_SIZE-3) / this.players.size());
@@ -68,7 +66,7 @@ public class Game {
 		guiltyWeap = new WeaponCard(w);
 		guiltyRoom = new RoomCard(r);
 
-		ArrayList<Card> deck = createNewDeck(c, w, r); // creates, shuffles a new deck of cards
+		ArrayList<CardInter> deck = createNewDeck(c, w, r); // creates, shuffles a new deck of cards
 
 		// add cards to each player's hand
 		int cardIdx = 0;
@@ -86,8 +84,8 @@ public class Game {
 		}
 		// then ensure every player has these cards...
 		for (Player p : players) {
-			for (Card card : deck.subList(cardIdx,deck.size())) {
-				p.vindicate(card);
+			for (CardInter cardInter : deck.subList(cardIdx,deck.size())) {
+				p.vindicate(cardInter);
 			}
 		}
 		// finally, discard these extra cards
@@ -104,9 +102,9 @@ public class Game {
 	 * @param r
 	 * @return A shuffled list of cards to be dealt to players.
 	 */
-	private ArrayList<Card> createNewDeck(Game.Characters c, Game.Weapons w,
+	private ArrayList<CardInter> createNewDeck(Game.Characters c, Game.Weapons w,
 			Game.Rooms r) {
-		ArrayList<Card> deck = new ArrayList<Card>();
+		ArrayList<CardInter> deck = new ArrayList<CardInter>();
 
 		// add some cards to the deck
 		for (int i = 0; i < Characters.values().length; i++) {
