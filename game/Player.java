@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import javax.xml.stream.events.Characters;
-
 /** The Player class models each active player in a game of Cluedo.
  *
  * A Player has to keep a set of cards, monitor whether they have made
@@ -18,7 +16,7 @@ import javax.xml.stream.events.Characters;
  *
  */
 public class Player {
-	public final Characters character;
+	public final String CHARACTER;
 
 	private List<Card> hand;
 	private boolean isPlaying = true;
