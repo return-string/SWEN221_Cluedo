@@ -1,7 +1,7 @@
 PUBLIC METHODS AND CONSTRUCTORS
 ===============================
 
-Main:
+TextUI:
 ----------------
 
 /**Prints the inputed text to System.out
@@ -19,14 +19,12 @@ public int askInt(String question){}
 
 
 Game:
------------------
+---------------------------------
 
-/**Constructor for class Game.
- *@param outIn The Main class it will be using 
- *for input and output
+/**@return True if game is still going. False if game over
  */
-public Game(Main outIn){}
-
+public boolean isPlaying(){
+}
 
 Player:
 ----------------------------------
