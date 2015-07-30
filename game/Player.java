@@ -1,7 +1,7 @@
 package game;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.xml.stream.events.Characters;
@@ -19,14 +19,15 @@ import javax.xml.stream.events.Characters;
  */
 public class Player {
 	public final Characters character;
-	private boolean isPlaying = true;
-	private HashMap<Card,Boolean> guiltMap;
+
 	private List<Card> hand;
+	private boolean isPlaying = true;
+	private HashSet<Card> guiltMap;
 
 	public Player(Characters c) {
 		character = c;
 		hand = new ArrayList<Card>();
-		guiltMap = new HashMap<Card, Boolean>();
+		guiltMap = new HashSet<Card>();
 	}
 
 	/** Construct a player with a given hand and mark all the cards as innocent.
@@ -35,7 +36,7 @@ public class Player {
 	 * @param h
 	 */
 	public Player(Characters c, List<Card> h) {
-		guiltMap = new HashMap<Card, Boolean>();
+		guiltMap = new HashSet<Card>();
 		character = c;
 		hand = h;
 		for (Card Card : hand) {
@@ -43,14 +44,13 @@ public class Player {
 		}
 	}
 
-	/** When play begins, cards should be dealt to Players
-	 * using this method.
+	/** When play begins, cards should be dealt to Players using this method.
 	 *
-	 * @param c
-	 * @return
+	 * @param c Card to add to this player's hand.
+	 * @return Whether the card was successfully added or not.
 	 */
 	public boolean giveCard(Card c) {
-		if (c != null && !hand.contains(c)) {
+		if (c != null) {
 			if (hand.add(c)) {
 				vindicate(c);
 				return true;
@@ -59,38 +59,26 @@ public class Player {
 		return false;
 	}
 
-	/** This method should only be used for debugging.
+	/** This method should only be used for debugging/testing.
 	 *
-	 * @return
+	 * @return This player's List of cards in their hand.
 	 */
 	public List<Card> getHand() {
 		return hand;
 	}
 
-	/** Vindicating occurs when a player is shown that a
-	 * character, weapon or room is innocent.
+	/** A player vindicates a card when it is shown to them by another player.
 	 * @param Card Card to vindicate for this Player
 	 */
 	public void vindicate(Card c) {
-		guiltMap.put(c,true);
+		guiltMap.add(c);
 	}
 
 	public boolean isInnocent(Card c) {
-		if (!guiltMap.containsKey(c)) {
-			return false;
-		}
-		return guiltMap.get(c) == true;
+		return guiltMap.contains(c);
 	}
 
-	public boolean isInnocent(Card.Character c) {
-		return isInnocent(new Card(c));
-	}
-
-	public boolean isInnocent(Card.Weapon w) {
-		return isInnocent(new Card(w));
-	}
-
-	public boolean isInnocent(Card.Room r) {
-		return isInnocent(new Card(r));
+	public boolean isPlaying() {
+		return isPlaying;
 	}
 }

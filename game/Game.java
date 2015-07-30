@@ -14,59 +14,66 @@ import javax.xml.stream.events.Characters;
  *
  */
 public class Game {
+	public final List<Player> players;
+
 	private Card guiltyChar;
 	private Card guiltyWeap;
 	private Card guiltyRoom;
-	private int handSize;
-	public final List<Player> players;
+
+	private TextUI textUI = new TextUI();
 
 	/** Given a list of the playing characters,
 	 *
 	 * @param players
 	 */
-	public Game(List<Card.Character> players) {
+	public Game() {
 		this.players = new ArrayList<Player>();
-		for (Card.Character c : players) {
-			this.players.add(new Player(c));
+		textUI.printText("Welcome to Cluedo and stuff!");
+		int numPlayers = textUI.askInt("How many players? (Please enter a number between 3 and 6)");
+		for (int i = 0; i < numPlayers; i++) {
+			textUI.printArray(Card.CHARACTERS);
+			textUI.askInt("Player "+ i+1 +", please select a character.");
 		}
-		handSize = (int) Math.floor((DECK_SIZE-3) / this.players.size());
-	}
 
-	/**
-	 *
-	 */
-	public void initialiseGame() {
-		initialiseGame(null,null,null);
+		initialiseDeck();
 	}
 
 	/** This method selects the guilty character, weapon and room and deals
 	 * the remaining cards to the players.
-	 *
-	 * @param c Guilty character, null to select randomly
-	 * @param w Guilty weapon, null to select randomly
-	 * @param r Guilty room, null to select randomly
 	 */
-	public void initialiseGame(Game.Characters c, Game.Weapons w, Game.Rooms r) {
+	public void initialiseDeck() {
+		initialiseGame(null,null,null);
+	}
+
+	/** This method can be used to select the guilty cards manually.
+	 * Leave any parameters as null to select randomly.
+	 *
+	 * @param c Guilty character
+	 * @param w Guilty weapon
+	 * @param r Guilty room
+	 */
+	public void initialiseGame(String c, String w, String r) {
 		// for each null value, pick a random card to be guilty
 		if (c == null) {
-			int i = (int) (Math.random()*Characters.values().length-1);
-			c = Characters.values()[i];
+			int i = (int) (Math.random()*Card.CHARACTERS.length);
+			c = Card.CHARACTERS[i];
 		}
 		if (w == null) {
-			int i = (int) (Math.random()*Weapons.values().length-1);
-			w = Weapons.values()[i];
+			int i = (int) (Math.random()*Card.WEAPONS.length);
+			w = Card.WEAPONS[i];
 		}
 		if (r == null) {
-			int i = (int) (Math.random()*Rooms.values().length-1);
-			r = Rooms.values()[i];
+			int i = (int) (Math.random()*Card.ROOMS.length);
+			r = Card.ROOMS[i];
 		}
 
 		// put guilty cards into fields
-		guiltyChar = new CharacterCard(c);
-		guiltyWeap = new WeaponCard(w);
-		guiltyRoom = new RoomCard(r);
+		guiltyChar = new Card(Card.Type.CHARACTER, c);
+		guiltyWeap = new Card(Card.Type.WEAPON, w);
+		guiltyRoom = new Card(Card.Type.ROOM, r);
 
-		ArrayList<CardInter> deck = createNewDeck(c, w, r); // creates, shuffles a new deck of cards
+		ArrayList<Card> deck = createNewDeck(c, w, r); // creates, shuffles a new deck of cards
+		int handSize = (int) Math.floor((Card.DECKSIZE-3) / this.players.size());
 
 		// add cards to each player's hand
 		int cardIdx = 0;
@@ -79,13 +86,13 @@ public class Game {
 
 
 		// if there are any cards remaining, print a message
-		if (handSize * players.size() != DECK_SIZE) {
+		if (handSize * players.size() != Card.DECKSIZE) {
 			//Main.showSpareCards(deck.subList(cardIdx, deck.size()));
 		}
 		// then ensure every player has these cards...
 		for (Player p : players) {
-			for (CardInter cardInter : deck.subList(cardIdx,deck.size())) {
-				p.vindicate(cardInter);
+			for (Card card : deck.subList(cardIdx,deck.size())) {
+				p.vindicate(card);
 			}
 		}
 		// finally, discard these extra cards
@@ -94,7 +101,7 @@ public class Game {
 		}
 	}
 
-	/** Given the guilty cards, this method assembles a shuffled list
+	/** Given the values of the guilty cards, this method assembles a shuffled list
 	 * containing the remaining innocent cards and returns it.
 	 *
 	 * @param c
@@ -102,24 +109,26 @@ public class Game {
 	 * @param r
 	 * @return A shuffled list of cards to be dealt to players.
 	 */
-	private ArrayList<CardInter> createNewDeck(Game.Characters c, Game.Weapons w,
-			Game.Rooms r) {
-		ArrayList<CardInter> deck = new ArrayList<CardInter>();
+	private ArrayList<Card> createNewDeck(String c, String w, String r) {
+		ArrayList<Card> deck = new ArrayList<Card>();
+		if (c == null || w == null || r == null) {
+			throw new IllegalArgumentException("Parameters cannot be null when creating a deck.");
+		}
 
 		// add some cards to the deck
-		for (int i = 0; i < Characters.values().length; i++) {
-			if (Characters.values()[i] != c) {
-				deck.add(new CharacterCard(Characters.values()[i]));
+		for (int i = 0; i < Card.CHARACTERS.length; i++) {
+			if (Card.CHARACTERS[i] != c) {
+				deck.add(new Card(Card.Type.CHARACTER, Card.CHARACTERS[i]));
 			}
 		}
-		for (int i = 0; i < Weapons.values().length; i++) {
-			if (Weapons.values()[i] == w) {
-				deck.add(new WeaponCard(Weapons.values()[i]));
+		for (int i = 0; i < Card.WEAPONS.length; i++) {
+			if (Card.WEAPONS[i] == w) {
+				deck.add(new Card(Card.Type.WEAPON, Card.WEAPONS[i]));
 			}
 		}
-		for (int i = 0; i < Rooms.values().length; i++) {
-			if (Rooms.values()[i] == r) {
-				deck.add(new RoomCard(Rooms.values()[i]));
+		for (int i = 0; i < Card.WEAPONS.length; i++) {
+			if (Card.WEAPONS[i] == r) {
+				deck.add(new Card(Card.Type.ROOM, Card.ROOMS[i]));
 			}
 		}
 
