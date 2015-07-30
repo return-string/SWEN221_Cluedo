@@ -1,0 +1,124 @@
+PUBLIC METHODS AND CONSTRUCTORS
+===============================
+
+Main:
+----------------
+
+/**Prints the inputed text to System.out
+  *@param text Text to print out
+  */
+public void printText(String text){}
+
+/**Prints the given message to System.out then 
+  *asks user for an interger. Can be used to get
+  *user to select an option etc
+  *@param question Message to print out
+  *@return User inputed integer
+  */
+public int askInt(String question){}
+
+
+Game:
+-----------------
+
+/**Constructor for class Game.
+ *@param outIn The Main class it will be using 
+ *for input and output
+ */
+public Game(Main outIn){}
+
+
+Player:
+----------------------------------
+
+/**Constructor for class Player
+ *@param name Player name. Should be a character name from cluedo
+ *@param start Start position of player on board
+ */
+public Player(String name, Coordinate start){}
+
+/**Adds card to players hand
+  *@param card Card to add to hand
+  */
+public void addCardToHand(Card card){}
+
+/**Sets players position to the argument position
+ * Assumes legality of move has already been checked
+ *@param move Coordinates to move to
+ */
+public void setPosition(Coordinate move){}
+
+/**Checks if a given card is in the player's hand
+ *@param card Card to check is in player's hand
+ *@return Boolean representing if card is in hand
+ */
+public boolean cardInHand(Card card){}
+
+
+Card:
+------------------------------------
+
+/**Constructor for class Card
+ * Assumes type matches the value
+ *@param type Type of card
+ *@param value Value of card
+ */
+public Card(Type type, String value){}
+
+/*Needs good hash code and equals methods*/
+
+
+Coordinate:
+---------------------------------------
+
+/**Constructor for class Coordinate
+ *@param x X-value
+ *@param y Y-value
+ */
+public Coordinate(int x, int y){}
+
+/**@return x value of coordinate
+ */
+public int getX(){}
+
+/**@return y value of coordinate
+ */
+public int getY(){}
+
+/**@return string representation of coordinate
+ */
+public String toString(){}
+
+
+Board:
+----------------------------------------
+
+/**Checks if the given coordinate is legal for
+ * this board (Might have use for testing? Shouldn't
+ * need it if everything goes well)
+ *@param coord Coordinate to check
+ *@return Boolean representing legality of coordinate
+ */
+public boolean isLegal(Coordinate coord){}
+
+/**Checks if the given coordinate is in a room. Returns
+ * string name of room. ("Hallway" if player is not in a
+ * room?)
+ *@param coord Coordinate to check
+ *@return String name of room coordinate is in
+ */
+public String getRoom(Coordinate coord){}
+
+/**Determines the legal moves that can be made from the
+ * given coordinate moving the given number of steps.
+ * Returns a map of Coordinates to Strings, where the 
+ * coordinates are the choice of new board positions and
+ * the strings are descriptions of distances to different
+ * rooms.
+ * @param start Coordinate to move from
+ * @param steps Number of steps to move
+ * @return Map of coordinate choices to string descriptions
+ * of choices 
+ */
+public Map<Coordinate, String> possibleMoves(Coordinate start, int steps){}
+
