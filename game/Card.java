@@ -12,6 +12,16 @@ public class Card {
 	public static enum Weapon { CANDLESTICK, DAGGER, REVOLVER, ROPE, PIPE, WRENCH };
 	public static enum Room { CONSERVATORY, BALL, BILLIARD, DINING, HALL, KITCHEN, LOUNGE, STUDY };
 
+	public static final String WHITE = "Mrs White";
+	public static final String SCARLET = "Miss Scarlet";
+	public static final String MUSTARD = "Colonel Mustard";
+	public static final String GREEN = "Reverend Green";
+	public static final String PEACOCK = "Mrs Peacock";
+
+	public static final String CANDLESTICK = "Candlestick";
+	public static final String DAGGER = "Dagger";
+	public static final String
+
 	private final Character character;
 	private final Weapon weapon;
 	private final Room room;
@@ -25,7 +35,7 @@ public class Card {
 	public Card(Weapon w) {
 		room = null;
 		character = null;
-		weapon = null;
+		weapon = w;
 	}
 
 	public Card(Character c) {
@@ -35,14 +45,14 @@ public class Card {
 	}
 
 	public boolean isCharacter() {
-		return character == null;
+		return character != null;
 	}
 
 	public boolean isRoom() {
-		return room == null;
+		return room != null;
 	}
 
 	public boolean isWeapon() {
-		return weapon == null;
+		return weapon != null;
 	}
 }
