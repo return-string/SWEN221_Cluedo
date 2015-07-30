@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 /**
  *
- * @author jamesba
+ * @author badiJames
  *
  */
 public class TextUI {
@@ -23,7 +23,7 @@ public class TextUI {
 	}
 
 	/**Prints the given message to System.out then
-	  *asks user for an interger. Can be used to get
+	  *asks user for an integer. Can be used to get
 	  *user to select an option etc
 	  *@param question Message to print out
 	  *@return User inputed integer
@@ -34,7 +34,10 @@ public class TextUI {
 	}
 
 	public void printArray(String[] textArray){
-
+		System.out.println();
+		for(int i = 0; i < textArray.length; i++){
+			System.out.printf("%d : %s\n", i+1, textArray[i]);
+		}
 	}
 
 }
