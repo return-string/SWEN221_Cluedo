@@ -40,4 +40,14 @@ public class TextUI {
 		}
 	}
 
+	public int askIntBetween(String question, int min, int max){
+		System.out.print(question);
+		int answer = scan.nextInt();
+		while(answer < min || answer > max){
+			System.out.printf("Answer has to be between %d and %d inclusive. Please re-enter: ", min, max);
+			answer = scan.nextInt();
+		}
+		return answer;
+	}
+
 }
