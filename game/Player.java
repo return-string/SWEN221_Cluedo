@@ -10,7 +10,7 @@ import java.util.List;
  * an incorrect accusation (and are thus out of the game), and be
  * able to search their hand to match items in a Suggestion.
  *
- * Because Players are always potential suspects, Game.Character is used
+ * Because Players' names can also be suspects, Game.Character is used
  * to remember which player is which.
  * @author Vicki
  *
@@ -22,8 +22,8 @@ public class Player {
 	private boolean isPlaying = true;
 	private HashSet<Card> guiltMap;
 
-	public Player(Characters c) {
-		character = c;
+	public Player(String c) {
+		CHARACTER = c;
 		hand = new ArrayList<Card>();
 		guiltMap = new HashSet<Card>();
 	}
@@ -33,13 +33,13 @@ public class Player {
 	 * @param c
 	 * @param h
 	 */
-	public Player(Characters c, List<Card> h) {
-		guiltMap = new HashSet<Card>();
-		character = c;
+	public Player(String c, List<Card> h) {
+		CHARACTER = c;
 		hand = h;
 		for (Card Card : hand) {
 			vindicate(Card);
 		}
+		guiltMap = new HashSet<Card>();
 	}
 
 	/** When play begins, cards should be dealt to Players using this method.

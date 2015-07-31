@@ -1,6 +1,7 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,11 +15,12 @@ import javax.xml.stream.events.Characters;
  *
  */
 public class Game {
-	public final List<Player> players;
 
 	private Card guiltyChar;
 	private Card guiltyWeap;
 	private Card guiltyRoom;
+	private List<Player> players;
+	private int activePlayer;
 
 	private TextUI textUI = new TextUI();
 
@@ -34,15 +36,13 @@ public class Game {
 			textUI.printArray(Card.CHARACTERS);
 			textUI.askInt("Player "+ i+1 +", please select a character.");
 		}
-
-		initialiseDeck();
 	}
 
 	/** This method selects the guilty character, weapon and room and deals
 	 * the remaining cards to the players.
 	 */
 	public void initialiseDeck() {
-		initialiseGame(null,null,null);
+		initialiseDeck(null,null,null);
 	}
 
 	/** This method can be used to select the guilty cards manually.
@@ -52,7 +52,7 @@ public class Game {
 	 * @param w Guilty weapon
 	 * @param r Guilty room
 	 */
-	public void initialiseGame(String c, String w, String r) {
+	public void initialiseDeck(String c, String w, String r) {
 		// for each null value, pick a random card to be guilty
 		if (c == null) {
 			int i = (int) (Math.random()*Card.CHARACTERS.length);
@@ -134,5 +134,25 @@ public class Game {
 
 		Collections.shuffle(deck);
 		return deck;
+	}
+	
+	public void play() throws ParameterDesyncException {
+		if (players == null || activePlayer < players.size() || activePlayer >= players.size()) {
+			throw new ParameterDesyncException("The active player cannot be playing.");
+		}
+		
+	}
+
+	public void takeNextTurn() {
+		
+	}
+	
+	/** 
+	 * 
+	 * @return
+	 */
+	public Collection<Player> getPlayers() {
+		Collection<Player> 
+		return players;
 	}
 }
