@@ -1,0 +1,26 @@
+24 25
+---------h----h---------
+-------hhh----hhh-------
+------hh--------hh------
+------hh--------hh------
+------hh--------hhco----
+----s-h>b------b<h^-----
+----k-hh--------hhhhhhhh
+hhhh^hhh-b----b-hhhhhhh-
+-hhhhhhhh^hhhh^hhh------
+-----hhhhhhhhhhhh>i-----
+--------hh-----hhh------
+--------hh-----hhh------
+-------d<h-----hhh----i-
+--------hh-----hhhhhvh^-
+--------hh-----hhh--l---
+------d-hh-----hh-------
+-hhhhh^hhh-----h>l------
+hhhhhhhhhhhvvhhhh-------
+-hhhhhvhh--aa--hhh------
+-----cohh------hhhhhhhhh
+-------hh-----a<hvhhhhh-
+-------hh------hhsk-----
+-------hh------hh-------
+-------hh------hh-------
+-------h--------h-------

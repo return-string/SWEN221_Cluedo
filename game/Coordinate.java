@@ -1,5 +1,10 @@
 package game;
 
+/**
+ * Basic co-ordinate class. Stores an x value and a y value
+ * @author Badi james
+ *
+ */
 public class Coordinate {
 	
 	private int x;

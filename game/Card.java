@@ -25,19 +25,21 @@ public class Card {
 	public static final String WRENCH = "wrench";
 
 	public static final String CONSERVATORY = "conservatory";
-	public static final String BALL = "ball";
-	public static final String BILLIARD = "billiard";
-	public static final String DINING = "dining";
+	public static final String BALL = "ball room";
+	public static final String BILLIARD = "billiard room";
+	public static final String DINING = "dining room";
 	public static final String HALL = "hall";
 	public static final String KITCHEN = "kitchen";
 	public static final String LOUNGE = "lounge";
 	public static final String STUDY = "study";
+	public static final String LIBRARY = "library";
 
 	public static final String[] CHARACTERS = { WHITE,SCARLET,MUSTARD,GREEN,PEACOCK,PLUM };
 	public static final String[] WEAPONS = { CANDLESTICK, DAGGER, REVOLVER, ROPE, PIPE, WRENCH };
-	public static final String[] ROOMS = { CONSERVATORY, BALL, BILLIARD, DINING, HALL, KITCHEN, LOUNGE, STUDY };
+	public static final String[] ROOMS = { CONSERVATORY, BALL, BILLIARD, DINING, LIBRARY,
+											HALL, KITCHEN, LOUNGE, STUDY };
 
-	public static final int DECKSIZE = 20;
+	public static final int DECKSIZE = CHARACTERS.length + WEAPONS.length + ROOMS.length;
 
 	private String value;
 	private Type type;
