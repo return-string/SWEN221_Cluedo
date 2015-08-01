@@ -34,7 +34,7 @@ public class Card {
 	public static final String LOUNGE = "lounge";
 	public static final String STUDY = "study";
 
-	public static final String[] CHARACTERS = { WHITE,SCARLET,MUSTARD,GREEN,PEACOCK,PLUM };
+	public static final String[] CHARACTERS = { SCARLET,MUSTARD,WHITE,GREEN,PEACOCK,PLUM };
 	public static final String[] WEAPONS = { CANDLESTICK, DAGGER, REVOLVER, ROPE, PIPE, WRENCH };
 	public static final String[] ROOMS = { CONSERVATORY, BALL, BILLIARD, DINING, LIBRARY,
 											HALL, KITCHEN, LOUNGE, STUDY };
