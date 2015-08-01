@@ -24,15 +24,14 @@ public class Game {
 
 	private TextUI textUI = new TextUI();
 	private List<Player> players;
-	private Card guiltyChar;
-	private Card guiltyWeap;
-	private Card guiltyRoom;
+	private Hypothesis guilty;
 	private int activePlayer;
 
 	private static final String PROMPT = "Select an option:";
 	private static final String[] PLAYER_OPTIONS = {
 		"Make a suggestion",
 		"Make a final accusation",
+		"View detective notebook",
 		"End turn"
 	};
 
@@ -48,6 +47,164 @@ public class Game {
 			textUI.printArray(Card.CHARACTERS);
 			textUI.askInt("Player "+ i+1 +", please select a character.");
 		}
+	}
+
+
+	/** This is how we play a game of Cluedo!
+	 */
+	public void playGame() {
+		if (players == null || activePlayer >= players.size()) {
+			// throw new InvalidAttributeValueException("");
+		}
+
+		for (Player p : players) {
+			if (p.isPlaying()) {
+				playerMoves(p);
+				showPlayerOptions(p);
+			}
+		}
+	}
+
+	/** Method for resolving a player's movement phase.
+	 * The number of spaces that can be moved is calculated and options
+	 * for movement printed; based on the player's selection,
+	 * the player's position is updated accordingly.
+	 *
+	 * @param p
+	 */
+	public void playerMoves(Player p) {
+		/* first, roll the dice */
+		int roll = R.nextInt(5) + 1;
+		textUI.printText("You rolled a "+roll+"!");
+
+		/* get the map of options a player has and put them into an array */
+		Map<Coordinate,String> moves = BOARD.possibleMoves(p.position(), roll);
+		Iterator<String> descsIter = moves.values().iterator();
+		String[] moveDescs = new String[moves.size()];
+		for (int i = 0; i < moves.size(); i++) {
+			moveDescs[i] = descsIter.next();
+		}
+		/* then we can print these options and ask the user to select an option*/
+		textUI.printArray(moveDescs);
+		int userChoice = textUI.askIntBetween(PROMPT,1,moveDescs.length);
+		for (Entry<Coordinate,String> s : moves.entrySet()) {
+			/* when the user-selected move is found, move the player */
+			if (s.getValue().equalsIgnoreCase(moveDescs[userChoice])) {
+				p.move(s.getKey());
+			}
+		}
+	}
+
+	/** Shows the options available to a player once they have completed a move.*/
+	public void showPlayerOptions(Player p) {
+		String[] options;
+		/* if the player is in a room, give them the option to make a suggestion.
+		 * Otherwise limit their options to making an accusation, viewing their
+		 * card or ending the turn. */
+		if (BOARD.getRoom(p.position()).equals(BOARD.HALLWAYSTRING)) {
+			options = new String[]{ PLAYER_OPTIONS[1], PLAYER_OPTIONS[2], PLAYER_OPTIONS[3] };
+		} else {
+			options = PLAYER_OPTIONS;
+		}
+		textUI.printArray(options);
+		int option = textUI.askIntBetween(PROMPT,1,options.length) - 1; // subtract one because we've asked for a number between 1 and length
+		/* do the selected option! */
+		if (option == PLAYER_OPTIONS.length-1) { // the second-to-last option is always 'view notebook'
+			viewNotebook(p);
+			showPlayerOptions(p);
+		} else if (option == 0){
+			playerMakesSuggestion(p);
+		} else if (option == 1) {
+			playerMakesAccusation(p);
+		} else {
+			textUI.printText(p.toString() +" ends their turn.");
+		}
+	}
+
+	private void playerMakesSuggestion(Player p) {
+		Hypothesis guess = new Hypothesis();
+		textUI.printText(p.toString() +" is considering the evidence...");
+		textUI.printText("These are the possible guilty characters:");
+		textUI.printArray(createNotesToPrint(p, Card.Type.CHARACTER));
+		int select = textUI.askIntBetween(PROMPT,1,Card.CHARACTERS.length);
+		try {
+			guess.addCharacter(new Card(Card.Type.CHARACTER,Card.CHARACTERS[select]));
+		} catch (IllegalAccessException e) {
+			// this isn't actually possible
+		}
+
+		textUI.printText("These are the possible murder weapons:");
+		textUI.printArray(createNotesToPrint(p, Card.Type.WEAPON));
+		select = textUI.askIntBetween(PROMPT,1,Card.WEAPONS.length);
+		try {
+			guess.addWeapon(new Card(Card.Type.WEAPON,Card.WEAPONS[select]));
+		} catch (IllegalAccessException e) {
+			// this isn't actually possible
+		}
+
+		textUI.printText("These are the possible murder locations:");
+		textUI.printArray(createNotesToPrint(p, Card.Type.ROOM));
+		select = textUI.askIntBetween(PROMPT,1,Card.ROOMS.length);
+		try {
+			guess.addRoom(new Card(Card.Type.ROOM,Card.ROOMS[select]));
+		} catch (IllegalAccessException e) {
+			// this isn't actually possible
+		}
+	}
+
+
+	private void playerMakesAccusation(Player p) {
+
+	}
+
+
+	private void viewNotebook(Player p) {
+		textUI.printDivide();
+		textUI.printArray(createNotesToPrint(p,Card.Type.CHARACTER));
+		textUI.printArray(createNotesToPrint(p,Card.Type.WEAPON));
+		textUI.printArray(createNotesToPrint(p,Card.Type.ROOM));
+		textUI.printDivide();
+	}
+
+
+	/**
+	 * @param p
+	 */
+	private String[] createNotesToPrint(Player p, Card.Type t) {
+		String[] printing;
+		if (t == Card.Type.CHARACTER) {
+			printing = Card.CHARACTERS;
+		} else if (t == Card.Type.WEAPON) {
+			printing = Card.WEAPONS;
+		} else if (t == Card.Type.ROOM) {
+			printing = Card.ROOMS;
+		} else {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i < printing.length; i++) {
+			if (p.isInnocent(t,Card.CHARACTERS[i])) {
+				printing[i] = Card.CHARACTERS[i] +" (X)";
+			} else {
+				printing[i] = Card.CHARACTERS[i] +" ( )";
+			}
+		}
+		return printing;
+	}
+
+
+	public void playerAccuses(Player p) {
+	}
+
+	public void printSuspectCharacters() {
+		textUI.printArray(Card.CHARACTERS);
+	}
+
+	public void printSuspectWeapons() {
+		textUI.printArray(Card.WEAPONS);
+	}
+
+	public void printSuspectRooms() {
+		textUI.printArray(Card.ROOMS);
 	}
 
 	/** This method selects the guilty character, weapon and room and deals
@@ -80,9 +237,9 @@ public class Game {
 		}
 
 		// put guilty cards into fields
-		guiltyChar = new Card(Card.Type.CHARACTER, c);
-		guiltyWeap = new Card(Card.Type.WEAPON, w);
-		guiltyRoom = new Card(Card.Type.ROOM, r);
+		guilty = new Hypothesis(new Card(Card.Type.CHARACTER, c),
+								new Card(Card.Type.WEAPON, w),
+								new Card(Card.Type.ROOM, r));
 
 		ArrayList<Card> deck = createNewDeck(c, w, r); // creates, shuffles a new deck of cards
 		int handSize = (int) Math.floor((Card.DECKSIZE-3) / this.players.size());
@@ -148,79 +305,6 @@ public class Game {
 		return deck;
 	}
 
-	public void playGame() throws InvalidAttributeValueException {
-		if (players == null || activePlayer >= players.size()) {
-			throw new InvalidAttributeValueException("");
-		}
-
-		for (Player p : players) {
-			if (p.isPlaying()) {
-				playerMoves(p);
-				showPlayerOptions(p);
-			}
-		}
-	}
-
-	/** Method for resolving a player's movement phase.
-	 * The number of spaces that can be moved is calculated and options
-	 * for movement printed; based on the player's selection,
-	 * the player's position is updated accordingly.
-	 *
-	 * @param p
-	 */
-	public void playerMoves(Player p) {
-		/* first, roll the dice */
-		int roll = R.nextInt(5) + 1;
-		textUI.printText("You rolled a "+roll+"!");
-		String curRoom = BOARD.getRoom(p.position());
-		/* get the map of options a player has */
-		Map<Coordinate,String> moves = BOARD.possibleMoves(p.position(), roll);
-		Iterator<String> descsIter = moves.values().iterator();
-		String[] moveDescs = new String[moves.size()];
-		for (int i = 0; i < moves.size(); i++) {
-			moveDescs[i] = descsIter.next();
-		}
-		/* print these options */
-		textUI.printArray(moveDescs);
-		int userChoice = textUI.askIntBetween(PROMPT,1,moveDescs.length);
-		for (Entry<Coordinate,String> s : moves.entrySet()) {
-			/* when the user-selected move is found, move the player */
-			if (s.getValue().equalsIgnoreCase(moveDescs[userChoice])) {
-				p.move(s.getKey());
-			}
-		}
-	}
-
-	/** Shows the options available to a player once they have completed a move.*/
-	public void showPlayerOptions(Player p) {
-		String[] options;
-		/* if the player is in a room, give them the option to make a suggestion;
-		 * otherwise limit their options to making an accusation, viewing their
-		 * card or ending the turn.
-		 */
-		if (BOARD.getRoom(p.position()).equals(BOARD.HALLWAYSTRING)) {
-			options = new String[]{ PLAYER_OPTIONS[1], PLAYER_OPTIONS[2] };
-		} else {
-			options = PLAYER_OPTIONS;
-		}
-		textUI.printArray(options);
-		textUI.askIntBetween(PROMPT,1,options.length);
-	}
-
-	public void playerAccuses(Player p) {
-	}
-
-	public void printSuspectCharacters() {
-		textUI.printArray(Card.CHARACTERS);
-	}
-
-	public void printSuspectWeapons() {
-		textUI.printArray(Card.WEAPONS);
-	}
-
-	public void printSuspectRooms() {
-		textUI.printArray(Card.ROOMS);
-	}
 
 
 	/**

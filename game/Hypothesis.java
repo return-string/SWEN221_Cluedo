@@ -13,9 +13,6 @@ import java.util.Set;
  *
  */
 public class Hypothesis implements Set {
-
-
-
 	private final Card[] set = new Card[3];
 
 	/**
@@ -32,7 +29,24 @@ public class Hypothesis implements Set {
 		set[2] = room;
 	}
 
+	public Hypothesis() {
+		// TODO Auto-generated constructor stub
+	}
 
+	public void addCharacter(Card c) throws IllegalAccessException {
+		if (set[0] != null) { throw new IllegalAccessException(); }
+		set[0] = c;
+	}
+
+	public void addWeapon(Card c) throws IllegalAccessException {
+		if (set[1] != null) { throw new IllegalAccessException(); }
+		set[1] = c;
+	}
+
+	public void addRoom(Card c) throws IllegalAccessException {
+		if (set[2] != null) { throw new IllegalAccessException(); }
+		set[1] = c;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

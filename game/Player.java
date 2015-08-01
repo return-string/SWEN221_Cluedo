@@ -81,6 +81,18 @@ public class Player {
 		return false;
 	}
 
+	/** The player shows a card to another player if they can refute their hypothesis.
+	 */
+	public List<Card> refuteHypothesis(Hypothesis h) {
+		List<Card> l = new ArrayList<Card>();
+		for (Card c : hand) {
+			if (h.contains(c)) {
+				l.add(c);
+			}
+		}
+		return l;
+	}
+
 	/** Returns the player's current position on the board. */
 	public Coordinate position() {
 		return pos;
@@ -95,6 +107,10 @@ public class Player {
 
 	public boolean isInnocent(Card c) {
 		return guiltMap.contains(c);
+	}
+
+	public boolean isInnocent(Card.Type t, String c) {
+		return guiltMap.contains(new Card(t,c));
 	}
 
 	public boolean isPlaying() {
