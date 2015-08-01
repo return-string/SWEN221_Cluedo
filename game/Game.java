@@ -3,26 +3,38 @@ package game;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.Set;
 
+import javax.management.InvalidAttributeValueException;
 import javax.xml.stream.events.Characters;
 
-/** The Game class is used to model the Cluedo game, which
- * manages turn progression (calling takeTurn() on each player
- * while the game is in progress) and the guilty cards.
+/** The Game class is used to model the Cluedo game.
  *
  * @author mckayvick
  *
  */
 public class Game {
+	private static final Random R = new Random(System.currentTimeMillis());
+	public static final Board BOARD = new Board();
 
+	private TextUI textUI = new TextUI();
+	private List<Player> players;
 	private Card guiltyChar;
 	private Card guiltyWeap;
 	private Card guiltyRoom;
-	private List<Player> players;
 	private int activePlayer;
 
-	private TextUI textUI = new TextUI();
+	private static final String PROMPT = "Select an option:";
+	private static final String[] PLAYER_OPTIONS = {
+		"Make a suggestion",
+		"Make a final accusation",
+		"End turn"
+	};
 
 	/** Given a list of the playing characters,
 	 *
@@ -135,24 +147,87 @@ public class Game {
 		Collections.shuffle(deck);
 		return deck;
 	}
-	
-	public void play() throws ParameterDesyncException {
-		if (players == null || activePlayer < players.size() || activePlayer >= players.size()) {
-			throw new ParameterDesyncException("The active player cannot be playing.");
+
+	public void playGame() throws InvalidAttributeValueException {
+		if (players == null || activePlayer >= players.size()) {
+			throw new InvalidAttributeValueException("");
 		}
-		
+
+		for (Player p : players) {
+			if (p.isPlaying()) {
+				playerMoves(p);
+				showPlayerOptions(p);
+			}
+		}
 	}
 
-	public void takeNextTurn() {
-		
+	/** Method for resolving a player's movement phase.
+	 * The number of spaces that can be moved is calculated and options
+	 * for movement printed; based on the player's selection,
+	 * the player's position is updated accordingly.
+	 *
+	 * @param p
+	 */
+	public void playerMoves(Player p) {
+		/* first, roll the dice */
+		int roll = R.nextInt(5) + 1;
+		textUI.printText("You rolled a "+roll+"!");
+		String curRoom = BOARD.getRoom(p.position());
+		/* get the map of options a player has */
+		Map<Coordinate,String> moves = BOARD.possibleMoves(p.position(), roll);
+		Iterator<String> descsIter = moves.values().iterator();
+		String[] moveDescs = new String[moves.size()];
+		for (int i = 0; i < moves.size(); i++) {
+			moveDescs[i] = descsIter.next();
+		}
+		/* print these options */
+		textUI.printArray(moveDescs);
+		int userChoice = textUI.askIntBetween(PROMPT,1,moveDescs.length);
+		for (Entry<Coordinate,String> s : moves.entrySet()) {
+			/* when the user-selected move is found, move the player */
+			if (s.getValue().equalsIgnoreCase(moveDescs[userChoice])) {
+				p.move(s.getKey());
+			}
+		}
 	}
-	
-	/** 
-	 * 
+
+	/** Shows the options available to a player once they have completed a move.*/
+	public void showPlayerOptions(Player p) {
+		String[] options;
+		/* if the player is in a room, give them the option to make a suggestion;
+		 * otherwise limit their options to making an accusation, viewing their
+		 * card or ending the turn.
+		 */
+		if (BOARD.getRoom(p.position()).equals(BOARD.HALLWAYSTRING)) {
+			options = new String[]{ PLAYER_OPTIONS[1], PLAYER_OPTIONS[2] };
+		} else {
+			options = PLAYER_OPTIONS;
+		}
+		textUI.printArray(options);
+		textUI.askIntBetween(PROMPT,1,options.length);
+	}
+
+	public void playerAccuses(Player p) {
+	}
+
+	public void printSuspectCharacters() {
+		textUI.printArray(Card.CHARACTERS);
+	}
+
+	public void printSuspectWeapons() {
+		textUI.printArray(Card.WEAPONS);
+	}
+
+	public void printSuspectRooms() {
+		textUI.printArray(Card.ROOMS);
+	}
+
+
+	/**
+	 *
 	 * @return
 	 */
 	public Collection<Player> getPlayers() {
-		Collection<Player> 
 		return players;
 	}
 }

@@ -21,11 +21,14 @@ public class Player {
 	private List<Card> hand;
 	private boolean isPlaying = true;
 	private HashSet<Card> guiltMap;
+	private Coordinate pos;
+	private boolean wasForced = false;
 
-	public Player(String c) {
-		CHARACTER = c;
-		hand = new ArrayList<Card>();
-		guiltMap = new HashSet<Card>();
+	public Player(String characterName, Coordinate startPos) {
+		this.CHARACTER = characterName;
+		this.hand = new ArrayList<Card>();
+		this.pos = pos;
+		this.guiltMap = new HashSet<Card>();
 	}
 
 	/** Construct a player with a given hand and mark all the cards as innocent.
@@ -33,13 +36,34 @@ public class Player {
 	 * @param c
 	 * @param h
 	 */
-	public Player(String c, List<Card> h) {
-		CHARACTER = c;
-		hand = h;
-		for (Card Card : hand) {
-			vindicate(Card);
+	public Player(String characterName, List<Card> hand, Coordinate startPos) {
+		this.CHARACTER = characterName;
+		this.hand = hand;
+		this.pos = startPos;
+		for (Card card : hand) {
+			vindicate(card);
 		}
-		guiltMap = new HashSet<Card>();
+		this.guiltMap = new HashSet<Card>();
+	}
+
+	/** This method should only be used for debugging/testing.
+	 *
+	 * @return This player's List of cards in their hand.
+	 */
+	public List<Card> getHand() {
+		return hand;
+	}
+
+	/** Updates the player's coordinates. */
+	public void move(Coordinate pos) {
+		this.pos = pos;
+		wasForced = false;
+	}
+
+	/** When a player is moved out of turn, call this method. */
+	public void forciblyMove(Coordinate pos) {
+		this.pos = pos;
+		wasForced = true;
 	}
 
 	/** When play begins, cards should be dealt to Players using this method.
@@ -57,12 +81,9 @@ public class Player {
 		return false;
 	}
 
-	/** This method should only be used for debugging/testing.
-	 *
-	 * @return This player's List of cards in their hand.
-	 */
-	public List<Card> getHand() {
-		return hand;
+	/** Returns the player's current position on the board. */
+	public Coordinate position() {
+		return pos;
 	}
 
 	/** A player vindicates a card when it is shown to them by another player.
