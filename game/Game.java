@@ -121,6 +121,14 @@ public class Game {
 		}
 	}
 
+	/** This method is used when a player p wants to make a suggestion about
+	 * who they suspect the murderer is.
+	 *
+	 * Game uses the parameter player's detective notes to print the list of people, places and
+	 * weapons their might select from, and assembles the results of each into
+	 * a Hypothesis object.
+	 * @param p
+	 */
 	private void playerMakesSuggestion(Player p) {
 		Hypothesis guess = new Hypothesis();
 		textUI.printText(p.toString() +" is considering the evidence...");
@@ -150,6 +158,14 @@ public class Game {
 		} catch (IllegalAccessException e) {
 			// this isn't actually possible
 		}
+
+		int i = activePlayer+1;
+		do {
+			List<Card> l = players.get(i).refuteHypothesis(guess);
+			if (l.size() > 0) {
+				textUI.printText("")
+			}
+		} while (i!=activePlayer);
 	}
 
 
