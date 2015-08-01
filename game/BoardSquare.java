@@ -48,14 +48,14 @@ public class BoardSquare {
 		this.neighbours = neighbours;
 	}
 
+	/**
+	 * Adds given boardSquare to the collection of neighbours, then adds
+	 * this board square to the given boardSquare's collection of neighbours
+	 * @param neighbour
+	 */
 	public void addNeigbour(BoardSquare neighbour){
 		this.neighbours.add(neighbour);
-		neighbour.addNeigbourNonReflection(this);
-	}
-
-	private void addNeigbourNonReflection(BoardSquare boardSquare) {
-		this.neighbours.add(boardSquare);
-
+		neighbour.neighbours.add(this);
 	}
 
 	public boolean containsCoordinate(Coordinate coord) {
@@ -117,6 +117,12 @@ public class BoardSquare {
 		return true;
 	}
 
+	/**
+	 * Finds the coordinate in the collection of coordinates that is the
+	 * closest to the given coordinate
+	 * @param from The coordinate to compare to
+	 * @return The coordinate in this.coordinates closest to from
+	 */
 	public Coordinate getClosestCoordinate(Coordinate from) {
 		int closest = Integer.MAX_VALUE;
 		Coordinate toReturn = null;
