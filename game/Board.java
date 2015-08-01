@@ -87,7 +87,7 @@ public class Board {
 						moveCoord = roomEntry.square.getACoordinate();
 						if(moves.containsKey(moveCoord)){
 							descriptionString = moves.get(moveCoord)
-									+ ". " + descriptionString;
+									+ "\n " + descriptionString;
 						}
 					}
 					moves.put(moveCoord, descriptionString);
