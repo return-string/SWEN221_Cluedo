@@ -7,9 +7,10 @@
 /Cheat.class
 /Coordinate.class
 /Game.class
-/Hypothesis$HypothesisIter.class
-/Hypothesis.class
 /ParameterDesyncException.class
-/Player$PlayerComp.class
 /Player.class
 /TextUI.class
+/Hypothesis$HypothesisIter.class
+/Hypothesis.class
+/Player$PlayerComp.class
+
