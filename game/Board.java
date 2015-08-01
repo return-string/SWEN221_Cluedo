@@ -1,6 +1,7 @@
 package game;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -57,42 +58,54 @@ public class Board {
 	public Map<Coordinate, String> possibleMoves(Coordinate start, int steps){
 		if(!isLegal(start)) {throw new IllegalArgumentException();}
 		BoardSquare startSquare = squares[start.getX()][start.getY()];
-		HashSet<Coordinate> destinations = new HashSet<Coordinate>();
-		//does a breadth first search for squares move can end in
-		LinkedList<PathFringeEntry> pathFringe = new LinkedList<PathFringeEntry>();
-		pathFringe.offer(new PathFringeEntry(startSquare, null, 0));
-		do{
-			PathFringeEntry current = pathFringe.poll();
-			/*if path length to current square equals the dice roll
-			or if current square is a room, it's a possible move*/
-			if(current.getDistance() == steps || current.getSquare().isRoom()){
-				destinations.add(current.getSquare().getACoordinate());
-			} else {
-				/*puts all the neighbours on the fringe if they haven't been
-				 * visited, with this entry as their 'from' and an incremented
-				 * 'dist' (path length)*/
-				for(BoardSquare neighbour : current.getSquare().getNeighbours()){
-					if(!current.isFrom(neighbour)){
-						pathFringe.offer(new PathFringeEntry(neighbour, current,
-								current.getDistance()+1));
+		HashMap<Coordinate, String> moves = new HashMap<Coordinate, String>();
+		HashSet<String> roomsToFind = new HashSet<String>(Arrays.asList(Card.ROOMS));
+		roomsToFind.remove(startSquare.getRoom());
+		for(String rm : roomsToFind){
+			String descriptionString = "";
+			Coordinate moveCoord = null;
+			//does a breadth first search for squares move can end in
+			LinkedList<PathFringeEntry> pathFringe = new LinkedList<PathFringeEntry>();
+			pathFringe.offer(new PathFringeEntry(startSquare, null, 0));
+			do{
+				PathFringeEntry current = pathFringe.poll();
+				//if it finds the room it's currently looking for
+				if(current.square.getRoom().equals(rm)){
+					if(current.distance <= steps){//if can get to it this turn
+						descriptionString = "Enter the " + rm;
+						moveCoord = current.square.getClosestCoordinate(current.from.square.getACoordinate());
+					} else { //finds the square player can reach closest to room
+						int finalLength = current.distance;
+						PathFringeEntry roomEntry = current;
+						while(roomEntry.distance > steps){
+							roomEntry = roomEntry.from;
+						}
+						int stepsToRoom = finalLength - steps;
+						descriptionString = stepsToRoom + " steps away from " + rm;
+						moveCoord = roomEntry.square.getACoordinate();
+						if(moves.containsKey(moveCoord)){
+							descriptionString = moves.get(moveCoord)
+									+ ". " + descriptionString;
+						}
+					}
+					moves.put(moveCoord, descriptionString);
+					break;
+				} else {
+					/*If the current square isn't a room square, puts all the neighbours
+					 * on the fringe if they haven't been
+					 * visited, with this entry as their 'from' and an incremented
+					 * 'dist' (path length)*/
+					if(!current.square.isRoom()){
+						for(BoardSquare neighbour : current.square.getNeighbours()){
+							if(!current.isFrom(neighbour)){
+								pathFringe.offer(new PathFringeEntry(neighbour, current,
+										current.distance+1));
+							}
+						}
 					}
 				}
-			}
-		} while(!pathFringe.isEmpty());
-		HashMap<Coordinate, String> moves = new HashMap<Coordinate, String>();
-		//Builds the map with the appropriate descriptions
-		for(Coordinate coord : destinations){
-			BoardSquare endSquare = squares[coord.getX()][coord.getY()];
-			String description = "";
-			if(endSquare.isRoom()){
-				description = "Enter the " + endSquare.getRoom();
-			} else {
-				description = "Go down " + endSquare.getRoom() + ". Don't know distance to"
-						+" rooms yet.";
-			}
-			moves.put(coord, description);
+			} while(!pathFringe.isEmpty());
 		}
-		// TODO make methods to calculate distance to rooms
 		return moves;
 	}
 
@@ -116,14 +129,6 @@ public class Board {
 			this.distance = distance;
 		}
 
-		public BoardSquare getSquare() {
-			return square;
-		}
-
-		public int getDistance() {
-			return distance;
-		}
-
 		/**
 		 * Recursively checks the 'from' entries. Used to check if
 		 * a square neighboring this square to be added to the fringe
@@ -134,7 +139,7 @@ public class Board {
 		public boolean isFrom(BoardSquare bs){
 			if(this.from == null){
 				return false;
-			} else if(this.from.getSquare().equals(bs)){
+			} else if(this.from.square.equals(bs)){
 				return true;
 			} else {
 				return this.from.isFrom(bs);

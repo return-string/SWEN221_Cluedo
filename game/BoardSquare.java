@@ -117,6 +117,20 @@ public class BoardSquare {
 		return true;
 	}
 
+	public Coordinate getClosestCoordinate(Coordinate from) {
+		int closest = Integer.MAX_VALUE;
+		Coordinate toReturn = null;
+		for(Coordinate coord : this.coordinates){
+			int distance = (Math.abs(coord.getX() - from.getX()))
+				+ (Math.abs(coord.getY() - from.getY()));
+			if(distance < closest){
+				closest = distance;
+				toReturn = coord;
+			}
+		}
+		return toReturn;
+	}
+
 
 
 
