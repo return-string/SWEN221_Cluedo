@@ -1,6 +1,7 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
@@ -15,8 +16,8 @@ import java.util.List;
  * @author Vicki
  *
  */
-public class Player {
-	public final String CHARACTER;
+public class Player implements Comparable {
+	public final String NAME;
 
 	private List<Card> hand;
 	private boolean isPlaying = true;
@@ -25,7 +26,7 @@ public class Player {
 	private boolean wasForced = false;
 
 	public Player(String characterName, Coordinate startPos) {
-		this.CHARACTER = characterName;
+		this.NAME = characterName;
 		this.hand = new ArrayList<Card>();
 		this.pos = pos;
 		this.guiltMap = new HashSet<Card>();
@@ -37,7 +38,7 @@ public class Player {
 	 * @param h
 	 */
 	public Player(String characterName, List<Card> hand, Coordinate startPos) {
-		this.CHARACTER = characterName;
+		this.NAME = characterName;
 		this.hand = hand;
 		this.pos = startPos;
 		for (Card card : hand) {
@@ -81,7 +82,16 @@ public class Player {
 		return false;
 	}
 
+	/**
+	 * @return
+	 */
+	public void kill() {
+		isPlaying = false;
+	}
+
 	/** The player shows a card to another player if they can refute their hypothesis.
+	 *
+	 * This is... really not a safe method to have for networked play. Grr. Any alternatives?
 	 */
 	public List<Card> refuteHypothesis(Hypothesis h) {
 		List<Card> l = new ArrayList<Card>();
@@ -115,5 +125,51 @@ public class Player {
 
 	public boolean isPlaying() {
 		return isPlaying;
+	}
+
+	public String getName() {
+		return NAME;
+	}
+
+	public class PlayerComp<T extends Player> implements Comparator{
+		@Override
+		public int compare(Object o1, Object o2) {
+			if (!(o1 instanceof Player) || !(o2 instanceof Player)) {
+				throw new IllegalArgumentException();
+			}
+			Player first = (Player)o1;
+			Player second = (Player)o2;
+			int index1 = 0;
+			int index2 = 0;
+			for (int i = 0; i < Card.CHARACTERS.length; i++) {
+				if (first.getName().equals(Card.CHARACTERS[i])) {
+					index1 = i;
+				}
+				if (second.getName().equals(Card.CHARACTERS[i])) {
+					index2 = i;
+				}
+			}
+			return index2 - index1;
+		}
+
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		if (!(o instanceof Player)) {
+			throw new IllegalArgumentException();
+		}
+		Player second = (Player)o;
+		int index1 = 0;
+		int index2 = 0;
+		for (int i = 0; i < Card.CHARACTERS.length; i++) {
+			if (this.getName().equals(Card.CHARACTERS[i])) {
+				index1 = i;
+			}
+			if (second.getName().equals(Card.CHARACTERS[i])) {
+				index2 = i;
+			}
+		}
+		return index1 - index2;
 	}
 }

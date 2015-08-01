@@ -33,19 +33,31 @@ public class Hypothesis implements Set {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void addCharacter(Card c) throws IllegalAccessException {
+	public void setCharacter(Card c) throws IllegalAccessException {
 		if (set[0] != null) { throw new IllegalAccessException(); }
 		set[0] = c;
 	}
 
-	public void addWeapon(Card c) throws IllegalAccessException {
+	public Card getCharacter() {
+		return set[0];
+	}
+
+	public void setWeapon(Card c) throws IllegalAccessException {
 		if (set[1] != null) { throw new IllegalAccessException(); }
 		set[1] = c;
 	}
 
-	public void addRoom(Card c) throws IllegalAccessException {
+	public Card getWeapon() {
+		return set[1];
+	}
+
+	public void setRoom(Card c) throws IllegalAccessException {
 		if (set[2] != null) { throw new IllegalAccessException(); }
-		set[1] = c;
+		set[2] = c;
+	}
+
+	public Card getRoom() {
+		return set[2];
 	}
 
 	/* (non-Javadoc)
