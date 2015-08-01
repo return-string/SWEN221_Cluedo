@@ -55,6 +55,7 @@ public class Board {
 	 * of choices
 	 */
 	public Map<Coordinate, String> possibleMoves(Coordinate start, int steps){
+		if(!isLegal(start)) {throw new IllegalArgumentException();}
 		BoardSquare startSquare = squares[start.getX()][start.getY()];
 		HashSet<Coordinate> destinations = new HashSet<Coordinate>();
 		//does a breadth first search for squares move can end in
