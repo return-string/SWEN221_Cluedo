@@ -62,6 +62,7 @@ public class Board {
 		HashSet<String> roomsToFind = new HashSet<String>(Arrays.asList(Card.ROOMS));
 		roomsToFind.remove(startSquare.getRoom());
 		for(String rm : roomsToFind){
+			clearVisits();
 			String descriptionString = "";
 			Coordinate moveCoord = null;
 			//does a breadth first search for squares move can end in
@@ -69,6 +70,7 @@ public class Board {
 			pathFringe.offer(new PathFringeEntry(startSquare, null, 0));
 			do{
 				PathFringeEntry current = pathFringe.poll();
+				current.square.setVisited(true);
 				//if it finds the room it's currently looking for
 				if(current.square.getRoom().equals(rm)){
 					if(current.distance <= steps){//if can get to it this turn
@@ -95,9 +97,9 @@ public class Board {
 					 * on the fringe if they haven't been
 					 * visited, with this entry as their 'from' and an incremented
 					 * 'dist' (path length)*/
-					if(!current.square.isRoom()){
+					if(!current.square.isRoom() || current.distance == 0){
 						for(BoardSquare neighbour : current.square.getNeighbours()){
-							if(!current.isFrom(neighbour)){
+							if(!neighbour.isVisited()){
 								pathFringe.offer(new PathFringeEntry(neighbour, current,
 										current.distance+1));
 							}
@@ -107,6 +109,18 @@ public class Board {
 			} while(!pathFringe.isEmpty());
 		}
 		return moves;
+	}
+
+	private void clearVisits() {
+		for(int i = 0; i < this.squares.length; i++){
+			for(int j = 0; j < squares[0].length; j++){
+				BoardSquare bs = squares[i][j];
+				if(bs != null){
+					bs.setVisited(false);
+				}
+			}
+		}
+
 	}
 
 	/**

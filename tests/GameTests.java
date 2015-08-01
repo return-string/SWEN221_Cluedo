@@ -35,12 +35,28 @@ public class GameTests {
 	}
 
 	@Test
-	public void test2_getMoves2(){
+	public void test3_getMoves2(){
 		Board b = new Board();
-		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(9, 0), 4);
+		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(9,0), 4);
+		for(Coordinate coord : moves.keySet()){
+			System.out.printf("%s : %s\n", coord.toString(), moves.get(coord));
+		}
+	}
+
+	@Test
+	public void test4_getMoves3(){
+		Board b = new Board();
+		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(4, 6), 1);
 		Map<Coordinate, String> expected = new HashMap<Coordinate, String>();
-		expected.put(new Coordinate(7, 2), "Go down hallway. Don't know distance to rooms yet.");
-		assertEquals(expected, moves);
+		assertEquals("Enter the study", moves.get(new Coordinate(4,5)));
+		String distanceTo = moves.get(new Coordinate(4,7));
+		assertTrue(distanceTo.contains("6 steps away from ball room"));
+		assertTrue(distanceTo.contains("10 steps away from dining room"));
+		assertTrue(distanceTo.contains("22 steps away from library"));
+		assertTrue(distanceTo.contains("19 steps away from conservatory"));
+		assertTrue(distanceTo.contains("18 steps away from lounge"));
+		assertTrue(distanceTo.contains("18 steps away from hall"));
+		assertTrue(distanceTo.contains("16 steps away from billiard room"));
 	}
 
 	// ========= helper methods! =============
