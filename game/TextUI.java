@@ -8,6 +8,7 @@ import java.util.Scanner;
  *
  */
 public class TextUI {
+	private static final String DIVIDE = "=========================";
 
 	private Scanner scan;
 
@@ -40,6 +41,11 @@ public class TextUI {
 		}
 	}
 
+	public void printDivide() {
+		System.out.println();
+		System.out.print(DIVIDE);
+	}
+
 	public int askIntBetween(String question, int min, int max){
 		System.out.print(question);
 		int answer = scan.nextInt();
@@ -49,5 +55,4 @@ public class TextUI {
 		}
 		return answer;
 	}
-
 }
