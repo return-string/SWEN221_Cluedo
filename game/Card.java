@@ -15,7 +15,7 @@ public class Card {
 	public static final String MUSTARD = "Colonel Mustard";
 	public static final String GREEN = "Reverend Green";
 	public static final String PEACOCK = "Mrs Peacock";
-	public static final String PLUM = "Proffesor Plum";
+	public static final String PLUM = "Professor Plum";
 
 	public static final String CANDLESTICK = "candlestick";
 	public static final String DAGGER = "dagger";
@@ -24,15 +24,15 @@ public class Card {
 	public static final String PIPE = "pipe";
 	public static final String WRENCH = "wrench";
 
-	public static final String CONSERVATORY = "conservatory";
 	public static final String BALL = "ball room";
 	public static final String BILLIARD = "billiard room";
+	public static final String CONSERVATORY = "conservatory";
 	public static final String DINING = "dining room";
 	public static final String HALL = "hall";
 	public static final String KITCHEN = "kitchen";
+	public static final String LIBRARY = "library";
 	public static final String LOUNGE = "lounge";
 	public static final String STUDY = "study";
-	public static final String LIBRARY = "library";
 
 	public static final String[] CHARACTERS = { WHITE,SCARLET,MUSTARD,GREEN,PEACOCK,PLUM };
 	public static final String[] WEAPONS = { CANDLESTICK, DAGGER, REVOLVER, ROPE, PIPE, WRENCH };
@@ -85,12 +85,56 @@ public class Card {
 		if (value == null) {
 			if (other.value != null)
 				return false;
-		} else if (!value.equals(other.value))
+		} else if (!value.equalsIgnoreCase(other.value))
 			return false;
 		return true;
 	}
 
-
+	public String toString() {
+		switch(value) {
+			case WHITE:
+				return WHITE;
+			case SCARLET:
+				return SCARLET;
+			case MUSTARD:
+				return MUSTARD;
+			case GREEN:
+				return GREEN;
+			case PEACOCK:
+				return PEACOCK;
+			case PLUM:
+				return PLUM;
+			case CANDLESTICK:
+				return CANDLESTICK;
+			case DAGGER:
+				return DAGGER;
+			case REVOLVER:
+				return REVOLVER;
+			case ROPE:
+				return ROPE;
+			case PIPE:
+				return PIPE;
+			case WRENCH:
+				return WRENCH;
+			case BALL:
+				return BALL;
+			case BILLIARD:
+				return BILLIARD;
+			case CONSERVATORY:
+				return CONSERVATORY;
+			case DINING:
+				return DINING;
+			case KITCHEN:
+				return KITCHEN;
+			case LIBRARY:
+				return LIBRARY;
+			case LOUNGE:
+				return LOUNGE;
+			case STUDY:
+				return STUDY;
+		}
+		throw new IllegalStateException();
+	}
 
 
 }
