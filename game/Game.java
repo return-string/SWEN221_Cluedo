@@ -42,7 +42,7 @@ public class Game {
 	public Game() {
 		this.players = new ArrayList<Player>();
 		textUI.printText("Welcome to Cluedo and stuff!");
-		int numPlayers = textUI.askIntBetween("How many players? (Please enter a number between 3 and 6)",3,6)-1;
+		int numPlayers = textUI.askIntBetween("How many players? (Please enter a number between 3 and 6)",3,6);
 		selectCharacters(numPlayers);
 		Collections.sort(players);
 	}
@@ -105,7 +105,7 @@ public class Game {
 		}
 		/* then we can print these options and ask the user to select an option*/
 		textUI.printArray(moveDescs);
-		int userChoice = textUI.askIntBetween(PROMPT,1,moveDescs.length);
+		int userChoice = textUI.askIntBetween(PROMPT,1,moveDescs.length)-1;
 		for (Entry<Coordinate,String> s : moves.entrySet()) {
 			/* when the user-selected move is found, move the player */
 			if (s.getValue().equalsIgnoreCase(moveDescs[userChoice])) {
@@ -136,7 +136,7 @@ public class Game {
 		} else if (option == 1) {
 			testAccusation(p);
 		} else {
-			textUI.printText(p.toString() +" ends their turn.");
+			textUI.printText(p.getName() +" ends their turn.");
 		}
 	}
 
@@ -174,7 +174,7 @@ public class Game {
 	 */
 	private Hypothesis makeHypothesis(Player p) {
 		Hypothesis guess = new Hypothesis();
-		textUI.printText(p.toString() +" is considering the evidence...");
+		textUI.printText(p.getName() +" is considering the evidence...");
 		textUI.printText("These are the possible guilty characters:");
 		textUI.printArray(createNotesToPrint(p, Card.Type.CHARACTER));
 		int select = textUI.askIntBetween(PROMPT,1,Card.CHARACTERS.length);
@@ -214,10 +214,10 @@ public class Game {
 	private void testAccusation(Player p) {
 		Hypothesis h = makeHypothesis(p);
 		if (!h.equals(guilty)) {
-			textUI.printText(p.toString()+"'s guess was incorrect.");
+			textUI.printText(p.getName()+"'s guess was incorrect.");
 			p.kill();
 		} else {
-			textUI.printText("Success! "+p.NAME+" has made a correct accusation and the guilty party will be brought to justice.");
+			textUI.printText("Success! "+ p.getName() +" has made a correct accusation and the guilty party will be brought to justice.");
 			if (p.NAME.equals(h.getCharacter())) {
 				textUI.printText("('Accusation' sounds kinder than 'loud, weeping confession into "+ players.get( (activePlayer + 1) % players.size()) +"'s arms.)");
 			}
@@ -256,10 +256,10 @@ public class Game {
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i < printing.length; i++) {
-			if (p.isInnocent(t,Card.CHARACTERS[i])) {
-				printing[i] = Card.CHARACTERS[i] +" (X)";
+			if (p.isInnocent(t,printing[i])) {
+				printing[i] = printing[i] +" (X)";
 			} else {
-				printing[i] = Card.CHARACTERS[i] +" ( )";
+				printing[i] = printing[i] +" ( )";
 			}
 		}
 		return printing;
@@ -388,7 +388,7 @@ public class Game {
 	public Coordinate getStart(String c) {
 		switch(c) {
 			case Card.SCARLET:
-				return new Coordinate(7,25);
+				return new Coordinate(7,24);
 			case Card.MUSTARD:
 				return new Coordinate(0,17);
 			case Card.WHITE:
@@ -396,9 +396,9 @@ public class Game {
 			case Card.GREEN:
 				return new Coordinate(14,0);
 			case Card.PEACOCK:
-				return new Coordinate(23,19);
-			case Card.PLUM:
 				return new Coordinate(23,6);
+			case Card.PLUM:
+				return new Coordinate(23,19);
 			default:
 				throw new IllegalArgumentException();
 		}

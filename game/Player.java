@@ -28,7 +28,7 @@ public class Player implements Comparable {
 	public Player(String characterName, Coordinate startPos) {
 		this.NAME = characterName;
 		this.hand = new ArrayList<Card>();
-		this.pos = pos;
+		this.pos = startPos;
 		this.guiltMap = new HashSet<Card>();
 	}
 
