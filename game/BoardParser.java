@@ -8,12 +8,12 @@ import java.util.Scanner;
 /**
  * Parses the text files representing cluedo boards and
  * returns a 2D array of BoardSquares
- * 
+ *
  * @author Badi James
  *
  */
 public class BoardParser {
-	
+
 	private char hallway = 'h';
 	private char doorUp = '^';
 	private char doorDown = 'v';
@@ -28,16 +28,14 @@ public class BoardParser {
 	private char lounge = 'o';
 	private char study = 's';
 	private char hall = 'a';
-	
-	private String hallwayString = "hallway";
-	
+
 	private int width;
 	private int height;
 	private BoardSquare[][] board;
-	
+
 	private HashSet<BoardSquare> rooms = new HashSet<BoardSquare>();
 	private HashSet<Coordinate> doorRightDownCoords = new HashSet<Coordinate>();
-	
+
 	/**
 	 * Scans the board file. Gets the width and the height of the board
 	 * and then builds the 2D array of BoardSquares row by row, from the
@@ -58,12 +56,10 @@ public class BoardParser {
 			return this.board;
 		} catch(IOException e){
 			System.out.print("Error reading board file: " + e);
-		} finally {
-			sc.close();
 			return null;
-		}	
+		}
 	}
-	
+
 	/**
 	 * Scans line character by character then builds the appropriate
 	 * squares
@@ -79,7 +75,7 @@ public class BoardParser {
 			}
 		}
 	}
-	
+
 	/**
 	 * Makes a coordinate from the row and col number and builds a
 	 * BoardSquare appropriate to the character representing it
@@ -90,25 +86,25 @@ public class BoardParser {
 	private void makeBoardSquare(char square, int col, int row) {
 		Coordinate coordinate = new Coordinate(col, row);
 		String roomName = determineName(square);
-		boolean isRoom = !roomName.equals(hallwayString);
+		boolean isRoom = !roomName.equals(Board.HALLWAYSTRING);
 		if(isRoom){
 			makeRoomSquare(col, row, coordinate, roomName);
 		} else {
 			makeHallwaySquare(col, row, coordinate, square);
 		}
 	}
-	
+
 	/**
 	 * Makes a board square representing a square that is not part of any room
-	 * Adds it to the 2D BoardSquare array in a cell that matches it's coordinate 
+	 * Adds it to the 2D BoardSquare array in a cell that matches it's coordinate
 	 * @param col Column number
 	 * @param row Row number
 	 * @param coordinate Coordinate of square
-	 * @param square Character representing the square 
+	 * @param square Character representing the square
 	 */
 	private void makeHallwaySquare(int col, int row, Coordinate coordinate,
 			char square) {
-		BoardSquare toMake = new BoardSquare(coordinate, hallwayString, false);
+		BoardSquare toMake = new BoardSquare(coordinate, Board.HALLWAYSTRING, false);
 		//adds adjacent squares to neighbours that are also non-room squares
 		if(col != 0 && this.board[col-1][row] != null && !this.board[col-1][row].isRoom()){
 			toMake.addNeigbour(this.board[col-1][row]);
@@ -121,7 +117,7 @@ public class BoardParser {
 			toMake.addNeigbour(this.board[col][row-1]);
 		} else if(square == doorLeft){
 			toMake.addNeigbour(this.board[col-1][row]);
-		} 
+		}
 		//notes down which squares are adjacent to doors to rooms that have not been scanned yet
 		else if(square == doorDown){
 			doorRightDownCoords.add(coordinate);
@@ -130,7 +126,7 @@ public class BoardParser {
 		}
 		this.board[col][row] = toMake;
 	}
-	
+
 	/**
 	 * Checks if the square is representing a room that has already been scanned.
 	 * If so, adds the coordinate to the room's BoardSquare. Otherwise creates a
@@ -165,7 +161,7 @@ public class BoardParser {
 		}
 		this.board[col][row] = toMake;
 	}
-	
+
 	/**
 	 * Matches square characters to the string for that room
 	 * @param square Character to match
@@ -191,7 +187,7 @@ public class BoardParser {
 		} else if(square == this.hall){
 			return  Card.HALL;
 		} else {
-			return hallwayString;
+			return Board.HALLWAYSTRING;
 		}
 	}
 

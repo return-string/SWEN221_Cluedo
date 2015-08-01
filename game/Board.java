@@ -7,15 +7,17 @@ import java.util.LinkedList;
 import java.util.Map;
 
 public class Board {
-	
+
+	public static final String HALLWAYSTRING = "hallway";
+
 	private BoardSquare[][] squares;
 	private File classic = new File("ClassicBoard.txt");
-	
+
 	public Board() {
 		BoardParser bp = new BoardParser();
 		squares = bp.buildBoard(classic);
 	}
-	
+
 	/**Checks if the given coordinate is legal for
 	 * this board (Might have use for testing? Shouldn't
 	 * need it if everything goes well)
@@ -43,16 +45,17 @@ public class Board {
 
 	/**Determines the legal moves that can be made from the
 	 * given coordinate moving the given number of steps.
-	 * Returns a map of Coordinates to Strings, where the 
+	 * Returns a map of Coordinates to Strings, where the
 	 * coordinates are the choice of new board positions and
 	 * the strings are descriptions of distances to different
 	 * rooms.
 	 * @param start Coordinate to move from
 	 * @param steps Number of steps to move
 	 * @return Map of coordinate choices to string descriptions
-	 * of choices 
+	 * of choices
 	 */
 	public Map<Coordinate, String> possibleMoves(Coordinate start, int steps){
+		if(!isLegal(start)) {throw new IllegalArgumentException();}
 		BoardSquare startSquare = squares[start.getX()][start.getY()];
 		HashSet<Coordinate> destinations = new HashSet<Coordinate>();
 		//does a breadth first search for squares move can end in
@@ -70,7 +73,7 @@ public class Board {
 				 * 'dist' (path length)*/
 				for(BoardSquare neighbour : current.getSquare().getNeighbours()){
 					if(!current.isFrom(neighbour)){
-						pathFringe.offer(new PathFringeEntry(neighbour, current, 
+						pathFringe.offer(new PathFringeEntry(neighbour, current,
 								current.getDistance()+1));
 					}
 				}
@@ -92,19 +95,19 @@ public class Board {
 		// TODO make methods to calculate distance to rooms
 		return moves;
 	}
-	
+
 	/**
 	 * Tuple for the breadth first search for move options
-	 * 
+	 *
 	 * @author Badi James
 	 *
 	 */
 	private class PathFringeEntry{
-		
+
 		private BoardSquare square;
 		private PathFringeEntry from;
 		private int distance;
-		
+
 		public PathFringeEntry(BoardSquare square, PathFringeEntry from,
 				int distance) {
 			super();
@@ -120,7 +123,7 @@ public class Board {
 		public int getDistance() {
 			return distance;
 		}
-		
+
 		/**
 		 * Recursively checks the 'from' entries. Used to check if
 		 * a square neighboring this square to be added to the fringe
@@ -139,5 +142,5 @@ public class Board {
 		}
 	}
 
-	
+
 }
