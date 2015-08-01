@@ -91,49 +91,7 @@ public class Card {
 	}
 
 	public String toString() {
-		switch(value) {
-			case WHITE:
-				return WHITE;
-			case SCARLET:
-				return SCARLET;
-			case MUSTARD:
-				return MUSTARD;
-			case GREEN:
-				return GREEN;
-			case PEACOCK:
-				return PEACOCK;
-			case PLUM:
-				return PLUM;
-			case CANDLESTICK:
-				return CANDLESTICK;
-			case DAGGER:
-				return DAGGER;
-			case REVOLVER:
-				return REVOLVER;
-			case ROPE:
-				return ROPE;
-			case PIPE:
-				return PIPE;
-			case WRENCH:
-				return WRENCH;
-			case BALL:
-				return BALL;
-			case BILLIARD:
-				return BILLIARD;
-			case CONSERVATORY:
-				return CONSERVATORY;
-			case DINING:
-				return DINING;
-			case KITCHEN:
-				return KITCHEN;
-			case LIBRARY:
-				return LIBRARY;
-			case LOUNGE:
-				return LOUNGE;
-			case STUDY:
-				return STUDY;
-		}
-		throw new IllegalStateException();
+		return value;
 	}
 
 
