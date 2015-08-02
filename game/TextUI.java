@@ -1,5 +1,6 @@
 package game;
 
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -20,7 +21,8 @@ public class TextUI {
 	  *@param text Text to print out
 	  */
 	public void printText(String text){
-		System.out.println(text);
+		System.out.println();
+		System.out.print(text);
 	}
 
 	/**Prints the given message to System.out then
@@ -30,6 +32,7 @@ public class TextUI {
 	  *@return User inputed integer
 	  */
 	public int askInt(String question){
+		System.out.println();
 		System.out.print(question);
 		return scan.nextInt();
 	}
@@ -40,6 +43,15 @@ public class TextUI {
 			System.out.printf("%d : %s\n", i+1, textArray[i]);
 		}
 	}
+	
+	public void printList(List<? extends String> list) {
+		System.out.println();
+		int i = 0;
+		for(String s : list) {
+			System.out.printf("%d : %s\n", i+1, s);
+			i++;
+		}
+	}
 
 	public void printDivide() {
 		System.out.println();
@@ -47,6 +59,7 @@ public class TextUI {
 	}
 
 	public int askIntBetween(String question, int min, int max){
+		System.out.println();
 		System.out.print(question);
 		int answer = scan.nextInt();
 		while(answer < min || answer > max){

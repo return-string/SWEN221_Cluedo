@@ -12,7 +12,7 @@ import java.util.Set;
  * @author mckayvick
  *
  */
-public class Hypothesis implements Set {
+public class Hypothesis implements Set<Card>, Comparable<Hypothesis> {
 	private final Card[] set = new Card[3];
 
 	/**
@@ -30,7 +30,7 @@ public class Hypothesis implements Set {
 	}
 
 	public Hypothesis() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public void setCharacter(Card c) throws IllegalAccessException {
@@ -58,6 +58,14 @@ public class Hypothesis implements Set {
 
 	public Card getRoom() {
 		return set[2];
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Hypothesis [set=" + Arrays.toString(set) + "]";
 	}
 
 	/* (non-Javadoc)
@@ -90,20 +98,23 @@ public class Hypothesis implements Set {
 			return false;
 		}
 		return true;
-	}
-
-
-
+		}
 	@Override
 	public int size() {
-		return 3;
+		int s = 0;
+		for (int i = 0; i < 3; i++) {
+			if (set[i] != null) {
+				s++;
+			}
+		}
+		return s;
 	}
 
 
 
 	@Override
 	public boolean isEmpty() {
-		return false;
+		return size() == 0;
 	}
 
 
@@ -129,7 +140,7 @@ public class Hypothesis implements Set {
 
 
 	@Override
-	public Iterator iterator() {
+	public Iterator<Card> iterator() {
 		return new HypothesisIter();
 	}
 
@@ -137,11 +148,22 @@ public class Hypothesis implements Set {
 
 	@Override
 	public Object[] toArray() {
-		return new Card[]{set[0],set[1],set[2]};
+		Card[] a = new Card[size()];
+		int i = 0;
+		if (set[0] != null) {
+			a[i] = set[0];
+		}
+		if (set[1] != null) {
+			a[i] = set[1];
+		}
+		if (set[2] != null) {
+			a[i] = set[2];
+		}
+		return a;
 	}
 
 	@Override
-	public boolean add(Object e) {
+	public boolean add(Card e) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -155,17 +177,8 @@ public class Hypothesis implements Set {
 
 
 	@Override
-	public boolean containsAll(Collection c) {
+	public boolean containsAll(Collection<?> c) {
 		throw new UnsupportedOperationException();
-		/*if (c.size() > 3) { return false; }
-		int tested = 0;
-		for (int i = 0; i < 3; ) {
-			for (Object o : c) {
-				if (!o instanceof Card) {
-					return false;
-				} else if ((Card)o.getType() )
-			}
-		} */
 	}
 
 
@@ -178,14 +191,14 @@ public class Hypothesis implements Set {
 
 
 	@Override
-	public boolean retainAll(Collection c) {
+	public boolean retainAll(Collection<?> c) {
 		throw new UnsupportedOperationException();
 	}
 
 
 
 	@Override
-	public boolean removeAll(Collection c) {
+	public boolean removeAll(Collection<?> c) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -196,7 +209,7 @@ public class Hypothesis implements Set {
 		throw new UnsupportedOperationException();
 	}
 
-	public class HypothesisIter implements Iterator {
+	public class HypothesisIter implements Iterator<Card> {
 		int idx = 0;
 		boolean moved = false;
 
@@ -206,7 +219,7 @@ public class Hypothesis implements Set {
 		}
 
 		@Override
-		public Object next() {
+		public Card next() {
 			idx++;
 			return set[idx-1];
 		}
@@ -219,8 +232,24 @@ public class Hypothesis implements Set {
 	}
 
 	@Override
-	public Object[] toArray(Object[] a) {
+	public Hypothesis[] toArray(Object[] a) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int compareTo(Hypothesis o) {
+		if (o == this) {
+			return 0;
+		}
+		if (o.getCharacter().compareTo(getCharacter()) == 0
+				&& o.getWeapon().compareTo(getWeapon()) == 0
+				&& o.getRoom().compareTo(getRoom()) == 0) {
+			return 0;
+		}
+		int total = o.getRoom().compareTo(getRoom())*3;
+			total += o.getWeapon().compareTo(getCharacter())*5;
+			total += o.getCharacter().compareTo(getCharacter())*7;
+		return total;
 	}
 
 }

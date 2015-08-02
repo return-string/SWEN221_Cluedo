@@ -16,7 +16,7 @@ import java.util.List;
  * @author Vicki
  *
  */
-public class Player implements Comparable {
+public class Player implements Comparable<Player> {
 	public final String NAME;
 
 	private List<Card> hand;
@@ -29,6 +29,13 @@ public class Player implements Comparable {
 		this.NAME = characterName;
 		this.hand = new ArrayList<Card>();
 		this.pos = startPos;
+		this.guiltMap = new HashSet<Card>();
+	}
+
+	public Player(String characterName) {
+		this.NAME = characterName;
+		this.hand = new ArrayList<Card>();
+		this.pos = Game.getStart(characterName);
 		this.guiltMap = new HashSet<Card>();
 	}
 
@@ -74,10 +81,16 @@ public class Player implements Comparable {
 	 */
 	public boolean giveCard(Card c) {
 		if (c != null) {
+			if (hand.contains(c)) {
+				throw new IllegalArgumentException();
+			}
 			if (hand.add(c)) {
+				System.out.println("adding "+ c.toString() +" to "+ getName() +"'s hand");
 				vindicate(c);
 				return true;
 			}
+			System.out.println("failed to add "+ c.toString() +" to "+ getName() +"'s hand");
+			
 		}
 		return false;
 	}
@@ -126,6 +139,10 @@ public class Player implements Comparable {
 	public boolean isPlaying() {
 		return isPlaying;
 	}
+	
+	public boolean wasForced() {
+		return wasForced;
+	}
 
 	public String getName() {
 		return NAME;
@@ -154,22 +171,77 @@ public class Player implements Comparable {
 
 	}
 
+	
+	
 	@Override
-	public int compareTo(Object o) {
-		if (!(o instanceof Player)) {
-			throw new IllegalArgumentException();
+	public int compareTo(Player o) {
+		if (o.getName().equals(this.getName())) {
+			return 0;
 		}
-		Player second = (Player)o;
-		int index1 = 0;
-		int index2 = 0;
 		for (int i = 0; i < Card.CHARACTERS.length; i++) {
-			if (this.getName().equals(Card.CHARACTERS[i])) {
-				index1 = i;
-			}
-			if (second.getName().equals(Card.CHARACTERS[i])) {
-				index2 = i;
+			if (Card.CHARACTERS[i] == o.getName()) {
+				return 1;
+			} else if (Card.CHARACTERS[i] == this.getName()) {
+				return -1;
 			}
 		}
-		return index1 - index2;
+		return -1;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((NAME == null) ? 0 : NAME.hashCode());
+		result = prime * result + ((hand == null) ? 0 : hand.hashCode());
+		result = prime * result + (isPlaying ? 1231 : 1237);
+		result = prime * result + ((pos == null) ? 0 : pos.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Player)) {
+			return false;
+		}
+		Player other = (Player) obj;
+		if (NAME == null) {
+			if (other.NAME != null) {
+				return false;
+			}
+		} else if (!NAME.equals(other.NAME)) {
+			return false;
+		}
+		if (hand == null) {
+			if (other.hand != null) {
+				return false;
+			}
+		} else if (!hand.equals(other.hand)) {
+			return false;
+		}
+		if (isPlaying != other.isPlaying) {
+			return false;
+		}
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return NAME + " ("+ (isPlaying?"1":"0") +")";
 	}
 }

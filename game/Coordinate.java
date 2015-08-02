@@ -5,13 +5,12 @@ package game;
  * @author Badi james
  *
  */
-public class Coordinate {
+public class Coordinate implements Comparable<Coordinate>{
 	
 	private int x;
 	private int y;
 	
 	public Coordinate(int x, int y) {
-		super();
 		this.x = x;
 		this.y = y;
 	}
@@ -52,6 +51,11 @@ public class Coordinate {
 		if (y != other.y)
 			return false;
 		return true;
+	}
+
+	@Override
+	public int compareTo(Coordinate o) {
+		return (int) (Math.hypot(o.getX(), o.getY()) - Math.hypot(this.getX(), this.getY()) + 0.5);
 	}
 	
 	

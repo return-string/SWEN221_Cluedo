@@ -1,6 +1,8 @@
 package game;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -8,10 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-import java.util.Set;
 
 import javax.management.InvalidAttributeValueException;
-import javax.xml.stream.events.Characters;
 
 /** The Game class is used to model the Cluedo game.
  *
@@ -22,11 +22,12 @@ public class Game {
 	private static final Random R = new Random(System.currentTimeMillis());
 	public static final Board BOARD = new Board();
 
+	private static final String tag = "\n > ";
 	private TextUI textUI = new TextUI();
 	private List<Player> players;
 	private Hypothesis guilty;
-	private int activePlayer;
-
+	private int activePlayer = -1;
+	
 	private static final String PROMPT = "Select an option:";
 	private static final String[] PLAYER_OPTIONS = {
 		"Make a suggestion",
@@ -42,46 +43,105 @@ public class Game {
 	public Game() {
 		this.players = new ArrayList<Player>();
 		textUI.printText("Welcome to Cluedo and stuff!");
-		int numPlayers = textUI.askIntBetween("How many players? (Please enter a number between 3 and 6)",3,6);
+	}
+	
+	/** This is the normal method that should be called to start a game.
+	 * It asks the user how many players will be in this game, then 
+	 * creates the player list, sorts it, and tries to play. 
+	 */
+	public void startGame() {
+		int numPlayers = textUI.askIntBetween("How many players? (3 - 6 people can play.)"+tag,3,6);
 		selectCharacters(numPlayers);
 		Collections.sort(players);
+		try {
+			playGame();
+		} catch (InvalidAttributeValueException e) {
+			textUI.printText("Uh-oh! Invalid number of players.");
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
 
 	/**
 	 * @param numPlayers
 	 */
 	private void selectCharacters(int numPlayers) {
+		List<String> options = new ArrayList<String>();
+		for (int i = 0; i < Card.CHARACTERS.length; i++) {
+			options.add(Card.CHARACTERS[i]);
+		}
 		for (int i = 0; i < numPlayers; i++) {
-			textUI.printArray(Card.CHARACTERS);
-			int select = textUI.askInt("Please select a character. "+(i==0?(Card.SCARLET +" always goes first)."):""))-1;
-			addPlayer(i, select);
+			textUI.printList(options);
+			/* if Miss Scarlet hasn't been selected yet, remind the user she always plays first. */
+			int select = textUI.askIntBetween("Please select a character. "+
+					(options.get(0)==Card.SCARLET?("("+ Card.SCARLET +" always goes first)."):"") + tag,1,options.size())-1;
+			int realIndex = indexOf(options, Card.Type.CHARACTER, options.get(select));
+			addPlayer(realIndex);
+			options.remove(select);
 		}
 	}
 
+	/** 
+	 */
+	private int indexOf(List<String> options, Card.Type t, String name) {
+		String[] arr = null;
+		switch (t) {
+			case CHARACTER:
+				arr = Card.CHARACTERS;
+				break;
+			case WEAPON:
+				arr = Card.WEAPONS;
+				break;
+			case ROOM:
+				arr = Card.ROOMS;
+				break;
+			default: 
+				throw new IllegalArgumentException();
+		}
+		for (int i = 0; i < arr.length; i++){
+			if (arr[i].equalsIgnoreCase(name)) {
+				return i;
+			}
+		}
+		throw new IllegalArgumentException();
+	}
+
 	/**
-	 * @param i
 	 * @param select
 	 */
-	public void addPlayer(int i, int select) {
-		players.add(new Player(Card.CHARACTERS[select],getStart(Card.CHARACTERS[select])));
+	public void addPlayer(int select) {
+		players.add(new Player(Card.CHARACTERS[select]));
 	}
 
 
 	/** This is how we play a game of Cluedo!
+	 * @throws InvalidAttributeValueException 
 	 */
-	public void playGame() {
-		if (players == null || activePlayer >= players.size()) {
-			// throw new InvalidAttributeValueException("");
+	public void playGame() throws InvalidAttributeValueException {
+		if (players == null) {
+			throw new InvalidAttributeValueException("Can't start a game without players!");
+		}
+		if (guilty == null) {
+			initialiseDeck();
 		}
 
-		while (this.isPlaying()) {
+		/** the game plays at least one turn. */
+		do {
 			for (activePlayer = 0; activePlayer < players.size(); activePlayer++) {
-				if (players.get(activePlayer).isPlaying()) {
-					playerMoves(players.get(activePlayer));
-					showPlayerOptions(players.get(activePlayer));
+				/** whenever the turn begins, get the player taking a turn and print some nice-looking stuff.*/
+				Player p = players.get(activePlayer);
+				textUI.printDivide();
+				if (p.isPlaying()) {
+					textUI.printText(p.getName() +"'s turn begins in the "+ BOARD.getRoom(p.position()) +".");
+					textUI.printText(p.getHand().toString() +"\n"+activePlayer+", "+players.size()+"\t"+players.get(activePlayer).toString());
+					playerMoves(p);
+					showPlayerOptions(p);
+				} else { // if they're not playing, just print something interesting. 
+					textUI.printText(p.getName() + " " + randomDeathMessage());
 				}
 			}
-		}
+		} while (this.isPlaying());
+		textUI.printText("Good game!");
 	}
 
 	/** Method for resolving a player's movement phase.
@@ -94,90 +154,82 @@ public class Game {
 	public void playerMoves(Player p) {
 		/* first, roll the dice */
 		int roll = R.nextInt(5) + 1;
-		textUI.printText(p.NAME +" rolls a "+roll+"!");
+		textUI.printText(p.NAME +" rolls a "+roll+".");
+		/** if the player was forced, print some acknowledging message */
+		if (players.get(activePlayer).wasForced()) {
+			textUI.printText("Last turn "+ p.getName() +" was forcibly moved here.");
+		}
 
 		/* get the map of options a player has and put them into an array */
 		Map<Coordinate,String> moves = BOARD.possibleMoves(p.position(), roll);
-		Iterator<String> descsIter = moves.values().iterator();
-		String[] moveDescs = new String[moves.size()];
-		for (int i = 0; i < moves.size(); i++) {
-			moveDescs[i] = descsIter.next();
+		List<String> moveDescs = new ArrayList<String>();
+		for (String s : moves.values()) {
+			moveDescs.add(s);
+		}
+		/* if the player was forcibly moved, they may not want to leave this room. */
+		if (players.get(activePlayer).wasForced()) {
+			moveDescs.add("Stay here.");
 		}
 		/* then we can print these options and ask the user to select an option*/
-		textUI.printArray(moveDescs);
-		int userChoice = textUI.askIntBetween(PROMPT,1,moveDescs.length)-1;
+		textUI.printList(moveDescs);
+			
+		int userChoice = textUI.askIntBetween(PROMPT,1,moveDescs.size())-1;
 		for (Entry<Coordinate,String> s : moves.entrySet()) {
 			/* when the user-selected move is found, move the player */
-			if (s.getValue().equalsIgnoreCase(moveDescs[userChoice])) {
+			if (s.getValue().equalsIgnoreCase(moveDescs.get(userChoice))) {
 				p.move(s.getKey());
 			}
 		}
 	}
 
-	/** Shows the options available to a player once they have completed a move.*/
+	/** Prints  the options available to a player once their movement phase
+	 * is complete. 
+	 * 
+	 * @param p Player whose options are to be displayed. 
+	 */
 	public void showPlayerOptions(Player p) {
 		String[] options;
 		/* if the player is in a room, give them the option to make a suggestion.
 		 * Otherwise limit their options to making an accusation, viewing their
-		 * card or ending the turn. */
+		 * cards or ending the turn. */
 		if (BOARD.getRoom(p.position()).equals(BOARD.HALLWAYSTRING)) {
 			options = new String[]{ PLAYER_OPTIONS[1], PLAYER_OPTIONS[2], PLAYER_OPTIONS[3] };
 		} else {
 			options = PLAYER_OPTIONS;
 		}
 		textUI.printArray(options);
-		int option = textUI.askIntBetween(PROMPT,1,options.length) - 1; // subtract one because we've asked for a number between 1 and length
+		int option = textUI.askIntBetween(PROMPT,1,options.length) - 1; // subtract one because we've asked for a number between 1 and length, and we want 0-to-length-minus-1
+		
 		/* do the selected option! */
-		if (option == PLAYER_OPTIONS.length-1) { // the second-to-last option is always 'view notebook'
+		if (option == 0 && options[option] == PLAYER_OPTIONS[0]) {
+			testHypothesis(p,null);
+		} else if ((option == 0 || option == 1) && options[option] == PLAYER_OPTIONS[1]){
+			testAccusation(p);
+		} else if ((option == 1 || option == 2) && options[option] == PLAYER_OPTIONS[2]) {
+			testAccusation(p);
 			viewNotebook(p);
 			showPlayerOptions(p);
-		} else if (option == 0){
-			testHypothesis(p, null);
-		} else if (option == 1) {
-			testAccusation(p);
 		} else {
 			textUI.printText(p.getName() +" ends their turn.");
 		}
 	}
 
-	/** This method is used when a player p wants to make a suggestion about
-	 * who they suspect the murderer is.
-	 *
-	 * Game uses the parameter player's detective notes to print the list of people, places and
-	 * weapons their might select from, and assembles the results of each into
-	 * a Hypothesis object, which it asks each player to check.
-	 *
-	 * @param p
+	/** This method is called when a player wants to make an accusation or
+	 * a suggestion: each block prints part of their detective notebook and
+	 * waits for them to select which character, weapon and room they would
+	 * like to test with this hypothesis.  
+	 * 
+	 * @param p The player making the hypothesis
+	 * @return A hypothesis to be tested against the hands of the other players
+	 * or the guilty cards. 
 	 */
-	private boolean testHypothesis(Player p, Hypothesis h) {
-		if (h==null) {
-			h = makeHypothesis(p);
-		}
-
-		int i = activePlayer+1;
-		do {
-			List<Card> l = players.get(i).refuteHypothesis(h);
-			if (l.size() > 0) {
-				textUI.printText(players.get(i).getName() +" whispers something into "+ p.getName() +"'s ear.");
-				return true;
-			}
-			i = (i+1) % players.size();
-		} while (i!=activePlayer);
-		textUI.printText("The evidence was not forthcoming.");
-		return false;
-	}
-
-
-	/**
-	 * @param p
-	 * @return
-	 */
-	private Hypothesis makeHypothesis(Player p) {
+	private Hypothesis makeHypothesis(Player p, boolean isFinalAccusation) {
 		Hypothesis guess = new Hypothesis();
 		textUI.printText(p.getName() +" is considering the evidence...");
+		
 		textUI.printText("These are the possible guilty characters:");
 		textUI.printArray(createNotesToPrint(p, Card.Type.CHARACTER));
-		int select = textUI.askIntBetween(PROMPT,1,Card.CHARACTERS.length);
+		int select = textUI.askIntBetween(PROMPT+tag,1,Card.CHARACTERS.length)-1;
 		try {
 			guess.setCharacter(new Card(Card.Type.CHARACTER,Card.CHARACTERS[select]));
 		} catch (IllegalAccessException e) {
@@ -186,42 +238,90 @@ public class Game {
 
 		textUI.printText("These are the possible murder weapons:");
 		textUI.printArray(createNotesToPrint(p, Card.Type.WEAPON));
-		select = textUI.askIntBetween(PROMPT,1,Card.WEAPONS.length);
+		select = textUI.askIntBetween(PROMPT+tag,1,Card.WEAPONS.length)-1;
 		try {
 			guess.setWeapon(new Card(Card.Type.WEAPON,Card.WEAPONS[select]));
 		} catch (IllegalAccessException e) {
-			// this isn't actually possible
+			// this isn't possible
 		}
 
-		textUI.printText("These are the possible murder locations:");
-		textUI.printArray(createNotesToPrint(p, Card.Type.ROOM));
-		select = textUI.askIntBetween(PROMPT,1,Card.ROOMS.length);
-		try {
-			guess.setRoom(new Card(Card.Type.ROOM,Card.ROOMS[select]));
-		} catch (IllegalAccessException e) {
-			// this isn't actually possible
+		Card roomCard;
+		if (isFinalAccusation) {
+			textUI.printText("These are the possible murder locations:");
+			textUI.printArray(createNotesToPrint(p, Card.Type.ROOM));
+			select = textUI.askIntBetween(PROMPT+tag,1,Card.ROOMS.length)-1;
+			roomCard = new Card(Card.Type.ROOM,Card.ROOMS[select]);
+		} else {
+			String room = BOARD.getRoom(p.position());
+			roomCard = new Card(Card.Type.ROOM,room);
+			textUI.printText("In the "+ room +".");
 		}
+		try {
+			guess.setRoom(roomCard);
+		} catch (IllegalAccessException e) {
+			// this isn't possible
+		}
+		textUI.printText(p.getName() + (isFinalAccusation? " accuses ":" theorises that it was "+
+				guess.getCharacter() +" in the "+ guess.getRoom() +" with the "+ guess.getWeapon() +"."));
 		return guess;
+	}
+
+	/** This method is used when a player p wants to make a suggestion about
+	 * who they suspect the murderer is.
+	 *
+	 * Game uses the player to the active player's left as the start of the round,
+	 * then goes around the players asking if they are able to refute the hypothesis. 
+	 * 
+	 * This method does not allow a player to select which of their cards is used
+	 * to refute the hypothesis, which means the asking player will be shown the same
+	 * card every time they make the same hypothesis.
+	 *
+	 * @param p
+	 */
+	private boolean testHypothesis(Player p, Hypothesis h) {
+		if (h == null) {
+			h = makeHypothesis(p,false);
+		}
+
+		/** now, go through all the players and check their hands for cards to refute
+		 * the player's hypothesis.
+		 */
+		int i = (activePlayer+1) % players.size();;
+		do {
+			List<Card> l = players.get(i).refuteHypothesis(h);
+			if (l.size() > 0) {
+				// the ternary check just says: if this is new information to the asking player, mention that fact in the printout.  
+				textUI.printText(players.get(i).getName() +" whispers something "+ (p.isInnocent(l.get(0))? "":"new") +" into "+ p.getName() +"'s ear.");
+				p.vindicate(l.get(0));
+				return false;
+			}
+			i = (i+1) % players.size();
+		} while (i!=activePlayer);
+		textUI.printText("The evidence was not forthcoming.");
+		return true;
 	}
 
 
 	/** The player has chosen to make an accusation! Assemble their
 	 * hypothesis, see if it equals the guilty one. If not, end them.
-	 * Otherwise, they win.
+	 * Otherwise, they win. The player list is cleared and the game 
+	 * ends. 
 	 *
 	 * @param p
 	 */
-	private void testAccusation(Player p) {
-		Hypothesis h = makeHypothesis(p);
+	private boolean testAccusation(Player p) {
+		Hypothesis h = makeHypothesis(p,true);
 		if (!h.equals(guilty)) {
 			textUI.printText(p.getName()+"'s guess was incorrect.");
 			p.kill();
+			return false;
 		} else {
 			textUI.printText("Success! "+ p.getName() +" has made a correct accusation and the guilty party will be brought to justice.");
 			if (p.NAME.equals(h.getCharacter())) {
 				textUI.printText("('Accusation' sounds kinder than 'loud, weeping confession into "+ players.get( (activePlayer + 1) % players.size()) +"'s arms.)");
 			}
 			players.clear();
+			return true;
 		}
 	}
 
@@ -231,6 +331,7 @@ public class Game {
 	 * @param p
 	 */
 	private void viewNotebook(Player p) {
+		System.out.println("printing hand!");
 		textUI.printDivide();
 		textUI.printArray(createNotesToPrint(p,Card.Type.CHARACTER));
 		textUI.printArray(createNotesToPrint(p,Card.Type.WEAPON));
@@ -256,11 +357,9 @@ public class Game {
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i < printing.length; i++) {
-			if (p.isInnocent(t,printing[i])) {
-				printing[i] = printing[i] +" (X)";
-			} else {
-				printing[i] = printing[i] +" ( )";
-			}
+			// if the player is proven innocent, prepend (X), else ( )
+			printing[i] = (p.isInnocent(t,printing[i]) ? "(X)":"( )") + " " 
+				+ printing[i].toUpperCase();
 		}
 		return printing;
 	}
@@ -278,8 +377,10 @@ public class Game {
 		initialiseDeck(null,null,null);
 	}
 
-	/** This method can be used to select the guilty cards manually.
-	 * Leave any parameters as null to select randomly.
+	/** This method takes the guilty character, weapon and room and uses
+	 * this information to create the guilty Hypothesis, then deals
+	 * the remaining cards to the players.
+	 * Leave any parameter(s) as null to select randomly.
 	 *
 	 * @param c Guilty character
 	 * @param w Guilty weapon
@@ -306,12 +407,17 @@ public class Game {
 								new Card(Card.Type.ROOM, r));
 
 		ArrayList<Card> deck = createNewDeck(c, w, r); // creates, shuffles a new deck of cards
-		int handSize = (int) Math.floor((Card.DECKSIZE-3) / this.players.size());
+		int remainder = (Card.DECKSIZE-3) % players.size();
+		int handSize = (Card.DECKSIZE-3-remainder) / players.size();
 
 		// add cards to each player's hand
 		int cardIdx = 0;
+		textUI.printText((double)(Card.DECKSIZE-3)/players.size() +" cards between "+ players.size() +" and "+deck.size()+" cards, "+remainder+" remaining, to deal between "+ handSize +"-sized hands.");
+		
 		for (Player p : players) {
-			for (int i = cardIdx; i < handSize; i++) {
+			textUI.printText(p.getName() +" starts at "+ cardIdx);
+			for (int i = 0; i <= handSize; i++) {
+				textUI.printText(cardIdx+" "+ deck.get(cardIdx).toString());
 				p.giveCard(deck.get(cardIdx));
 				cardIdx ++;
 			}
@@ -319,30 +425,33 @@ public class Game {
 
 
 		// if there are any cards remaining, print a message
-		if (handSize * players.size() != Card.DECKSIZE) {
-			//Main.showSpareCards(deck.subList(cardIdx, deck.size()));
-		}
-		// then ensure every player has these cards...
-		for (Player p : players) {
-			for (Card card : deck.subList(cardIdx,deck.size())) {
-				p.vindicate(card);
+		if (remainder != 0) {
+			textUI.printText(handSize +" * "+ players.size() +"("+ handSize * players.size() +") != "+ Card.DECKSIZE);
+			showSpareCards(deck.subList(cardIdx, deck.size()));
+			// then ensure every player has these cards marked off...
+			for (Player p : players) {
+				for (Card spareCard : deck.subList(cardIdx,deck.size())) {
+					p.vindicate(spareCard);
+				}
 			}
 		}
-		// finally, discard these extra cards
-		for (int i = cardIdx; i < deck.size(); i++) {
-			deck.remove(i);
-		}
+	}
+
+	/** If there are spare cards, prints a message informing the user. */
+	private void showSpareCards(List<Card> subList) {
+		if (subList.size() < 1) {return;}
+		textUI.printText("Everyone knows that "+ subList.toString() +" had nothing to do with the murder.");
 	}
 
 	/** Given the values of the guilty cards, this method assembles a shuffled list
 	 * containing the remaining innocent cards and returns it.
 	 *
-	 * @param c
-	 * @param w
-	 * @param r
-	 * @return A shuffled list of cards to be dealt to players.
+	 * @param c One of the CHARACTER strings defined in Cards
+	 * @param w One of the WEAPON strings
+	 * @param r One of the ROOM strings.
+	 * @return A shuffled list of the remaining cards, ready to be dealt to players.
 	 */
-	private ArrayList<Card> createNewDeck(String c, String w, String r) {
+	public static ArrayList<Card> createNewDeck(String c, String w, String r) {
 		ArrayList<Card> deck = new ArrayList<Card>();
 		if (c == null || w == null || r == null) {
 			throw new IllegalArgumentException("Parameters cannot be null when creating a deck.");
@@ -350,26 +459,20 @@ public class Game {
 
 		// add some cards to the deck
 		for (int i = 0; i < Card.CHARACTERS.length; i++) {
-			if (Card.CHARACTERS[i] != c) {
-				deck.add(new Card(Card.Type.CHARACTER, Card.CHARACTERS[i]));
-			}
+			deck.add(new Card(Card.Type.CHARACTER, Card.CHARACTERS[i]));
 		}
 		for (int i = 0; i < Card.WEAPONS.length; i++) {
-			if (Card.WEAPONS[i] == w) {
-				deck.add(new Card(Card.Type.WEAPON, Card.WEAPONS[i]));
-			}
+			deck.add(new Card(Card.Type.WEAPON, Card.WEAPONS[i]));
 		}
-		for (int i = 0; i < Card.WEAPONS.length; i++) {
-			if (Card.WEAPONS[i] == r) {
-				deck.add(new Card(Card.Type.ROOM, Card.ROOMS[i]));
-			}
+		for (int i = 0; i < Card.ROOMS.length; i++) {
+			deck.add(new Card(Card.Type.ROOM, Card.ROOMS[i]));
 		}
 
-		Collections.shuffle(deck);
+		Collections.shuffle(deck,R);
 		return deck;
 	}
 
-	/** While there are still at least two players in the game, keep playing.
+	/** While there are still at least two players in the game, returns true.
 	 * @return
 	 */
 	public boolean isPlaying() {
@@ -382,10 +485,10 @@ public class Game {
 		return n > 1;
 	}
 
-	/**
+	/** Returns the unique start coordinate for each character.
 	 *
 	 */
-	public Coordinate getStart(String c) {
+	public static Coordinate getStart(String c) {
 		switch(c) {
 			case Card.SCARLET:
 				return new Coordinate(7,24);
@@ -403,12 +506,78 @@ public class Game {
 				throw new IllegalArgumentException();
 		}
 	}
+	
+	/** Returns the Hypothesis containing the guilty cards.*/
+	public Hypothesis getGuilty() {
+		return guilty;
+	}
 
-	/**
+	/** 
 	 *
-	 * @return
+	 * @return The list of players in the game
 	 */
 	public Collection<Player> getPlayers() {
 		return players;
+	}
+	
+
+	/** Returns a random message, to be printed instead of a
+	 * 'dead' player taking their turn. */
+	private String randomDeathMessage() {
+		String[] m = { "files some paperwork.",
+					"makes a delicious grilled cheese sandwich.",
+					"pretends to be working.",
+					"is looking bored.",
+					"is making excuses to the police chief.",
+					"is trying to regain some respect from the detectives.",
+					"seems superfluous, really.",
+					"is wishing the rest of you would hurry up and solve this murder.",
+					"regrets no longer being allowed to say 'Elementary!'."
+					};
+		return m[(int)Math.random()*m.length];
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((guilty == null) ? 0 : guilty.hashCode());
+		result = prime * result + ((players == null) ? 0 : players.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Game)) {
+			return false;
+		}
+		Game other = (Game) obj;
+		if (guilty == null) {
+			if (other.guilty != null) {
+				return false;
+			}
+		} else if (!guilty.equals(other.guilty)) {
+			return false;
+		}
+		if (players == null) {
+			if (other.players != null) {
+				return false;
+			}
+		} else if (!players.equals(other.players)) {
+			return false;
+		}
+		return true;
 	}
 }

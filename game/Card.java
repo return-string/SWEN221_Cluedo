@@ -4,9 +4,10 @@ package game;
  * and each CardInter is in the hand of a player, unless
  * it is the murderer, murder weapon or location.
  *
+ * @author Someone 
  */
 
-public class Card {
+public class Card implements Comparable<Card> {
 
 	public static enum Type {CHARACTER, WEAPON, ROOM};
 
@@ -92,6 +93,51 @@ public class Card {
 
 	public String toString() {
 		return value;
+	}
+
+	@Override
+	public int compareTo(Card o) {
+		Card c = (Card)o;
+		if (c.getValue() == this.getValue()) {
+			return 0;
+		}
+		if (c.getType() == Type.CHARACTER &&
+				getType() == Type.CHARACTER) {
+			for (int i = 0; i < CHARACTERS.length; i++) {
+				if (CHARACTERS[i] == c.getValue()) {
+					return 1;
+				} else if (CHARACTERS[i] == this.getValue()) {
+					return -1;
+				}
+			}
+		} else if (c.getType() == Card.Type.WEAPON &&
+				getType() == Type.WEAPON) {
+			for (int i = 0; i < WEAPONS.length; i++) {
+				if (WEAPONS[i] == c.getValue()) {
+					return 1;
+				} else if (WEAPONS[i] == this.getValue()) {
+					return -1;
+				}
+			}
+		} else if (c.getType() == Card.Type.ROOM &&
+				getType() == Type.ROOM) {
+			for (int i = 0; i < ROOMS.length; i++) {
+				if (ROOMS[i] == c.getValue()) {
+					return 1;
+				} else if (ROOMS[i] == this.getValue()) {
+					return -1;
+				}
+			}
+		}
+		Type[] t = Type.values();
+		for (int i = 0; i < t.length; i++) {
+			if (t[i] == c.getType()) {
+				return 1;
+			} else if (t[i] == getType()) {
+				return -1;
+			}
+		}
+		throw new IllegalArgumentException();
 	}
 
 
