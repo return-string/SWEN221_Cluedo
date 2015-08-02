@@ -34,7 +34,7 @@ public class TextUI {
 	public int askInt(String question){
 		System.out.println();
 		System.out.print(question);
-		return scan.nextInt();
+		return receiveInteger();
 	}
 
 	public void printArray(String[] textArray){
@@ -43,7 +43,7 @@ public class TextUI {
 			System.out.printf("%d : %s\n", i+1, textArray[i]);
 		}
 	}
-	
+
 	public void printList(List<? extends String> list) {
 		System.out.println();
 		int i = 0;
@@ -61,10 +61,25 @@ public class TextUI {
 	public int askIntBetween(String question, int min, int max){
 		System.out.println();
 		System.out.print(question);
-		int answer = scan.nextInt();
+		int answer = receiveInteger();
+
 		while(answer < min || answer > max){
 			System.out.printf("Answer has to be between %d and %d inclusive. Please re-enter: ", min, max);
-			answer = scan.nextInt();
+			answer = receiveInteger();
+		}
+		return answer;
+	}
+
+	private int receiveInteger(){
+		int answer = Integer.MIN_VALUE;
+		String input = scan.next();
+		while(answer == Integer.MIN_VALUE){
+			try{
+				answer = Integer.parseInt(input);
+			} catch (NumberFormatException e) {
+				System.out.println("Input not recognised as an integer. Please re-enter: ");
+				input = scan.next();
+			}
 		}
 		return answer;
 	}
