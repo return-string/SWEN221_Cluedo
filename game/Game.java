@@ -1,11 +1,8 @@
 package game;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -13,22 +10,22 @@ import java.util.Random;
 
 import javax.management.InvalidAttributeValueException;
 
-/** The Game class is used to model the Cluedo game.
+/** The Game class is used to model the Cluedo game, including the
+ * list of players, turn progression and ending the game.
+ *
+ * It relies on the TextUI class to print messages to the console
+ * and return user input.
  *
  * @author mckayvick
  *
  */
 public class Game {
-	private static final Random R = new Random(System.currentTimeMillis());
 	public static final Board BOARD = new Board();
+	public static final TextUI textUI = new TextUI();
 
-	private static final String tag = "\n > ";
-	private TextUI textUI = new TextUI();
-	private List<Player> players;
-	private Hypothesis guilty;
-	private int activePlayer = -1;
-	
-	private static final String PROMPT = "Select an option:";
+	private static final Random R = new Random(System.currentTimeMillis());
+	private static final String NEWLINE = "\n > ";
+	private static final String PROMPT = "Select an option: ";
 	private static final String[] PLAYER_OPTIONS = {
 		"Make a suggestion",
 		"Make a final accusation",
@@ -36,7 +33,12 @@ public class Game {
 		"End turn"
 	};
 
-	/** Given a list of the playing characters,
+	private List<Player> players;
+	private Hypothesis guilty;
+	private int activePlayer = -1;
+
+
+	/** Constructs a new game, prints the rules.
 	 *
 	 * @param players
 	 */
@@ -44,13 +46,13 @@ public class Game {
 		this.players = new ArrayList<Player>();
 		textUI.printText("Welcome to Cluedo and stuff!");
 	}
-	
+
 	/** This is the normal method that should be called to start a game.
-	 * It asks the user how many players will be in this game, then 
-	 * creates the player list, sorts it, and tries to play. 
+	 * It asks the user how many players will be in this game, then
+	 * creates the player list, sorts it, and tries to play.
 	 */
 	public void startGame() {
-		int numPlayers = textUI.askIntBetween("How many players? (3 - 6 people can play.)"+tag,3,6);
+		int numPlayers = textUI.askIntBetween("How many players? (3 - 6 people can play.)"+NEWLINE,3,6);
 		selectCharacters(numPlayers);
 		Collections.sort(players);
 		try {
@@ -62,7 +64,10 @@ public class Game {
 		}
 	}
 
-	/**
+	/** Given the number of users playing, prints the remaining
+	 * character options and repeatedly asks them to select which characters
+	 * they would like to play.
+	 *
 	 * @param numPlayers
 	 */
 	private void selectCharacters(int numPlayers) {
@@ -71,19 +76,22 @@ public class Game {
 			options.add(Card.CHARACTERS[i]);
 		}
 		for (int i = 0; i < numPlayers; i++) {
+			textUI.printDivide();
 			textUI.printList(options);
 			/* if Miss Scarlet hasn't been selected yet, remind the user she always plays first. */
-			int select = textUI.askIntBetween("Please select a character. "+
-					(options.get(0)==Card.SCARLET?("("+ Card.SCARLET +" always goes first)."):"") + tag,1,options.size())-1;
-			int realIndex = indexOf(options, Card.Type.CHARACTER, options.get(select));
+			int select = textUI.askIntBetween("Please add a character. "+
+					(options.get(0)==Card.SCARLET?("("+ Card.SCARLET +" always goes first)."):"") + NEWLINE,1,options.size())-1;
+			int realIndex = indexOf(Card.Type.CHARACTER, options.get(select));
 			addPlayer(realIndex);
 			options.remove(select);
 		}
 	}
 
-	/** 
+	/** It's useful to know which index belongs to which value.
+	 * For a given Card.Type and value, returns the index of
+	 * that value in the relevant array.
 	 */
-	private int indexOf(List<String> options, Card.Type t, String name) {
+	private int indexOf(Card.Type t, String name) {
 		String[] arr = null;
 		switch (t) {
 			case CHARACTER:
@@ -95,7 +103,7 @@ public class Game {
 			case ROOM:
 				arr = Card.ROOMS;
 				break;
-			default: 
+			default:
 				throw new IllegalArgumentException();
 		}
 		for (int i = 0; i < arr.length; i++){
@@ -115,7 +123,7 @@ public class Game {
 
 
 	/** This is how we play a game of Cluedo!
-	 * @throws InvalidAttributeValueException 
+	 * @throws InvalidAttributeValueException
 	 */
 	public void playGame() throws InvalidAttributeValueException {
 		if (players == null) {
@@ -136,7 +144,7 @@ public class Game {
 					textUI.printText(p.getHand().toString() +"\n"+activePlayer+", "+players.size()+"\t"+players.get(activePlayer).toString());
 					playerMoves(p);
 					showPlayerOptions(p);
-				} else { // if they're not playing, just print something interesting. 
+				} else { // if they're not playing, just print something interesting.
 					textUI.printText(p.getName() + " " + randomDeathMessage());
 				}
 			}
@@ -172,7 +180,7 @@ public class Game {
 		}
 		/* then we can print these options and ask the user to select an option*/
 		textUI.printList(moveDescs);
-			
+
 		int userChoice = textUI.askIntBetween(PROMPT,1,moveDescs.size())-1;
 		for (Entry<Coordinate,String> s : moves.entrySet()) {
 			/* when the user-selected move is found, move the player */
@@ -183,30 +191,32 @@ public class Game {
 	}
 
 	/** Prints  the options available to a player once their movement phase
-	 * is complete. 
-	 * 
-	 * @param p Player whose options are to be displayed. 
+	 * is complete.
+	 *
+	 * @param p Player whose options are to be displayed.
 	 */
 	public void showPlayerOptions(Player p) {
 		String[] options;
 		/* if the player is in a room, give them the option to make a suggestion.
 		 * Otherwise limit their options to making an accusation, viewing their
 		 * cards or ending the turn. */
-		if (BOARD.getRoom(p.position()).equals(BOARD.HALLWAYSTRING)) {
+		if (BOARD.getRoom(p.position()).equals(Board.HALLWAYSTRING)) {
 			options = new String[]{ PLAYER_OPTIONS[1], PLAYER_OPTIONS[2], PLAYER_OPTIONS[3] };
 		} else {
 			options = PLAYER_OPTIONS;
 		}
 		textUI.printArray(options);
 		int option = textUI.askIntBetween(PROMPT,1,options.length) - 1; // subtract one because we've asked for a number between 1 and length, and we want 0-to-length-minus-1
-		
+
 		/* do the selected option! */
-		if (option == 0 && options[option] == PLAYER_OPTIONS[0]) {
+		if (option == 0 && options[option].equals(PLAYER_OPTIONS[0])) {
+			textUI.printText("MAKE GUESS");
 			testHypothesis(p,null);
-		} else if ((option == 0 || option == 1) && options[option] == PLAYER_OPTIONS[1]){
+		} else if ((option == 0 || option == 1) && options[option].equals(PLAYER_OPTIONS[1])) {
+			textUI.printText("MAKE ACCUSATION");
 			testAccusation(p);
-		} else if ((option == 1 || option == 2) && options[option] == PLAYER_OPTIONS[2]) {
-			testAccusation(p);
+		} else if ((option == 1 || option == 2) && options[option].equals(PLAYER_OPTIONS[2])) {
+			textUI.printText("VIEW NOTEBOOK");
 			viewNotebook(p);
 			showPlayerOptions(p);
 		} else {
@@ -217,30 +227,30 @@ public class Game {
 	/** This method is called when a player wants to make an accusation or
 	 * a suggestion: each block prints part of their detective notebook and
 	 * waits for them to select which character, weapon and room they would
-	 * like to test with this hypothesis.  
-	 * 
+	 * like to test with this hypothesis.
+	 *
 	 * @param p The player making the hypothesis
 	 * @return A hypothesis to be tested against the hands of the other players
-	 * or the guilty cards. 
+	 * or the guilty cards.
 	 */
 	private Hypothesis makeHypothesis(Player p, boolean isFinalAccusation) {
-		Hypothesis guess = new Hypothesis();
+		Hypothesis h = new Hypothesis();
 		textUI.printText(p.getName() +" is considering the evidence...");
-		
+
 		textUI.printText("These are the possible guilty characters:");
 		textUI.printArray(createNotesToPrint(p, Card.Type.CHARACTER));
-		int select = textUI.askIntBetween(PROMPT+tag,1,Card.CHARACTERS.length)-1;
+		int select = textUI.askIntBetween(PROMPT+NEWLINE,1,Card.CHARACTERS.length)-1;
 		try {
-			guess.setCharacter(new Card(Card.Type.CHARACTER,Card.CHARACTERS[select]));
+			h.setCharacter(new Card(Card.Type.CHARACTER,Card.CHARACTERS[select]));
 		} catch (IllegalAccessException e) {
 			// this isn't actually possible
 		}
 
 		textUI.printText("These are the possible murder weapons:");
 		textUI.printArray(createNotesToPrint(p, Card.Type.WEAPON));
-		select = textUI.askIntBetween(PROMPT+tag,1,Card.WEAPONS.length)-1;
+		select = textUI.askIntBetween(PROMPT+NEWLINE,1,Card.WEAPONS.length)-1;
 		try {
-			guess.setWeapon(new Card(Card.Type.WEAPON,Card.WEAPONS[select]));
+			h.setWeapon(new Card(Card.Type.WEAPON,Card.WEAPONS[select]));
 		} catch (IllegalAccessException e) {
 			// this isn't possible
 		}
@@ -249,29 +259,35 @@ public class Game {
 		if (isFinalAccusation) {
 			textUI.printText("These are the possible murder locations:");
 			textUI.printArray(createNotesToPrint(p, Card.Type.ROOM));
-			select = textUI.askIntBetween(PROMPT+tag,1,Card.ROOMS.length)-1;
+			select = textUI.askIntBetween(PROMPT+NEWLINE,1,Card.ROOMS.length)-1;
 			roomCard = new Card(Card.Type.ROOM,Card.ROOMS[select]);
 		} else {
 			String room = BOARD.getRoom(p.position());
 			roomCard = new Card(Card.Type.ROOM,room);
 			textUI.printText("In the "+ room +".");
+			for (int i=0; i < players.size(); i++) {
+				if (players.get(i).equalsName(h.getCharacter().getValue())) {
+					// TODO some board method for moving characters into the same room
+					// players.get(i).forciblyMove();
+				}
+			}
 		}
 		try {
-			guess.setRoom(roomCard);
+			h.setRoom(roomCard);
 		} catch (IllegalAccessException e) {
 			// this isn't possible
 		}
-		textUI.printText(p.getName() + (isFinalAccusation? " accuses ":" theorises that it was "+
-				guess.getCharacter() +" in the "+ guess.getRoom() +" with the "+ guess.getWeapon() +"."));
-		return guess;
+		textUI.printText(p.getName() + (isFinalAccusation? " accuses "+h.getCharacter()+" of "+ randomMurderDescription()
+				:" theorises that it was "+	h.getCharacter()) +" in the "+ h.getRoom() +" with the "+ h.getWeapon() +".");
+		return h;
 	}
 
 	/** This method is used when a player p wants to make a suggestion about
 	 * who they suspect the murderer is.
 	 *
 	 * Game uses the player to the active player's left as the start of the round,
-	 * then goes around the players asking if they are able to refute the hypothesis. 
-	 * 
+	 * then goes around the players asking if they are able to refute the hypothesis.
+	 *
 	 * This method does not allow a player to select which of their cards is used
 	 * to refute the hypothesis, which means the asking player will be shown the same
 	 * card every time they make the same hypothesis.
@@ -290,7 +306,7 @@ public class Game {
 		do {
 			List<Card> l = players.get(i).refuteHypothesis(h);
 			if (l.size() > 0) {
-				// the ternary check just says: if this is new information to the asking player, mention that fact in the printout.  
+				// the ternary check just says: if this is new information to the asking player, mention that fact in the printout.
 				textUI.printText(players.get(i).getName() +" whispers something "+ (p.isInnocent(l.get(0))? "":"new") +" into "+ p.getName() +"'s ear.");
 				p.vindicate(l.get(0));
 				return false;
@@ -304,8 +320,8 @@ public class Game {
 
 	/** The player has chosen to make an accusation! Assemble their
 	 * hypothesis, see if it equals the guilty one. If not, end them.
-	 * Otherwise, they win. The player list is cleared and the game 
-	 * ends. 
+	 * Otherwise, they win. The player list is cleared and the game
+	 * ends.
 	 *
 	 * @param p
 	 */
@@ -331,7 +347,6 @@ public class Game {
 	 * @param p
 	 */
 	private void viewNotebook(Player p) {
-		System.out.println("printing hand!");
 		textUI.printDivide();
 		textUI.printArray(createNotesToPrint(p,Card.Type.CHARACTER));
 		textUI.printArray(createNotesToPrint(p,Card.Type.WEAPON));
@@ -347,19 +362,23 @@ public class Game {
 	 */
 	private String[] createNotesToPrint(Player p, Card.Type t) {
 		String[] printing;
+		String[] from;
 		if (t == Card.Type.CHARACTER) {
-			printing = Card.CHARACTERS;
+			printing = new String[Card.CHARACTERS.length];
+			from = Card.CHARACTERS;
 		} else if (t == Card.Type.WEAPON) {
-			printing = Card.WEAPONS;
+			printing = new String[Card.WEAPONS.length];
+			from = Card.WEAPONS;
 		} else if (t == Card.Type.ROOM) {
-			printing = Card.ROOMS;
+			printing = new String[Card.ROOMS.length];
+			from = Card.ROOMS;
 		} else {
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i < printing.length; i++) {
 			// if the player is proven innocent, prepend (X), else ( )
-			printing[i] = (p.isInnocent(t,printing[i]) ? "(X)":"( )") + " " 
-				+ printing[i].toUpperCase();
+			printing[i] = (p.isInnocent(t,from[i]) ? "(X)":"( )") + " "
+				+ from[i].substring(0, 1).toUpperCase() + from[i].substring(1, from[i].length());
 		}
 		return printing;
 	}
@@ -413,7 +432,7 @@ public class Game {
 		// add cards to each player's hand
 		int cardIdx = 0;
 		textUI.printText((double)(Card.DECKSIZE-3)/players.size() +" cards between "+ players.size() +" and "+deck.size()+" cards, "+remainder+" remaining, to deal between "+ handSize +"-sized hands.");
-		
+
 		for (Player p : players) {
 			textUI.printText(p.getName() +" starts at "+ cardIdx);
 			for (int i = 0; i <= handSize; i++) {
@@ -506,20 +525,36 @@ public class Game {
 				throw new IllegalArgumentException();
 		}
 	}
-	
+
 	/** Returns the Hypothesis containing the guilty cards.*/
 	public Hypothesis getGuilty() {
 		return guilty;
 	}
 
-	/** 
+	/**
 	 *
 	 * @return The list of players in the game
 	 */
 	public Collection<Player> getPlayers() {
 		return players;
 	}
-	
+
+
+
+	/** Returns a random message, such that it completes the phrase:
+	 * CHARACTER_NAME accuses ACCUSED_NAME of _____________ in the ROOM with the WEAPON */
+	private String randomMurderDescription() {
+		String[] m = { "bloody treachery",
+					"violent actions",
+					"unwanted attention",
+					"killing Dr Body",
+					"ending the life of Dr Body",
+					"commiting murder",
+					"homicide",
+					"murder"
+					};
+		return m[(int)Math.random()*m.length];
+	}
 
 	/** Returns a random message, to be printed instead of a
 	 * 'dead' player taking their turn. */
@@ -534,7 +569,7 @@ public class Game {
 					"is wishing the rest of you would hurry up and solve this murder.",
 					"regrets no longer being allowed to say 'Elementary!'."
 					};
-		return m[(int)Math.random()*m.length];
+		return m[(int)(Math.random()*m.length)];
 	}
 
 	/* (non-Javadoc)

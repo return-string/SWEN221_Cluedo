@@ -1,7 +1,6 @@
 package game;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
@@ -90,7 +89,7 @@ public class Player implements Comparable<Player> {
 				return true;
 			}
 			System.out.println("failed to add "+ c.toString() +" to "+ getName() +"'s hand");
-			
+
 		}
 		return false;
 	}
@@ -139,7 +138,7 @@ public class Player implements Comparable<Player> {
 	public boolean isPlaying() {
 		return isPlaying;
 	}
-	
+
 	public boolean wasForced() {
 		return wasForced;
 	}
@@ -148,31 +147,6 @@ public class Player implements Comparable<Player> {
 		return NAME;
 	}
 
-	public class PlayerComp<T extends Player> implements Comparator{
-		@Override
-		public int compare(Object o1, Object o2) {
-			if (!(o1 instanceof Player) || !(o2 instanceof Player)) {
-				throw new IllegalArgumentException();
-			}
-			Player first = (Player)o1;
-			Player second = (Player)o2;
-			int index1 = 0;
-			int index2 = 0;
-			for (int i = 0; i < Card.CHARACTERS.length; i++) {
-				if (first.getName().equals(Card.CHARACTERS[i])) {
-					index1 = i;
-				}
-				if (second.getName().equals(Card.CHARACTERS[i])) {
-					index2 = i;
-				}
-			}
-			return index2 - index1;
-		}
-
-	}
-
-	
-	
 	@Override
 	public int compareTo(Player o) {
 		if (o.getName().equals(this.getName())) {
@@ -235,6 +209,10 @@ public class Player implements Comparable<Player> {
 			return false;
 		}
 		return true;
+	}
+
+	public boolean equalsName(String s) {
+		return NAME.equalsIgnoreCase(s);
 	}
 
 	/* (non-Javadoc)

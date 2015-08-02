@@ -1,34 +1,27 @@
 package tests;
 import static org.junit.Assert.*;
 
-import java.lang.reflect.Field;
-
 import org.junit.Test;
 
-import game.Board;
 import game.Card;
-import game.Coordinate;
 import game.Game;
 import game.Player;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 public class GameTests2 {
 	private final long seed = 304494949;
-	
+
 	public List<Card> sameDeck() {
 		List<Card> deck = Game.createNewDeck(Card.SCARLET,Card.DAGGER,Card.CONSERVATORY);
 		Collections.sort(deck);
 		Collections.shuffle(deck, new Random(seed));
 		return deck;
 	}
-	
+
 	/* @Test
 	public void test1() {
 		System.out.println("\tTEST EMPTY PLAYER SET EQUALITY");
@@ -36,7 +29,7 @@ public class GameTests2 {
 		Game g2 = new Game();
 		assertEquals("",g1.getPlayers(),g2.getPlayers());
 	}
-	
+
 	@Test
 	public void test2() {
 		System.out.println("\tTEST HYPOTHESIS/CARD EQUALITY");
@@ -46,7 +39,7 @@ public class GameTests2 {
 		g2.initialiseDeck(Card.SCARLET, Card.PIPE, Card.BALL);
 		assertEquals(g1.getGuilty(),g2.getGuilty());
 	}
-	
+
 	@Test
 	public void test3() {
 		System.out.println("\tTEST HYPOTHESIS/CARD EQUALITY");
@@ -63,8 +56,9 @@ public class GameTests2 {
 		assertTrue("The first player should be the same in these games. ("+ g1Arr[0] +" =/= "+ g2Arr[0] +")",
 				g1Arr[0].equals(g2Arr[0]));
 	} */
-	
+
 	@Test
+	/** Tests the natural sort of Players */
 	public void test4() {
 		Player[] ps = { new Player(Card.MUSTARD),
 				new Player(Card.SCARLET),
@@ -87,8 +81,9 @@ public class GameTests2 {
 		Collections.sort(players);
 		assertEquals(players.toString() +" \n=/=\n "+ ps2.toString()+"\n",ps2,players);
 	}
-	
+
 	@Test
+	/** Tests the natural sort of Cards */
 	public void test5() {
 		List<Card> cards = new ArrayList<Card>();
 		cards.addAll(sameDeck());
@@ -98,20 +93,21 @@ public class GameTests2 {
 		Collections.sort(deck);
 		assertEquals(cards,deck);
 	}
-	
+
 	@Test
+	/** Also tests the natural sort of Cards, small-scale. */
 	public void test6() {
 		List<Card> cards = new ArrayList<Card>();
 		cards.add(new Card(Card.Type.CHARACTER, Card.GREEN));
 		cards.add(new Card(Card.Type.WEAPON, Card.DAGGER));
 		cards.add(new Card(Card.Type.ROOM, Card.BILLIARD));
-		
+
 		List<Card> sortedCards = new ArrayList<Card>();
-		sortedCards.add(new Card(Card.Type.CHARACTER, Card.GREEN));
-		sortedCards.add(new Card(Card.Type.ROOM, Card.BILLIARD));
 		sortedCards.add(new Card(Card.Type.WEAPON, Card.DAGGER));
+		sortedCards.add(new Card(Card.Type.ROOM, Card.BILLIARD));
+		sortedCards.add(new Card(Card.Type.CHARACTER, Card.GREEN));
 		Collections.sort(sortedCards);
-		
+
 		assertEquals(cards,sortedCards);
 	}
 }
