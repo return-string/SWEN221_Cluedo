@@ -26,29 +26,32 @@ public class GameTests {
 	}
 
 // Not really tests, more just debugging methods
-//	@Test
-//	public void test2_getMoves(){
-//		Board b = new Board();
-//		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(5,8), 6);
-//		for(Coordinate coord : moves.keySet()){
-//			System.out.printf("%s : %s\n", coord.toString(), moves.get(coord));
-//		}
-//	}
-//
-//	@Test
-//	public void test3_getMoves2(){
-//		Board b = new Board();
-//		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(9,0), 4);
-//		for(Coordinate coord : moves.keySet()){
-//			System.out.printf("%s : %s\n", coord.toString(), moves.get(coord));
-//		}
-//	}
+	@Test
+	public void test2_getMoves(){
+		Board b = new Board();
+		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(5,8), 6);
+		printMoves(moves);
+	}
+
+	@Test
+	public void test3_getMoves2(){
+		Board b = new Board();
+		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(9,0), 4);
+		printMoves(moves);
+	}
+
+	private void printMoves(Map<Coordinate, String> moves) {
+		for(Coordinate coord : moves.keySet()){
+			System.out.printf("%s : %s\n", coord.toString(), moves.get(coord));
+		}
+	}
 
 	@Test
 	public void test4_getMoves3(){
 		Board b = new Board();
 		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(4, 6), 1);
 		Map<Coordinate, String> expected = new HashMap<Coordinate, String>();
+		printMoves(moves);
 		assertEquals("Enter the study", moves.get(new Coordinate(4,5)));
 		String distanceTo = moves.get(new Coordinate(4,7));
 		assertTrue(distanceTo.contains("6 steps away from ball room"));
