@@ -19,6 +19,7 @@ public class BoardSquare {
 	private String room;
 	private boolean isRoom;
 	private boolean isVisited = false;
+	private boolean occupied = false;
 
 	public BoardSquare(Coordinate coordinate, String room, boolean isRoom){
 		this.coordinates = new HashSet<Coordinate>();
@@ -144,6 +145,14 @@ public class BoardSquare {
 
 	public void setVisited(boolean isVisited) {
 		this.isVisited = isVisited;
+	}
+
+	public boolean isOccupied() {
+		return occupied;
+	}
+
+	public void setOccupied(boolean occupied) {
+		this.occupied = occupied;
 	}
 
 

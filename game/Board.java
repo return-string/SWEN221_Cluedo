@@ -93,13 +93,13 @@ public class Board {
 					moves.put(moveCoord, descriptionString);
 					break;
 				} else {
-					/*If the current square isn't a room square, puts all the neighbours
-					 * on the fringe if they haven't been
-					 * visited, with this entry as their 'from' and an incremented
-					 * 'dist' (path length)*/
+					/*If the current square is the start square or isn't a room square,
+					 * puts all the neighbours on the fringe if they haven't been visited
+					 * and they are not occupied, with this entry as their 'from' and an
+					 * incremented 'dist' (path length)*/
 					if(!current.square.isRoom() || current.distance == 0){
 						for(BoardSquare neighbour : current.square.getNeighbours()){
-							if(!neighbour.isVisited()){
+							if(!neighbour.isVisited() && !neighbour.isOccupied()){
 								pathFringe.offer(new PathFringeEntry(neighbour, current,
 										current.distance+1));
 							}
@@ -121,6 +121,18 @@ public class Board {
 			}
 		}
 
+	}
+
+	/**
+	 * Finds the board square matching the coordinate, and if it is
+	 * not a room square, switches its occupied state.
+	 * @param c Coordinate of square to switch
+	 */
+	public void toggleOccuptied(Coordinate c){
+		BoardSquare square = squares[c.getX()][c.getY()];
+		if(!square.isRoom()){
+			square.setOccupied(!square.isOccupied());
+		}
 	}
 
 	/**

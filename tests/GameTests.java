@@ -25,23 +25,24 @@ public class GameTests {
 		Board b = new Board();
 	}
 
-	@Test
-	public void test2_getMoves(){
-		Board b = new Board();
-		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(5,8), 6);
-		for(Coordinate coord : moves.keySet()){
-			System.out.printf("%s : %s\n", coord.toString(), moves.get(coord));
-		}
-	}
-
-	@Test
-	public void test3_getMoves2(){
-		Board b = new Board();
-		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(9,0), 4);
-		for(Coordinate coord : moves.keySet()){
-			System.out.printf("%s : %s\n", coord.toString(), moves.get(coord));
-		}
-	}
+// Not really tests, more just debugging methods
+//	@Test
+//	public void test2_getMoves(){
+//		Board b = new Board();
+//		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(5,8), 6);
+//		for(Coordinate coord : moves.keySet()){
+//			System.out.printf("%s : %s\n", coord.toString(), moves.get(coord));
+//		}
+//	}
+//
+//	@Test
+//	public void test3_getMoves2(){
+//		Board b = new Board();
+//		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(9,0), 4);
+//		for(Coordinate coord : moves.keySet()){
+//			System.out.printf("%s : %s\n", coord.toString(), moves.get(coord));
+//		}
+//	}
 
 	@Test
 	public void test4_getMoves3(){
@@ -57,6 +58,24 @@ public class GameTests {
 		assertTrue(distanceTo.contains("18 steps away from lounge"));
 		assertTrue(distanceTo.contains("18 steps away from hall"));
 		assertTrue(distanceTo.contains("16 steps away from billiard room"));
+	}
+
+	@Test
+	public void test5_testOccupied1(){
+		Board b = new Board();
+		Coordinate occupied = new Coordinate(4, 7);
+		b.toggleOccuptied(occupied);
+		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(4, 8), 1);
+		assertFalse(moves.containsKey(occupied));
+	}
+
+	@Test
+	public void test6_testOccupied2(){
+		Board b = new Board();
+		Coordinate occupied = new Coordinate(4, 7);
+		b.toggleOccuptied(occupied);
+		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(4, 8), 2);
+		assertFalse(moves.containsValue("Enter the kitchen"));
 	}
 
 	// ========= helper methods! =============
