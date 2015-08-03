@@ -65,11 +65,19 @@ public class Game {
 		}
 	}
 
+	/** For debugging purposes, players can be added as list of
+	 * character names.
+	 * @param characterNames
+	 */
 	public void addCharactersByName(List<String> characterNames) {
-		if (players!=null || players.size() != 0) {return;}
+		if (players != null || players.size() != 0) {return;}
 		players = new ArrayList<Player>();
 		for (int i = 0; i < characterNames.size(); i++) {
-			players.add(new Player(characterNames.get(i)));
+			for (int j = 0; j < Card.CHARACTERS.length; j++) {
+				if (Card.CHARACTERS[j].equals(characterNames.get(i))) {
+					players.add(new Player(characterNames.get(i)));
+				}
+			}
 		}
 		Collections.sort(players);
 	}
@@ -201,22 +209,37 @@ public class Game {
 		}
 	}
 
-	/** Once a player has moved, set their current square as occupied if it is
-	 * in a hallway.
+	/** Once a player has moved, set their current coordinate to occupied if it is
+	 * in a hallway. If their destination coordinate is in the hallway, set this
+	 * as occupied.
 	 *
-	 * @param o
+	 * This implementation only works as long as the Coordinate goTo was
+	 * given as a result of calling BOARD.possibleMoves() and the coordinate
+	 * comeFrom was given by a player's position() method. If this is not the case,
+	 * this method is not safe to use.
+	 *
+	 * The only exception is when a player loses and their token is removed from
+	 * the board: then the method is called with goTo == null.
+	 *
+	 * @param comeFrom The coordinate the player is moving from, as given by
+	 * their position() method.
+	 * @param goTo The coordinate they are moving to, as selected from the result
+	 * of BOARD.possibleMoves().
 	 */
-	public void toggleOccupied(Coordinate from,Coordinate to) {
-		if (BOARD.getRoom(from).equals(BOARD.HALLWAYSTRING)) {
-			BOARD.toggleOccupied(from);
+	private void toggleOccupied(Coordinate comeFrom,Coordinate goTo) {
+		if (comeFrom != null && BOARD.getRoom(comeFrom).equals(BOARD.HALLWAYSTRING)) {
+			BOARD.toggleOccupied(comeFrom);
 		}
-		if (BOARD.getRoom(to).equals(BOARD.HALLWAYSTRING)) {
-			BOARD.toggleOccupied(to);
+		if (goTo != null && BOARD.getRoom(goTo).equals(BOARD.HALLWAYSTRING)) {
+			BOARD.toggleOccupied(goTo);
 		}
 	}
 
-	/** Prints  the options available to a player once their movement phase
+	/** Prints the control options available to a player once their movement phase
 	 * is complete.
+	 *
+	 * If they are in a room, the first option will be to make a suggestion.
+	 * Otherwise, the first option is to make an accusation.
 	 *
 	 * @param p Player whose options are to be displayed.
 	 */
@@ -238,7 +261,10 @@ public class Game {
 			textUI.printText("MAKE GUESS");
 			testHypothesis(p,null);
 		} else if ((option == 0 || option == 1) && options[option].equals(PLAYER_OPTIONS[1])) {
-			textUI.printText("MAKE ACCUSATION");
+			textUI.printText("MAKE FINAL ACCUSATION");
+			textUI.printArray(new String[] {"Yes, I would like to make my final choice.","No! Stop! I misclicked! Help!"});
+			int select = textUI.askIntBetween("Are you sure you want to make your final accusation?", 1, 2);
+			if (s)
 			testAccusation(p);
 		} else if ((option == 1 || option == 2) && options[option].equals(PLAYER_OPTIONS[2])) {
 			viewInnocent(p,true);
@@ -413,6 +439,7 @@ public class Game {
 		if (!h.equals(guilty)) {
 			textUI.printText(p.getName()+"'s guess was incorrect.");
 			p.kill();
+			toggleOccupied(p.position(),null);
 			return false;
 		} else {
 			textUI.printText("Success! "+ p.getName() +" has made a correct accusation and the guilty party will be brought to justice.");
