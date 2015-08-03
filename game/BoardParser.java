@@ -53,6 +53,9 @@ public class BoardParser {
 				buildRow(sc, row);
 			}
 			sc.close();
+//			for(BoardSquare room : rooms){
+//				System.out.println(room.toString());
+//			}
 			return this.board;
 		} catch(IOException e){
 			System.out.print("Error reading board file: " + e);
@@ -151,13 +154,21 @@ public class BoardParser {
 		}
 		//Adds adjacent squares to neighbours that are either also rooms, or squares adjacent
 		//to a door
-		if(col != 0 && this.board[col-1][row] != null && (this.board[col-1][row].isRoom()
-				|| this.doorRightDownCoords.contains(new Coordinate(col-1, row)))){
-			toMake.addNeigbour(this.board[col-1][row]);
+		if(col != 0){
+			BoardSquare adjacent = this.board[col-1][row];
+			Coordinate left = new Coordinate(col-1, row);
+			if(adjacent != null && ((adjacent.isRoom() && !toMake.hasRoomInNeigbours(adjacent))
+					|| this.doorRightDownCoords.contains(left))){
+				toMake.addNeigbour(adjacent);
+			}
 		}
-		if(row != 0 && this.board[col][row-1] != null && (this.board[col][row-1].isRoom()
-				|| this.doorRightDownCoords.contains(new Coordinate(col, row-1)))){
-			toMake.addNeigbour(this.board[col][row-1]);
+		if(row != 0){
+			BoardSquare adjacent = this.board[col][row-1];
+			Coordinate up = new Coordinate(col, row-1);
+			if(adjacent != null && ((adjacent.isRoom() && !toMake.hasRoomInNeigbours(adjacent))
+					|| this.doorRightDownCoords.contains(up))){
+				toMake.addNeigbour(adjacent);
+			}
 		}
 		this.board[col][row] = toMake;
 	}

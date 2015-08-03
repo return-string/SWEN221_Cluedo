@@ -75,7 +75,7 @@ public class Board {
 				if(current.square.getRoom().equals(rm)){
 					if(current.distance <= steps){//if can get to it this turn
 						descriptionString = "Enter the " + rm;
-						moveCoord = current.square.getClosestCoordinate(current.from.square.getACoordinate());
+						moveCoord = current.square.getClosestCoordinate(start);
 					} else { //finds the square player can reach closest to room
 						int finalLength = current.distance;
 						PathFringeEntry roomEntry = current;

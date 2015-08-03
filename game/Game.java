@@ -227,10 +227,10 @@ public class Game {
 	 * of BOARD.possibleMoves().
 	 */
 	private void toggleOccupied(Coordinate comeFrom,Coordinate goTo) {
-		if (comeFrom != null && BOARD.getRoom(comeFrom).equals(BOARD.HALLWAYSTRING)) {
+		if (comeFrom != null && BOARD.getRoom(comeFrom).equals(Board.HALLWAYSTRING)) {
 			BOARD.toggleOccupied(comeFrom);
 		}
-		if (goTo != null && BOARD.getRoom(goTo).equals(BOARD.HALLWAYSTRING)) {
+		if (goTo != null && BOARD.getRoom(goTo).equals(Board.HALLWAYSTRING)) {
 			BOARD.toggleOccupied(goTo);
 		}
 	}
@@ -264,7 +264,7 @@ public class Game {
 			textUI.printText("MAKE FINAL ACCUSATION");
 			textUI.printArray(new String[] {"Yes, I would like to make my final choice.","No! Stop! I misclicked! Help!"});
 			int select = textUI.askIntBetween("Are you sure you want to make your final accusation?", 1, 2);
-			if (s)
+			//if (s)
 			testAccusation(p);
 		} else if ((option == 1 || option == 2) && options[option].equals(PLAYER_OPTIONS[2])) {
 			viewInnocent(p,true);
@@ -671,7 +671,7 @@ public class Game {
 					"homicide",
 					"murder"
 					};
-		return m[(int)(R.nextInt(m.length-1)+1)];
+		return m[R.nextInt(m.length-1)+1];
 	}
 
 	/** Returns a random message, to be printed instead of a
@@ -687,7 +687,7 @@ public class Game {
 					"is wishing the rest of you would hurry up and solve this murder.",
 					"regrets no longer being allowed to say 'Elementary!'."
 					};
-		return m[(int)(R.nextInt(m.length-1)+1)];
+		return m[R.nextInt(m.length-1)+1];
 	}
 
 	/* (non-Javadoc)

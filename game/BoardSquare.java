@@ -56,8 +56,10 @@ public class BoardSquare {
 	 * @param neighbour
 	 */
 	public void addNeigbour(BoardSquare neighbour){
-		this.neighbours.add(neighbour);
-		neighbour.neighbours.add(this);
+		if(!neighbour.equals(this)){
+			this.neighbours.add(neighbour);
+			neighbour.neighbours.add(this);
+		}
 	}
 
 	public boolean containsCoordinate(Coordinate coord) {
@@ -84,13 +86,13 @@ public class BoardSquare {
 		return isRoom;
 	}
 
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
 				+ ((coordinates == null) ? 0 : coordinates.hashCode());
-		result = prime * result + (isRoom ? 1231 : 1237);
 		result = prime * result + ((room == null) ? 0 : room.hashCode());
 		return result;
 	}
@@ -108,8 +110,6 @@ public class BoardSquare {
 			if (other.coordinates != null)
 				return false;
 		} else if (!coordinates.equals(other.coordinates))
-			return false;
-		if (isRoom != other.isRoom)
 			return false;
 		if (room == null) {
 			if (other.room != null)
@@ -138,7 +138,25 @@ public class BoardSquare {
 		}
 		return toReturn;
 	}
-
+	
+	public boolean hasRoomInNeigbours(String roomName){
+		for(BoardSquare neighbour : this.neighbours){
+			if(neighbour.getRoom().equals(roomName)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean hasRoomInNeigbours(BoardSquare room){
+		for(BoardSquare neighbour : this.neighbours){
+			if(neighbour.getRoom().equals(room.getRoom())){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public boolean isVisited() {
 		return isVisited;
 	}
@@ -155,8 +173,36 @@ public class BoardSquare {
 		this.occupied = occupied;
 	}
 
+	@Override
+	public String toString() {
+		String representation = "BoardSquare\n==================\n"
+				+ "Room Name: " + this.room 
+				+ "\nIs a room: " + this.isRoom
+				+ "\nIs occupied: " + this.occupied
+				+ "\nHas been visited in a current path search: " + this.isVisited
+				+ "\nCoordinates: {";
+		for(Coordinate coord : this.coordinates){
+			representation += coord.toString();
+		}
+		representation += "}\nNeighbours: [";
+		for(BoardSquare neighbour : this.neighbours){
+			representation += neighbour.toStringNeighbour();
+		}
+		return representation + "]\n";
+	}
+	
+	private String toStringNeighbour(){
+		String representation = "\n-------------\n"
+				+ "Room Name: " + this.room 
+				+ "\nCoordinates: {";
+		for(Coordinate coord : this.coordinates){
+			representation += coord.toString();
+		}
+		return representation + "}\n";
+	}
 
-
+	
+	
 
 
 
