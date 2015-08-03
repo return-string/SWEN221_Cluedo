@@ -20,9 +20,6 @@ import javax.management.InvalidAttributeValueException;
  *
  */
 public class Game {
-	public static final Board BOARD = new Board();
-	public static final TextUI textUI = new TextUI();
-
 	private static final Random R = new Random(System.currentTimeMillis());
 	private static final String NEWLINE = "\n > ";
 	private static final String PROMPT = "Select an option: ";
@@ -33,6 +30,9 @@ public class Game {
 		"View detective notebook",
 		"End turn"
 	};
+
+	public final Board BOARD = new Board();
+	public final TextUI textUI = new TextUI();
 
 	private List<Player> players;
 	private Hypothesis guilty;
@@ -63,6 +63,15 @@ public class Game {
 			e.printStackTrace();
 			System.exit(1);
 		}
+	}
+
+	private void selectCharacters(List<String> characterNames) {
+		if (players!=null || players.size() != 0) {return;}
+		players = new ArrayList<Player>();
+		for (int i = 0; i < characterNames.size(); i++) {
+			players.add(new Player(characterNames.get(i)));
+		}
+		Collections.sort(players);
 	}
 
 	/** Given the number of users playing, prints the remaining
@@ -186,8 +195,23 @@ public class Game {
 		for (Entry<Coordinate,String> s : moves.entrySet()) {
 			/* when the user-selected move is found, move the player */
 			if (s.getValue().equalsIgnoreCase(moveDescs.get(userChoice))) {
+				toggleOccupied(p.position(),s.getKey());
 				p.move(s.getKey());
 			}
+		}
+	}
+
+	/** Once a player has moved, set their current square as occupied if it is
+	 * in a hallway.
+	 *
+	 * @param o
+	 */
+	public void toggleOccupied(Coordinate from,Coordinate to) {
+		if (BOARD.getRoom(from).equals(BOARD.HALLWAYSTRING)) {
+			BOARD.toggleOccupied(from);
+		}
+		if (BOARD.getRoom(to).equals(BOARD.HALLWAYSTRING)) {
+			BOARD.toggleOccupied(to);
 		}
 	}
 
@@ -290,8 +314,7 @@ public class Game {
 			textUI.printText("In the "+ room +".");
 			for (int i=0; i < players.size(); i++) {
 				if (players.get(i).equalsName(h.getCharacter().getValue())) {
-					// TODO some board method for moving characters into the same room
-					// players.get(i).forciblyMove();
+					players.get(i).forciblyMove(p.position());
 				}
 			}
 		}
@@ -711,4 +734,5 @@ public class Game {
 		}
 		throw new IllegalArgumentException();
 	}
+
 }

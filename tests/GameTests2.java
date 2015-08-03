@@ -7,6 +7,8 @@ import game.Card;
 import game.Game;
 import game.Player;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,6 +37,46 @@ public class GameTests2 {
 		System.out.println("\tTEST HYPOTHESIS/CARD EQUALITY");
 		Game g1 = new Game();
 		Game g2 = new Game();
+		List<String> p1 = new ArrayList<String>();
+		List<String> p2 = new ArrayList<String>();
+
+		for (String s : Card.CHARACTERS) {
+			p1.add(s);
+			p2.add(s);
+		}
+
+		Class<?> c1 = g1.getClass();
+		Method ms1[] = c1.getDeclaredMethods();
+		for (Method m : ms1) {
+			System.out.println("o has method: " + m.getName());
+		}
+		Class<?> c2 = g2.getClass();
+		Method ms2[] = c2.getDeclaredMethods();
+		for (Method m : ms2) {
+			System.out.println("o has method: " + m.getName());
+		}
+		for(int i = 0; i < ms2.length; i++) {
+			if (ms1[i].getName().equals("selectCharacters")) {
+				try {
+					ms1[i].setAccessible(true);
+					ms1[i].invoke(ms1[i], p1);
+				} catch (IllegalAccessException | IllegalArgumentException
+						| InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (ms2[i].getName().equals("selectCharacters")) {
+				try {
+					ms1[i].setAccessible(true);
+					ms2[i].invoke(ms2[i], p2);
+				} catch (IllegalAccessException | IllegalArgumentException
+						| InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 		g1.initialiseDeck(Card.SCARLET, Card.PIPE, Card.BALL);
 		g2.initialiseDeck(Card.SCARLET, Card.PIPE, Card.BALL);
 		assertEquals(g1.getGuilty(),g2.getGuilty());
