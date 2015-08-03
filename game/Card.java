@@ -4,7 +4,7 @@ package game;
  * and each CardInter is in the hand of a player, unless
  * it is the murderer, murder weapon or location.
  *
- * @author Someone 
+ * @author Someone
  */
 
 public class Card implements Comparable<Card> {
@@ -139,6 +139,4 @@ public class Card implements Comparable<Card> {
 		}
 		throw new IllegalArgumentException();
 	}
-
-
 }

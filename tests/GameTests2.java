@@ -22,7 +22,7 @@ public class GameTests2 {
 		return deck;
 	}
 
-	/* @Test
+	@Test
 	public void test1() {
 		System.out.println("\tTEST EMPTY PLAYER SET EQUALITY");
 		Game g1 = new Game();
@@ -55,7 +55,7 @@ public class GameTests2 {
 		Object[] g2Arr = g2.getPlayers().toArray();
 		assertTrue("The first player should be the same in these games. ("+ g1Arr[0] +" =/= "+ g2Arr[0] +")",
 				g1Arr[0].equals(g2Arr[0]));
-	} */
+	}
 
 	@Test
 	/** Tests the natural sort of Players */

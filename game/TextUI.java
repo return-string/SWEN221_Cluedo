@@ -9,7 +9,7 @@ import java.util.Scanner;
  *
  */
 public class TextUI {
-	private static final String DIVIDE = "=========================";
+	private static final String DIVIDE = "==================================================";
 
 	private Scanner scan;
 
@@ -82,5 +82,11 @@ public class TextUI {
 			}
 		}
 		return answer;
+	}
+
+	public void clearScreen() {
+		for (int i = 0; i < 100; i++) {
+			System.out.println();
+		}
 	}
 }

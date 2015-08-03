@@ -29,6 +29,7 @@ public class Game {
 	private static final String[] PLAYER_OPTIONS = {
 		"Make a suggestion",
 		"Make a final accusation",
+		"Check hand",
 		"View detective notebook",
 		"End turn"
 	};
@@ -75,6 +76,13 @@ public class Game {
 		for (int i = 0; i < Card.CHARACTERS.length; i++) {
 			options.add(Card.CHARACTERS[i]);
 		}
+		if (numPlayers == Card.CHARACTERS.length) {
+			textUI.printText("Starting a game with all 6 characters.");
+			for (int i = 0; i < Card.CHARACTERS.length;i++){
+				addPlayer(i);
+			}
+			return;
+		}
 		for (int i = 0; i < numPlayers; i++) {
 			textUI.printDivide();
 			textUI.printList(options);
@@ -85,33 +93,6 @@ public class Game {
 			addPlayer(realIndex);
 			options.remove(select);
 		}
-	}
-
-	/** It's useful to know which index belongs to which value.
-	 * For a given Card.Type and value, returns the index of
-	 * that value in the relevant array.
-	 */
-	private int indexOf(Card.Type t, String name) {
-		String[] arr = null;
-		switch (t) {
-			case CHARACTER:
-				arr = Card.CHARACTERS;
-				break;
-			case WEAPON:
-				arr = Card.WEAPONS;
-				break;
-			case ROOM:
-				arr = Card.ROOMS;
-				break;
-			default:
-				throw new IllegalArgumentException();
-		}
-		for (int i = 0; i < arr.length; i++){
-			if (arr[i].equalsIgnoreCase(name)) {
-				return i;
-			}
-		}
-		throw new IllegalArgumentException();
 	}
 
 	/**
@@ -132,24 +113,44 @@ public class Game {
 		if (guilty == null) {
 			initialiseDeck();
 		}
+		activePlayer = 0;
+		int roundCounter = 1;
 
+		textUI.printText(guilty.toString());
 		/** the game plays at least one turn. */
 		do {
+			textUI.printDivide();
+			textUI.printText("\t\tRound "+roundCounter+" begins.");
+			textUI.printDivide();
 			for (activePlayer = 0; activePlayer < players.size(); activePlayer++) {
 				/** whenever the turn begins, get the player taking a turn and print some nice-looking stuff.*/
 				Player p = players.get(activePlayer);
-				textUI.printDivide();
 				if (p.isPlaying()) {
 					textUI.printText(p.getName() +"'s turn begins in the "+ BOARD.getRoom(p.position()) +".");
-					textUI.printText(p.getHand().toString() +"\n"+activePlayer+", "+players.size()+"\t"+players.get(activePlayer).toString());
+					viewInnocent(p,false);
 					playerMoves(p);
 					showPlayerOptions(p);
 				} else { // if they're not playing, just print something interesting.
 					textUI.printText(p.getName() + " " + randomDeathMessage());
 				}
+				if (!isPlaying()) {
+					textUI.printText("All other players have failed!");
+					break;
+				}
+				textUI.printDivide();
 			}
+			roundCounter++;
 		} while (this.isPlaying());
-		textUI.printText("Good game!");
+		Player winner = null;
+		for (Player p:players) {
+			if (p.isPlaying() && winner == null) {
+				winner = p;
+			} else if (p.isPlaying() && winner != null) {
+				throw new IllegalStateException();
+			}
+		}
+		if (winner == null) { throw new IllegalStateException(); }
+		textUI.printText("Good game, all. "+ winner.getName()+" is the winner.");
 	}
 
 	/** Method for resolving a player's movement phase.
@@ -165,7 +166,7 @@ public class Game {
 		textUI.printText(p.NAME +" rolls a "+roll+".");
 		/** if the player was forced, print some acknowledging message */
 		if (players.get(activePlayer).wasForced()) {
-			textUI.printText("Last turn "+ p.getName() +" was forcibly moved here.");
+			textUI.printText("The questioning of "+ p.getName() +" is complete. \n (They are able to move or stay in the "+ BOARD.getRoom(p.position()) +".)");
 		}
 
 		/* get the map of options a player has and put them into an array */
@@ -201,13 +202,13 @@ public class Game {
 		 * Otherwise limit their options to making an accusation, viewing their
 		 * cards or ending the turn. */
 		if (BOARD.getRoom(p.position()).equals(Board.HALLWAYSTRING)) {
-			options = new String[]{ PLAYER_OPTIONS[1], PLAYER_OPTIONS[2], PLAYER_OPTIONS[3] };
+			options = new String[]{ PLAYER_OPTIONS[1], PLAYER_OPTIONS[2], PLAYER_OPTIONS[3], PLAYER_OPTIONS[4] };
 		} else {
 			options = PLAYER_OPTIONS;
 		}
 		textUI.printArray(options);
 		int option = textUI.askIntBetween(PROMPT,1,options.length) - 1; // subtract one because we've asked for a number between 1 and length, and we want 0-to-length-minus-1
-
+		boolean clearScreen = false;
 		/* do the selected option! */
 		if (option == 0 && options[option].equals(PLAYER_OPTIONS[0])) {
 			textUI.printText("MAKE GUESS");
@@ -216,12 +217,34 @@ public class Game {
 			textUI.printText("MAKE ACCUSATION");
 			testAccusation(p);
 		} else if ((option == 1 || option == 2) && options[option].equals(PLAYER_OPTIONS[2])) {
+			viewInnocent(p,true);
+			showPlayerOptions(p);
+			clearScreen = true;
+		} else if ((option == 2 || option == 3) && options[option].equals(PLAYER_OPTIONS[3])) {
 			textUI.printText("VIEW NOTEBOOK");
 			viewNotebook(p);
 			showPlayerOptions(p);
+			clearScreen = true;
 		} else {
 			textUI.printText(p.getName() +" ends their turn.");
+			clearScreen  =true;
 		}
+		if (clearScreen) {
+			textUI.clearScreen();
+		}
+	}
+
+	private void viewInnocent(Player p, boolean breakAfter) {
+		List<Card> hand = p.getHand();
+		String print = "   ";
+		for (int i = 0; i < hand.size(); i++) {
+			print += "  ( "+ capitaliseString(hand.get(i).getValue()) +" )";
+			if (i % 2 == 0 && i != 0) {
+				print += "\n   ";
+			}
+		}
+		textUI.printText(print);
+		if (breakAfter) { textUI.printText(""); }
 	}
 
 	/** This method is called when a player wants to make an accusation or
@@ -277,8 +300,17 @@ public class Game {
 		} catch (IllegalAccessException e) {
 			// this isn't possible
 		}
-		textUI.printText(p.getName() + (isFinalAccusation? " accuses "+h.getCharacter()+" of "+ randomMurderDescription()
-				:" theorises that it was "+	h.getCharacter()) +" in the "+ h.getRoom() +" with the "+ h.getWeapon() +".");
+		/* this statement prints the accusation text, according to the format:
+		 * NAME (accuses ACCUSED of murder)|(theorises it was [themself|ACCUSED]) with the WEAPON in the ROOM.
+		 */
+		String accused = null;
+		if (h.getCharacter().getValue().equals(p.getName())) {
+			accused = "themself";
+		} else { accused = h.getCharacter().getValue(); }
+		textUI.printText(p.getName() + ( isFinalAccusation?
+						" accuses "+ accused +" of "+ randomMurderDescription()
+						:" theorises that it was "+	accused )
+					+" with the "+ h.getWeapon() +" in the "+ h.getRoom() +".");
 		return h;
 	}
 
@@ -299,7 +331,14 @@ public class Game {
 			h = makeHypothesis(p,false);
 		}
 
-		/** now, go through all the players and check their hands for cards to refute
+		/* if the hypothesis requires a player, find and move them here. */
+		Player accused = getPlayer(h.getCharacter());
+		if (accused != null && !(accused.equals(p))) {
+			accused.forciblyMove(p.position());
+			textUI.printText(accused.getName() +" is brought to the "+ BOARD.getRoom(p.position()) +" to be questioned.");
+		}
+
+		/* now, go through all the players and check their hands for cards to refute
 		 * the player's hypothesis.
 		 */
 		int i = (activePlayer+1) % players.size();;
@@ -307,7 +346,7 @@ public class Game {
 			List<Card> l = players.get(i).refuteHypothesis(h);
 			if (l.size() > 0) {
 				// the ternary check just says: if this is new information to the asking player, mention that fact in the printout.
-				textUI.printText(players.get(i).getName() +" whispers something "+ (p.isInnocent(l.get(0))? "":"new") +" into "+ p.getName() +"'s ear.");
+				textUI.printText(players.get(i).getName() +" shares some "+ (p.isInnocent(l.get(0))? "":"new ") +"evidence with "+ p.getName() +".");
 				p.vindicate(l.get(0));
 				return false;
 			}
@@ -316,6 +355,27 @@ public class Game {
 		textUI.printText("The evidence was not forthcoming.");
 		return true;
 	}
+
+	/** If the given Card matches a player in the game, return them. */
+	public Player getPlayer(Card character) {
+		for (Player p : players) {
+			if (p.getName().equals(character.getValue())) {
+				return p;
+			}
+		}
+		return null;
+	}
+
+	/** Iff the given Card matches a player in the game, return true. */
+	public boolean isPlayer(Card character) {
+		for (Player p : players) {
+			if (p.getName().equals(character.getValue())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 
 	/** The player has chosen to make an accusation! Assemble their
@@ -333,10 +393,14 @@ public class Game {
 			return false;
 		} else {
 			textUI.printText("Success! "+ p.getName() +" has made a correct accusation and the guilty party will be brought to justice.");
-			if (p.NAME.equals(h.getCharacter())) {
-				textUI.printText("('Accusation' sounds kinder than 'loud, weeping confession into "+ players.get( (activePlayer + 1) % players.size()) +"'s arms.)");
+			if (p.getName().equals(h.getCharacter().getValue())) {
+				textUI.printText("('Accusation' sounds kinder than 'loud, weeping confession into "+ players.get( (activePlayer + 1) % players.size()).getName() +"'s arms.)");
 			}
-			players.clear();
+			for (Player ps : players) {
+				if (p != ps) {
+					ps.kill();
+				}
+			}
 			return true;
 		}
 	}
@@ -378,15 +442,13 @@ public class Game {
 		for (int i = 0; i < printing.length; i++) {
 			// if the player is proven innocent, prepend (X), else ( )
 			printing[i] = (p.isInnocent(t,from[i]) ? "(X)":"( )") + " "
-				+ from[i].substring(0, 1).toUpperCase() + from[i].substring(1, from[i].length());
+				+ capitaliseString(from[i]);
 		}
 		return printing;
 	}
 
-
-	// TODO
-	public void playerAccuses(Player p) {
-
+	private String capitaliseString(String string) {
+		return string.substring(0, 1).toUpperCase() + string.substring(1, string.length());
 	}
 
 	/** This method selects the guilty character, weapon and room and deals
@@ -431,12 +493,12 @@ public class Game {
 
 		// add cards to each player's hand
 		int cardIdx = 0;
-		textUI.printText((double)(Card.DECKSIZE-3)/players.size() +" cards between "+ players.size() +" and "+deck.size()+" cards, "+remainder+" remaining, to deal between "+ handSize +"-sized hands.");
+		//textUI.printText((double)(Card.DECKSIZE-3)/players.size() +" cards between "+ players.size() +" and "+deck.size()+" cards, "+remainder+" remaining, to deal between "+ handSize +"-sized hands.");
 
 		for (Player p : players) {
-			textUI.printText(p.getName() +" starts at "+ cardIdx);
-			for (int i = 0; i <= handSize; i++) {
-				textUI.printText(cardIdx+" "+ deck.get(cardIdx).toString());
+			//textUI.printText(p.getName() +" starts at "+ cardIdx);
+			for (int i = 0; i < handSize; i++) {
+			//	textUI.printText("\t"+ cardIdx+" "+ deck.get(cardIdx).toString());
 				p.giveCard(deck.get(cardIdx));
 				cardIdx ++;
 			}
@@ -445,7 +507,7 @@ public class Game {
 
 		// if there are any cards remaining, print a message
 		if (remainder != 0) {
-			textUI.printText(handSize +" * "+ players.size() +"("+ handSize * players.size() +") != "+ Card.DECKSIZE);
+			//textUI.printText(handSize +" * "+ players.size() +"("+ handSize * players.size() +") != "+ Card.DECKSIZE);
 			showSpareCards(deck.subList(cardIdx, deck.size()));
 			// then ensure every player has these cards marked off...
 			for (Player p : players) {
@@ -478,13 +540,19 @@ public class Game {
 
 		// add some cards to the deck
 		for (int i = 0; i < Card.CHARACTERS.length; i++) {
-			deck.add(new Card(Card.Type.CHARACTER, Card.CHARACTERS[i]));
+			if (Card.CHARACTERS[i] != c) {
+				deck.add(new Card(Card.Type.CHARACTER, Card.CHARACTERS[i]));
+			}
 		}
 		for (int i = 0; i < Card.WEAPONS.length; i++) {
-			deck.add(new Card(Card.Type.WEAPON, Card.WEAPONS[i]));
+			if (Card.WEAPONS[i] != w) {
+				deck.add(new Card(Card.Type.WEAPON, Card.WEAPONS[i]));
+			}
 		}
 		for (int i = 0; i < Card.ROOMS.length; i++) {
-			deck.add(new Card(Card.Type.ROOM, Card.ROOMS[i]));
+			if (Card.ROOMS[i] != r) {
+				deck.add(new Card(Card.Type.ROOM, Card.ROOMS[i]));
+			}
 		}
 
 		Collections.shuffle(deck,R);
@@ -553,23 +621,23 @@ public class Game {
 					"homicide",
 					"murder"
 					};
-		return m[(int)Math.random()*m.length];
+		return m[(int)(R.nextInt(m.length-1)+1)];
 	}
 
 	/** Returns a random message, to be printed instead of a
 	 * 'dead' player taking their turn. */
 	private String randomDeathMessage() {
 		String[] m = { "files some paperwork.",
-					"makes a delicious grilled cheese sandwich.",
-					"pretends to be working.",
-					"is looking bored.",
+					"is looking lost.",
+					"is returning their Detective of the Month plaque.",
+					"is wondering what went wrong.",
 					"is making excuses to the police chief.",
 					"is trying to regain some respect from the detectives.",
 					"seems superfluous, really.",
 					"is wishing the rest of you would hurry up and solve this murder.",
 					"regrets no longer being allowed to say 'Elementary!'."
 					};
-		return m[(int)(Math.random()*m.length)];
+		return m[(int)(R.nextInt(m.length-1)+1)];
 	}
 
 	/* (non-Javadoc)
@@ -614,5 +682,33 @@ public class Game {
 			return false;
 		}
 		return true;
+	}
+
+
+	/** It's useful to know which index belongs to which value.
+	 * For a given Card.Type and value, returns the index of
+	 * that value in the relevant array.
+	 */
+	private int indexOf(Card.Type t, String name) {
+		String[] arr = null;
+		switch (t) {
+			case CHARACTER:
+				arr = Card.CHARACTERS;
+				break;
+			case WEAPON:
+				arr = Card.WEAPONS;
+				break;
+			case ROOM:
+				arr = Card.ROOMS;
+				break;
+			default:
+				throw new IllegalArgumentException();
+		}
+		for (int i = 0; i < arr.length; i++){
+			if (arr[i].equalsIgnoreCase(name)) {
+				return i;
+			}
+		}
+		throw new IllegalArgumentException();
 	}
 }

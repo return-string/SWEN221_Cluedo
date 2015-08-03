@@ -84,12 +84,9 @@ public class Player implements Comparable<Player> {
 				throw new IllegalArgumentException();
 			}
 			if (hand.add(c)) {
-				System.out.println("adding "+ c.toString() +" to "+ getName() +"'s hand");
 				vindicate(c);
 				return true;
 			}
-			System.out.println("failed to add "+ c.toString() +" to "+ getName() +"'s hand");
-
 		}
 		return false;
 	}
