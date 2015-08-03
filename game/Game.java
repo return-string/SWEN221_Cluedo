@@ -65,7 +65,7 @@ public class Game {
 		}
 	}
 
-	private void selectCharacters(List<String> characterNames) {
+	public void addCharactersByName(List<String> characterNames) {
 		if (players!=null || players.size() != 0) {return;}
 		players = new ArrayList<Player>();
 		for (int i = 0; i < characterNames.size(); i++) {

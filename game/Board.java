@@ -128,7 +128,7 @@ public class Board {
 	 * not a room square, switches its occupied state.
 	 * @param c Coordinate of square to switch
 	 */
-	public void toggleOccuptied(Coordinate c){
+	public void toggleOccupied(Coordinate c){
 		BoardSquare square = squares[c.getX()][c.getY()];
 		if(!square.isRoom()){
 			square.setOccupied(!square.isOccupied());

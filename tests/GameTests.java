@@ -63,20 +63,48 @@ public class GameTests {
 	@Test
 	public void test5_testOccupied1(){
 		Board b = new Board();
-		Coordinate occupied = new Coordinate(4, 7);
-		b.toggleOccuptied(occupied);
-		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(4, 8), 1);
-		assertFalse(moves.containsKey(occupied));
+		Coordinate occupied = new Coordinate(0, 7);
+		Map<Coordinate, String> moves1 = b.possibleMoves(new Coordinate(4, 8), 1);
+		assertTrue(moves1.containsKey(occupied));
+		b.toggleOccupied(occupied);
+		Map<Coordinate, String> moves2 = b.possibleMoves(new Coordinate(4, 8), 1);
+		assertFalse(moves2.containsKey(occupied));
 	}
 
 	@Test
 	public void test6_testOccupied2(){
 		Board b = new Board();
 		Coordinate occupied = new Coordinate(4, 7);
-		b.toggleOccuptied(occupied);
-		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(4, 8), 2);
-		assertFalse(moves.containsValue("Enter the kitchen"));
+		Map<Coordinate, String> moves1 = b.possibleMoves(new Coordinate(4, 8), 1);
+		assertTrue(moves1.containsKey(occupied));
+		b.toggleOccupied(occupied);
+		Map<Coordinate, String> moves2 = b.possibleMoves(new Coordinate(4, 8), 2);
+		assertFalse(moves2.containsValue("Enter the kitchen"));
 	}
+
+
+	@Test
+	public void test5_testOccupied3(){
+		Board b = new Board();
+		Coordinate occupied = new Coordinate(9, 0);
+		Map<Coordinate, String> moves1 = b.possibleMoves(new Coordinate(9, 0), 1);
+		assertTrue(moves1.containsKey(occupied));
+		b.toggleOccupied(occupied);
+		Map<Coordinate, String> moves2 = b.possibleMoves(new Coordinate(9, 0), 1);
+		assertFalse(moves2.containsKey(occupied));
+	}
+
+	@Test
+	public void test6_testOccupied4(){
+		Board b = new Board();
+		Coordinate occupied = new Coordinate(9, 0);
+		Map<Coordinate, String> moves1 = b.possibleMoves(new Coordinate(9, 0), 1);
+		assertTrue(moves1.containsKey(occupied));
+		b.toggleOccupied(occupied);
+		Map<Coordinate, String> moves2 = b.possibleMoves(new Coordinate(9, 0), 2);
+		assertFalse(moves2.containsValue("Enter the kitchen"));
+	}
+
 
 	// ========= helper methods! =============
 
