@@ -26,23 +26,23 @@ public class GameTests {
 	}
 
 // Not really tests, more just debugging methods
-//	@Test
-//	public void test2_getMoves(){
-//		Board b = new Board();
-//		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(5,8), 6);
-//		for(Coordinate coord : moves.keySet()){
-//			System.out.printf("%s : %s\n", coord.toString(), moves.get(coord));
-//		}
-//	}
-//
-//	@Test
-//	public void test3_getMoves2(){
-//		Board b = new Board();
-//		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(9,0), 4);
-//		for(Coordinate coord : moves.keySet()){
-//			System.out.printf("%s : %s\n", coord.toString(), moves.get(coord));
-//		}
-//	}
+	@Test
+	public void test2_getMoves(){
+		Board b = new Board();
+		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(5,8), 6);
+		for(Coordinate coord : moves.keySet()){
+			System.out.printf("%s : %s\n", coord.toString(), moves.get(coord));
+		}
+	}
+
+	@Test
+	public void test3_getMoves2(){
+		Board b = new Board();
+		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(9,0), 4);
+		for(Coordinate coord : moves.keySet()){
+			System.out.printf("%s : %s\n", coord.toString(), moves.get(coord));
+		}
+	}
 
 	@Test
 	public void test4_getMoves3(){
@@ -63,7 +63,7 @@ public class GameTests {
 	@Test
 	public void test5_testOccupied1(){
 		Board b = new Board();
-		Coordinate occupied = new Coordinate(0, 7);
+		Coordinate occupied = new Coordinate(4, 7);
 		Map<Coordinate, String> moves1 = b.possibleMoves(new Coordinate(4, 8), 1);
 		assertTrue(moves1.containsKey(occupied));
 		b.toggleOccupied(occupied);
@@ -82,30 +82,24 @@ public class GameTests {
 		assertFalse(moves2.containsValue("Enter the kitchen"));
 	}
 
-	// added tests below this line
 
 	@Test
-	public void test7_testOccupied3(){
+	public void test5_testOccupied3(){
 		Board b = new Board();
-		Coordinate occupied = new Coordinate(9, 0);
-		Map<Coordinate, String> moves1 = b.possibleMoves(new Coordinate(9, 0), 1);
-		assertTrue(moves1.containsKey(occupied));
+		Coordinate occupied = new Coordinate(9, 1);
 		b.toggleOccupied(occupied);
-		Map<Coordinate, String> moves2 = b.possibleMoves(new Coordinate(9, 0), 1);
-		assertFalse(moves2.containsKey(occupied));
+		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(9, 0), 1);
+		assertFalse(moves.containsKey(occupied));
 	}
 
 	@Test
-	public void test8_testOccupied4(){
+	public void test6_testOccupied4(){
 		Board b = new Board();
-		Coordinate occupied = new Coordinate(9, 0);
-		Map<Coordinate, String> moves1 = b.possibleMoves(new Coordinate(9, 0), 1);
-		assertTrue(moves1.containsKey(occupied));
+		Coordinate occupied = new Coordinate(9, 1);
 		b.toggleOccupied(occupied);
-		Map<Coordinate, String> moves2 = b.possibleMoves(new Coordinate(9, 0), 2);
-		assertFalse(moves2.containsValue("Enter the kitchen"));
+		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(9, 0), 2);
+		assertFalse(moves.containsValue("Enter the kitchen"));
 	}
-
 
 	// ========= helper methods! =============
 
