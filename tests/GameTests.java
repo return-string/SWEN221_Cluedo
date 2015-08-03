@@ -82,9 +82,10 @@ public class GameTests {
 		assertFalse(moves2.containsValue("Enter the kitchen"));
 	}
 
+	// added tests below this line
 
 	@Test
-	public void test5_testOccupied3(){
+	public void test7_testOccupied3(){
 		Board b = new Board();
 		Coordinate occupied = new Coordinate(9, 0);
 		Map<Coordinate, String> moves1 = b.possibleMoves(new Coordinate(9, 0), 1);
@@ -95,7 +96,7 @@ public class GameTests {
 	}
 
 	@Test
-	public void test6_testOccupied4(){
+	public void test8_testOccupied4(){
 		Board b = new Board();
 		Coordinate occupied = new Coordinate(9, 0);
 		Map<Coordinate, String> moves1 = b.possibleMoves(new Coordinate(9, 0), 1);
