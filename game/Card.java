@@ -161,4 +161,54 @@ public class Card implements Comparable<Card> {
 		}
 		throw new IllegalArgumentException();
 	}
+
+	/** It's useful to know which index belongs to which value.
+	 * For a given Card.Type and value, returns the index of
+	 * that value in the relevant array.
+	 */
+	static int indexOf(Type t, String name) {
+		String[] arr = null;
+		switch (t) {
+			case CHARACTER:
+				arr = CHARACTERS;
+				break;
+			case WEAPON:
+				arr = WEAPONS;
+				break;
+			case ROOM:
+				arr = ROOMS;
+				break;
+			default:
+				throw new IllegalArgumentException();
+		}
+		for (int i = 0; i < arr.length; i++){
+			if (arr[i].equalsIgnoreCase(name)) {
+				return i;
+			}
+		}
+		throw new IllegalArgumentException();
+	}
+
+	/** Returns the unique start coordinate for each character, as
+	 * defined in Card.
+	 *
+	 */
+	public static Coordinate getStart(String c) {
+		switch(c) {
+			case SCARLET:
+				return new Coordinate(7,24);
+			case MUSTARD:
+				return new Coordinate(0,17);
+			case WHITE:
+				return new Coordinate(9,0);
+			case GREEN:
+				return new Coordinate(14,0);
+			case PEACOCK:
+				return new Coordinate(23,6);
+			case PLUM:
+				return new Coordinate(23,19);
+			default:
+				throw new IllegalArgumentException();
+		}
+	}
 }

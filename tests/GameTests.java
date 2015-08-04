@@ -41,11 +41,16 @@ public class GameTests {
 				e.printStackTrace();
 			}
 		}
-		assertEquals("The player lists should be the same for these games. ("+g1.getPlayers().toString()+" =/= "+ g2.getPlayers().toString() +")",
-				g1.getPlayers(),g2.getPlayers());
+		assertTrue("The player lists should be the same for these games.",
+				g1.getPlayers().equals(g2.getPlayers()));
 		Object[] g1Arr = g1.getPlayers().toArray();
 		Object[] g2Arr = g2.getPlayers().toArray();
 		assertTrue("The first player should be the same in these games. ("+ g1Arr[0] +" =/= "+ g2Arr[0] +")",
 				g1Arr[0].equals(g2Arr[0]));
+	}
+	
+	@Test
+	public void test3_winning() {
+		
 	}
 }

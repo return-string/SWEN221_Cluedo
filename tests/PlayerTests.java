@@ -1,6 +1,7 @@
 package tests;
 
 import static org.junit.Assert.*;
+import game.ActingOutOfTurnException;
 import game.Card;
 import game.Coordinate;
 import game.Player;
@@ -44,13 +45,34 @@ public class PlayerTests {
 		Coordinate c = new Coordinate(9,0);
 		Player white = new Player(Card.WHITE);
 		assertEquals(c,white.position());
-		white.move(new Coordinate (16,23)); // player doesn't check its moves
+		try {
+			white.move(new Coordinate (16,23));
+		} catch (ActingOutOfTurnException e) {
+			fail();
+		} // player doesn't check its moves
 		assertNotEquals(c,white.position());
+	}
+	
+	/** Tests invalid player moves */
+	@Test
+	public void test3_playerMovement2() {
+		Player white = new Player(Card.WHITE);
+		try {
+			white.move(new Coordinate(9,0));
+		} catch (ActingOutOfTurnException e1) {
+			fail();
+		}
+		try {
+			white.move(new Coordinate(9,1));
+		} catch (ActingOutOfTurnException e) {
+			return;
+		}
+		fail();
 	}
 	
 	/** Tests that adding cards to hand also marks them innocent */
 	@Test
-	public void test3_vindication1() {
+	public void test4_vindication1() {
 		Player white = new Player(Card.WHITE);
 		List<Card> hand = white.getHand();
 		for(Card c : hand) {

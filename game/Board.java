@@ -222,4 +222,13 @@ public class Board {
 	public int height() {
 		return squares[0].length;
 	}
+
+	/** Capitalises the first word in the given string. Assumes the string
+	 * is valid and the first character is alphabetic. 
+	 * @param string
+	 * @return
+	 */
+	String capitaliseString(String string) {
+		return string.substring(0, 1).toUpperCase() + string.substring(1, string.length());
+	}
 }

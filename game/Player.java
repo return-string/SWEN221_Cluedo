@@ -23,6 +23,7 @@ public class Player implements Comparable<Player> {
 	private HashSet<Card> guiltMap;
 	private Coordinate pos;
 	private boolean wasForced = false;
+	private boolean hasMoved = false;
 
 	public Player(String characterName, Coordinate startPos) {
 		this.NAME = characterName;
@@ -34,7 +35,7 @@ public class Player implements Comparable<Player> {
 	public Player(String characterName) {
 		this.NAME = characterName;
 		this.hand = new ArrayList<Card>();
-		this.pos = Game.getStart(characterName);
+		this.pos = Card.getStart(characterName);
 		this.guiltMap = new HashSet<Card>();
 	}
 
@@ -61,16 +62,24 @@ public class Player implements Comparable<Player> {
 		return hand;
 	}
 
-	/** Updates the player's coordinates. */
-	public void move(Coordinate pos) {
+	/** Updates the player's coordinates. 
+	 * @throws ActingOutOfTurnException */
+	public void move(Coordinate pos) throws ActingOutOfTurnException {
+		if (hasMoved) { throw new ActingOutOfTurnException(); }
 		this.pos = pos;
 		wasForced = false;
+		hasMoved = true;
 	}
 
 	/** When a player is moved out of turn, call this method. */
 	public void forciblyMove(Coordinate pos) {
 		this.pos = pos;
 		wasForced = true;
+	}
+	
+	/** When a player's turn is ended, call this method to allow them to move again. */
+	public void canMove() {
+		hasMoved = false;
 	}
 
 	/** When play begins, cards should be dealt to Players using this method.
@@ -138,6 +147,10 @@ public class Player implements Comparable<Player> {
 
 	public boolean wasForced() {
 		return wasForced;
+	}
+	
+	public boolean hasMoved() {
+		return hasMoved;
 	}
 
 	public String getName() {
