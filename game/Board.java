@@ -11,7 +11,7 @@ import java.util.Map;
 
 /**
  * 
- * @author Vicki Mckay & Badi James
+ * @author Badi James
  *
  */
 public class Board {
