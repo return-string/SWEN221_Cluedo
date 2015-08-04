@@ -127,11 +127,11 @@ public class Board {
 	 * 
 	 * @param description Current description of steps to rooms from a square 
 	 * @param add Description of steps to a particular room to add
-	 * @return
+	 * @return Updated description
 	 */
 	private String addToMoveDescription(String description, String add) {
 		// TODO Auto-generated method stub
-		System.out.printf("Adding \"%s\" to \"%s\"\n", add, description);
+		//System.out.printf("Adding \"%s\" to \"%s\"\n", add, description);
 		List<String> dP = Arrays.asList(description.split("\n\t"));
 		ArrayList<String> descriptPieces = new ArrayList<String>(dP);
 		int addSteps = Integer.parseInt(add.split(" ")[0]);
