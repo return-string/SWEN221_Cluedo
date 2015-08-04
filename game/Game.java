@@ -17,9 +17,9 @@ import javax.management.InvalidAttributeValueException;
  * It relies on the TextUI class to print messages to the console
  * and return user input.
  *
- * If this were a better design: 	
+ * If this were a better design:
  * 	- most of Game's print methods would be in printUI instead.
- *  - whatever printed the messages would read these from a file instead. 
+ *  - whatever printed the messages would read these from a file instead.
  *
  * @author mckayvick
  *
@@ -35,7 +35,7 @@ public class Game {
 	List<Player> players;
 	Hypothesis guilty;
 	int activePlayer = -1; /* used to check when play has begun also, instead
-										of creating and setting an additional field. 
+										of creating and setting an additional field.
 										if activePlayer < 0, game has not really started
 										and we can keep adding players. */
 
@@ -46,8 +46,8 @@ public class Game {
 	/** This is the normal method that should be called to start a game.
 	 * It asks the user how many players will be in this game, then
 	 * creates the player list, sorts it, and tries to play.
-	 * @throws GameStateModificationException 
-	 * @throws ActingOutOfTurnException 
+	 * @throws GameStateModificationException
+	 * @throws ActingOutOfTurnException
 	 */
 	public void startGame() throws GameStateModificationException, ActingOutOfTurnException {
 		textUI.printWelcomeAndRules();
@@ -66,7 +66,7 @@ public class Game {
 	/** This is how we play a game of Cluedo!
 	 * @throws InvalidAttributeValueException
 	 * @param game TODO
-	 * @throws ActingOutOfTurnException 
+	 * @throws ActingOutOfTurnException
 	 */
 	public void playGame() throws InvalidAttributeValueException, ActingOutOfTurnException {
 		if (players == null) {
@@ -77,7 +77,7 @@ public class Game {
 		}
 		activePlayer = 0;
 		int roundCounter = 1;
-		
+
 		/** the game plays at least one turn. */
 		do {
 			textUI.printText("\t\tRound "+roundCounter+" begins.");
@@ -89,11 +89,12 @@ public class Game {
 				textUI.askIntBetween("It's "+ p.getName() +"'s turn now! "+p.getName()+", are you there? (Enter 1 to confirm.)\n",1,1);
 				/* once the player has confirmed */
 				if (p.isPlaying()) {
-					textUI.printText(p.getName() +"'s turn begins in the "+ 
+					textUI.printText(p.getName() +"'s turn begins in the "+
 							relativeBoardPosString(p.position()) + " "+ BOARD.getRoom(p.position()));
-					
+
 					while (managePlayerOptions(p));
-					
+					p.canMove();
+
 					//textUI.showPlayerOptions(p);
 				} else { // if they're not playing, just print something interesting.
 					textUI.printText(p.getName() + " " + textUI.randomDeathMessage());
@@ -106,7 +107,7 @@ public class Game {
 			}
 			roundCounter++;
 		} while (isPlaying());
-		
+
 		/* once the game is over, work out who won and print the winning message.*/
 		Player winner = null;
 		for (Player p:players) {
@@ -125,7 +126,7 @@ public class Game {
 	 * they would like to play.
 	 *
 	 * @param numPlayers
-	 * @throws GameStateModificationException If this is called after play begins. 
+	 * @throws GameStateModificationException If this is called after play begins.
 	 */
 	private void selectCharacters(int numPlayers) throws GameStateModificationException {
 		if (players.size() != 0 && activePlayer >= 0) { throw new GameStateModificationException(); }
@@ -152,7 +153,7 @@ public class Game {
 		}
 	}
 
-	/** Add a player to the game. 
+	/** Add a player to the game.
 	 * @param select
 	 * @throws GameStateModificationException If this method is called after play begins.
 	 */
@@ -193,7 +194,7 @@ public class Game {
 		List<String> moveDescs = new ArrayList<String>();
 		List<Coordinate> moveCoords = new ArrayList<Coordinate>();
 		for (Entry<Coordinate,String> s : moves.entrySet()) {
-			moveDescs.add("Move "+ textUI.relativeMovementString(p.position(),s.getKey()) 
+			moveDescs.add("Move "+ textUI.relativeMovementString(p.position(),s.getKey())
 					+".\n\t"+ s.getValue());
 			moveCoords.add(s.getKey());
 		}
@@ -250,16 +251,16 @@ public class Game {
 	 * Otherwise, the first option is to make an accusation.
 	 *
 	 * @param p Player whose options are to be displayed.
-	 * @return True if the turn continues after the option has been selected; otherwise false. 
-	 * @throws ActingOutOfTurnException 
+	 * @return True if the turn continues after the option has been selected; otherwise false.
+	 * @throws ActingOutOfTurnException
 	 */
 	public boolean managePlayerOptions(Player p) throws ActingOutOfTurnException {
 		List<String> options = textUI.printPlayerOptions(BOARD, p);
 		String option = options.get( textUI.askIntBetween(PROMPT,1,options.size()) - 1 ); // subtract one because we've asked for a number between 1 and length, and we want 0-to-length-minus-1
 		/* do the selected option! */
-		
+
 		boolean turnContinues = true; // true if the turn continues after choosing this option
-		
+
 		// if they want to move...
 		if (option.equals(textUI.OPT_MOVE)) {
 			textUI.printText("ROLL TO MOVE");
@@ -283,7 +284,7 @@ public class Game {
 			}
 			turnContinues = false;
 			textUI.askIntBetween("(Enter 1 to continue.) ",1,1);
-		} 
+		}
 		// if they want to view their hand...
 		else if (option.equals(textUI.OPT_HAND)) {
 			textUI.printText("YOUR HAND");
@@ -576,14 +577,14 @@ public class Game {
 		Collections.shuffle(deck,RNG);
 		return deck;
 	}
-	
+
 	// ---------------------------------------------------
 	// HELPER METHODS
 	// ---------------------------------------------------
 
 
-	/** Debugging method used to add a list of character names. 
-	 * @throws GameStateModificationException If this method is called after play begins.*/ 
+	/** Debugging method used to add a list of character names.
+	 * @throws GameStateModificationException If this method is called after play begins.*/
 	public void addCharactersByName(List<String> characterNames) throws GameStateModificationException {
 		if (players.size() != 0 && activePlayer >= 0) { throw new GameStateModificationException(); }
 		players = new ArrayList<Player>();
@@ -626,8 +627,8 @@ public class Game {
 	}
 
 	/** Given a coordinate, return a string describing its relative
-	 * position on the board. 
-	 * 
+	 * position on the board.
+	 *
 	 * @param c
 	 * @return
 	 */
@@ -635,9 +636,9 @@ public class Game {
 		String s = "Moving";
 		int pX = c.getX();
 		int pY = c.getY();
-		
+
 		int division = (int)(BOARD.width() / 3 + 0.5);
-		
+
 		/** a complex series of if statements to determine the player's location. */
 		if (pY < division) {
 			s = "north";
@@ -646,7 +647,7 @@ public class Game {
 		} else {
 			s = "south";
 		}
-		
+
 		if (pX < division) {
 			s += "-west";
 		} else if (pX < division*2) {
@@ -705,7 +706,7 @@ public class Game {
 
 
 	/** Given a player, prints the things they know are innocent.
-	 * 
+	 *
 	 * @param p
 	 * @param breakAfter
 	 */
