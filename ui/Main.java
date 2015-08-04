@@ -3,7 +3,9 @@
  */
 package ui;
 
+import game.ActingOutOfTurnException;
 import game.Game;
+import game.GameStateModificationException;
 
 /**
  * @author mckayvick
@@ -16,6 +18,12 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		Game g = new Game();
-		g.startGame();
+		try {
+			g.startGame();
+		} catch (ActingOutOfTurnException e) {
+			e.printStackTrace();
+		} catch (GameStateModificationException m) {
+			m.printStackTrace();
+		}
 	}
 }

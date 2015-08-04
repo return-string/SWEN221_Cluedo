@@ -7,6 +7,11 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 
+/**
+ * 
+ * @author Vicki
+ *
+ */
 public class Board {
 
 	public static final String HALLWAYSTRING = "hallway";
@@ -174,4 +179,11 @@ public class Board {
 	}
 
 
+	public int width() {
+		return squares.length;
+	}
+	
+	public int height() {
+		return squares[0].length;
+	}
 }

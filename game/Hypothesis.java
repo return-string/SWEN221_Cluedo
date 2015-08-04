@@ -65,7 +65,7 @@ public class Hypothesis implements Set<Card>, Comparable<Hypothesis> {
 	 */
 	@Override
 	public String toString() {
-		return "Hypothesis [set=" + Arrays.toString(set) + "]";
+		return getCharacter() +" with the "+ getWeapon() +" in the "+ getRoom();
 	}
 
 	/* (non-Javadoc)

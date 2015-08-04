@@ -81,7 +81,7 @@ public class Player implements Comparable<Player> {
 	public boolean giveCard(Card c) {
 		if (c != null) {
 			if (hand.contains(c)) {
-				throw new IllegalArgumentException();
+				throw new IllegalArgumentException("Player "+ getName() +" hand cannot contain duplicate cards!");
 			}
 			if (hand.add(c)) {
 				vindicate(c);

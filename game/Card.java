@@ -46,13 +46,35 @@ public class Card implements Comparable<Card> {
 	private Type type;
 
 	/**Constructor for class Card
-	 * Assumes type matches the value
+	 * 
 	 *@param type Type of card
 	 *@param value Value of card
 	 */
 	public Card(Type type, String value){
 		this.type = type;
-		this.value = value;
+		if (type.equals(Card.Type.CHARACTER)) {
+			for (String s : Card.CHARACTERS) {
+				if (s.equals(value)) {
+					this.value = value;
+					return;
+				}
+			}
+		} else if (type.equals(Card.Type.WEAPON)) {
+			for (String s : Card.WEAPONS) {
+				if (s.equals(value)) {
+					this.value = value;
+					return;
+				}
+			}
+		} else if (type.equals(Card.Type.ROOM)) {
+			for (String s : Card.ROOMS) {
+				if (s.equals(value)) {
+					this.value = value;
+					return;
+				}
+			}
+		}
+		throw new IllegalArgumentException(type+" uhoh" +value);
 	}
 
 	public Type getType(){

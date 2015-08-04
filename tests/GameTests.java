@@ -1,116 +1,51 @@
-/**
- *
- */
 package tests;
 import static org.junit.Assert.*;
-import game.Board;
-import game.Card;
-import game.Coordinate;
-import game.Game;
-import game.Player;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.junit.Test;
-/**
- * @author Vicki
- *
- */
+
+import game.Card;
+import game.Game;
+import game.GameStateModificationException;
+import game.Player;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ReflectPermission;
+import java.security.Permission;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
 public class GameTests {
-	
-	public void test1_createBoard() {
-		Board b = new Board();
-	}
 
-// Not really tests, more just debugging methods
-	public void test2_getMoves(){
-		Board b = new Board();
-		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(5,8), 6);
-		printMoves(moves);
-	}
-
-	public void test3_getMoves2(){
-		Board b = new Board();
-		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(9,0), 4);
-		printMoves(moves);
-	}
-	
-	//=============== Actual Tests ========================
-	
 	@Test
-	public void test4_getMoves3(){
-		Board b = new Board();
-		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(4, 6), 1);
-		Map<Coordinate, String> expected = new HashMap<Coordinate, String>();
-		printMoves(moves);
-		assertEquals("Enter the study", moves.get(new Coordinate(4,5)));
-		String distanceTo = moves.get(new Coordinate(4,7));
-		assertTrue(distanceTo.contains("6 steps away from ball room"));
-		assertTrue(distanceTo.contains("10 steps away from dining room"));
-		assertTrue(distanceTo.contains("22 steps away from library"));
-		assertTrue(distanceTo.contains("19 steps away from conservatory"));
-		assertTrue(distanceTo.contains("18 steps away from lounge"));
-		assertTrue(distanceTo.contains("18 steps away from hall"));
-		assertTrue(distanceTo.contains("16 steps away from billiard room"));
+	public void test1_newGamePlayerEquality() {
+		System.out.println("\tTEST EMPTY PLAYER SET EQUALITY");
+		Game g1 = new Game();
+		Game g2 = new Game();
+		assertEquals("",g1.getPlayers(),g2.getPlayers());
 	}
 
 	@Test
-	public void test5_testOccupied1(){
-		Board b = new Board();
-		Coordinate occupied = new Coordinate(4, 7);
-		Map<Coordinate, String> moves1 = b.possibleMoves(new Coordinate(4, 8), 1);
-		assertTrue(moves1.containsKey(occupied));
-		b.toggleOccupied(occupied);
-		Map<Coordinate, String> moves2 = b.possibleMoves(new Coordinate(4, 8), 1);
-		assertFalse(moves2.containsKey(occupied));
-	}
-
-	@Test
-	public void test6_testOccupied2(){
-		Board b = new Board();
-		Coordinate occupied = new Coordinate(4, 7);
-		Map<Coordinate, String> moves1 = b.possibleMoves(new Coordinate(4, 8), 1);
-		assertTrue(moves1.containsKey(occupied));
-		b.toggleOccupied(occupied);
-		Map<Coordinate, String> moves2 = b.possibleMoves(new Coordinate(4, 8), 2);
-		assertFalse(moves2.containsValue("Enter the kitchen"));
-	}
-
-
-	@Test
-	public void test5_testOccupied3(){
-		Board b = new Board();
-		Coordinate occupied = new Coordinate(9, 1);
-		b.toggleOccupied(occupied);
-		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(9, 0), 1);
-		assertFalse(moves.containsKey(occupied));
-	}
-
-	@Test
-	public void test6_testOccupied4(){
-		Board b = new Board();
-		Coordinate occupied = new Coordinate(9, 1);
-		b.toggleOccupied(occupied);
-		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(9, 0), 2);
-		assertFalse(moves.containsValue("Enter the kitchen"));
-	}
-
-	// ========= helper methods! =============
-
-	private List<Card> fillHand(List<Card> list, Card[] cards) {
-		for (int i = 0; i < cards.length; i++) {
-			list.add(cards[i]);
+	public void test2_playerListEquality() {
+		System.out.println("\tTEST HYPOTHESIS/CARD EQUALITY");
+		Game g1 = new Game();
+		Game g2 = new Game();
+		for (int i = 0; i < 3; i++) {
+			try {
+				g2.addPlayer(i);
+				g1.addPlayer(i);
+			} catch (GameStateModificationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		return list;
-	}
-	
-
-	private void printMoves(Map<Coordinate, String> moves) {
-		for(Coordinate coord : moves.keySet()){
-			System.out.printf("%s : %s\n", coord.toString(), moves.get(coord));
-		}
+		assertEquals("The player lists should be the same for these games. ("+g1.getPlayers().toString()+" =/= "+ g2.getPlayers().toString() +")",
+				g1.getPlayers(),g2.getPlayers());
+		Object[] g1Arr = g1.getPlayers().toArray();
+		Object[] g2Arr = g2.getPlayers().toArray();
+		assertTrue("The first player should be the same in these games. ("+ g1Arr[0] +" =/= "+ g2Arr[0] +")",
+				g1Arr[0].equals(g2Arr[0]));
 	}
 }
