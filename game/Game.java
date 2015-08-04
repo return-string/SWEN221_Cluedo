@@ -212,15 +212,17 @@ public class Game {
 		textUI.printText(p.NAME +" rolls a "+roll+".");
 		/** if the player was forced, print some acknowledging message */
 		if (players.get(activePlayer).wasForced()) {
-			textUI.printText("The questioning of "+ p.getName() +" is complete. \n (You are able to move or stay in the "+ BOARD.getRoom(p.position()) +".)");
+			textUI.printText("The questioning of "+ p.getName() +" is complete. \n"
+					+ " (You are able to move or stay in the "
+					+ BOARD.getRoom(p.position()) +".)");
 		}
 		textUI.printText("---------------------------------");
 		/* get the map of options a player has and put them into an array */
 		Map<Coordinate,String> moves = BOARD.possibleMoves(p.position(), roll);
-		if(moves.isEmpty() || moves == null){
-			System.out.printf("ERROR for %s at %s \nPossible move list exists: %b\n"
-					+ "Possible move list is empty: %b\n", p.getName(), p.position().toString(),
-					moves == null, moves.isEmpty());
+		if(moves.isEmpty()){
+			System.out.printf("\nERROR for %s at %s\nPossible move list is empty\n",
+					p.getName(), p.position().toString());
+			return;
 		}
 		List<String> moveDescs = new ArrayList<String>();
 		List<Coordinate> moveCoords = new ArrayList<Coordinate>();
@@ -232,8 +234,10 @@ public class Game {
 		/* if the player was forcibly moved, they may not want to leave this room. */
 		if (players.get(activePlayer).wasForced()) {
 			moveDescs.add("Stay here.");
+			moveCoords.add(p.position());
 		}
 		/* then we can print these options and ask the user to select an option*/
+		textUI.printText("\nEnter number assigned to square you want to move to:\n");
 		textUI.printList(moveDescs);
 
 		int userChoice = textUI.askIntBetween(PROMPT,1,moveDescs.size())-1;

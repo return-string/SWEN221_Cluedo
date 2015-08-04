@@ -1,6 +1,8 @@
 package game;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,7 +11,7 @@ import java.util.Map;
 
 /**
  * 
- * @author Vicki
+ * @author Vicki Mckay & Badi James
  *
  */
 public class Board {
@@ -69,7 +71,7 @@ public class Board {
 		for(String rm : roomsToFind){
 			String descriptionString = "";
 			Coordinate moveCoord = null;
-			//does a breadth first search for squares move can end in
+			//does a breadth first search for squares of room rm
 			LinkedList<PathFringeEntry> pathFringe = new LinkedList<PathFringeEntry>();
 			pathFringe.offer(new PathFringeEntry(startSquare, null, 0));
 			do{
@@ -90,8 +92,8 @@ public class Board {
 						descriptionString = stepsToRoom + " steps away from " + rm;
 						moveCoord = roomEntry.square.getACoordinate();
 						if(moves.containsKey(moveCoord)){
-							descriptionString = moves.get(moveCoord)
-									+ "\n\t" + descriptionString;
+							descriptionString = addToMoveDescription(moves.get(moveCoord),
+									descriptionString);
 						}
 					}
 					moves.put(moveCoord, descriptionString);
@@ -114,6 +116,40 @@ public class Board {
 			} while(!pathFringe.isEmpty());
 		}
 		return moves;
+	}
+	
+	/**
+	 * Used when adding to a description of steps to room from a square to preserve the 
+	 * order of the description.
+	 * 
+	 * Splits up the description to find a place to insert the addition, then rebuilds.
+	 * Keeps the order shortest to longest.
+	 * 
+	 * @param description Current description of steps to rooms from a square 
+	 * @param add Description of steps to a particular room to add
+	 * @return
+	 */
+	private String addToMoveDescription(String description, String add) {
+		// TODO Auto-generated method stub
+		System.out.printf("Adding \"%s\" to \"%s\"\n", add, description);
+		List<String> dP = Arrays.asList(description.split("\n\t"));
+		ArrayList<String> descriptPieces = new ArrayList<String>(dP);
+		int addSteps = Integer.parseInt(add.split(" ")[0]);
+		for(int i = 0; i < descriptPieces.size(); i++){
+			int pieceSteps = Integer.parseInt(descriptPieces.get(i).split(" ")[0]);
+			if(addSteps < pieceSteps){
+				descriptPieces.add(i, add);
+				break;
+			}
+		}
+		if(!descriptPieces.contains(add)){
+			descriptPieces.add(add);
+		}
+		String newDescription = descriptPieces.get(0);
+		for(int i = 1; i < descriptPieces.size(); i++){
+			newDescription += "\n\t" + descriptPieces.get(i);
+		}
+		return newDescription;
 	}
 
 	private void clearVisits() {
