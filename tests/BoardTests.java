@@ -19,18 +19,18 @@ import org.junit.Test;
  */
 public class BoardTests {
 	
-	public void test1_createBoard() {
+	public void test_createBoard() {
 		Board b = new Board();
 	}
 
 	// Not really tests, more just debugging methods
-	public void test2_getMoves(){
+	public void test_getMoves(){
 		Board b = new Board();
 		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(5,8), 6);
 		printMoves(moves);
 	}
 
-	public void test3_getMoves2(){
+	public void test_getMoves2(){
 		Board b = new Board();
 		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(9,0), 4);
 		printMoves(moves);
@@ -38,12 +38,16 @@ public class BoardTests {
 	
 	//=============== Actual Tests ========================
 	
+	/**
+	 * Tests that possible moves contains all the expected values for the 
+	 * coordinate (4, 6), move length 1
+	 */
 	@Test
-	public void test4_getMoves3(){
+	public void test_getMoves3(){
 		Board b = new Board();
 		Map<Coordinate, String> moves = b.possibleMoves(new Coordinate(4, 6), 1);
 		Map<Coordinate, String> expected = new HashMap<Coordinate, String>();
-		printMoves(moves);
+		//printMoves(moves);
 		assertEquals("Enter the study", moves.get(new Coordinate(4,5)));
 		String distanceTo = moves.get(new Coordinate(4,7));
 		assertTrue(distanceTo.contains("6 steps away from ball room"));
@@ -54,10 +58,39 @@ public class BoardTests {
 		assertTrue(distanceTo.contains("18 steps away from hall"));
 		assertTrue(distanceTo.contains("16 steps away from billiard room"));
 	}
+	
+	/**
+	 * Tests that possible moves contains all the expected values for the 
+	 * coordinate (7, 21), move length 5
+	 */
+	@Test
+	public void test_getMoves4(){
+		Board b = new Board();
+		Map<Coordinate, String> moves1 = b.possibleMoves(new Coordinate(7, 24), 3);
+		Coordinate endTurn1 = new Coordinate(7, 21);
+		assertTrue(moves1.containsKey(endTurn1));
+		Map<Coordinate, String> moves2 = b.possibleMoves(endTurn1, 5);
+		Map<Coordinate, String> expected = new HashMap<Coordinate, String>();
+		//printMoves(moves2);
+		assertEquals("Enter the lounge", moves2.get(new Coordinate(6,19)));
+	}
+	
+	/**
+	 * Tests that possible moves contains all the expected values for the 
+	 * coordinate (7, 2), move length 1
+	 */
+	@Test
+	public void test_getMoves5(){
+		Board b = new Board();
+		Map<Coordinate, String> moves1 = b.possibleMoves(new Coordinate(7, 2), 1);
+		printMoves(moves1);
+		assertNotNull(moves1);
+		assertFalse(moves1.isEmpty());
+	}
 
 	/** Tests if the possibleMoves map includes an occupied square.	 */
 	@Test
-	public void test5_testOccupied1(){
+	public void test_testOccupied1(){
 		Board b = new Board();
 		Coordinate occupied = new Coordinate(4, 7);
 		Map<Coordinate, String> moves1 = b.possibleMoves(new Coordinate(4, 8), 1);
@@ -70,7 +103,7 @@ public class BoardTests {
 	/** Tests if the possibleMoves map reflects the constraint of not moving through
 	 * a through an occupied square. */
 	@Test
-	public void test6_testOccupied2(){
+	public void test_testOccupied2(){
 		Board b = new Board();
 		Coordinate occupied = new Coordinate(4, 7);
 		Map<Coordinate, String> moves1 = b.possibleMoves(new Coordinate(4, 8), 1);
@@ -82,7 +115,7 @@ public class BoardTests {
 
 
 	@Test
-	public void test5_testOccupied3(){
+	public void test_testOccupied3(){
 		Board b = new Board();
 		Coordinate occupied = new Coordinate(9, 1);
 		b.toggleOccupied(occupied);
@@ -91,7 +124,7 @@ public class BoardTests {
 	}
 
 	@Test
-	public void test6_testOccupied4(){
+	public void test_testOccupied4(){
 		Board b = new Board();
 		Coordinate occupied = new Coordinate(9, 1);
 		b.toggleOccupied(occupied);

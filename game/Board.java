@@ -67,7 +67,6 @@ public class Board {
 		HashSet<String> roomsToFind = new HashSet<String>(Arrays.asList(Card.ROOMS));
 		roomsToFind.remove(startSquare.getRoom());
 		for(String rm : roomsToFind){
-			clearVisits();
 			String descriptionString = "";
 			Coordinate moveCoord = null;
 			//does a breadth first search for squares move can end in
@@ -96,6 +95,7 @@ public class Board {
 						}
 					}
 					moves.put(moveCoord, descriptionString);
+					clearVisits();
 					break;
 				} else {
 					/*If the current square is the start square or isn't a room square,

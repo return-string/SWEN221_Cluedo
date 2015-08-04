@@ -217,10 +217,17 @@ public class Game {
 		textUI.printText("---------------------------------");
 		/* get the map of options a player has and put them into an array */
 		Map<Coordinate,String> moves = BOARD.possibleMoves(p.position(), roll);
+		if(moves.isEmpty() || moves == null){
+			System.out.printf("ERROR for %s at %s \nPossible move list exists: %b\n"
+					+ "Possible move list is empty: %b\n", p.getName(), p.position().toString(),
+					moves == null, moves.isEmpty());
+		}
 		List<String> moveDescs = new ArrayList<String>();
+		List<Coordinate> moveCoords = new ArrayList<Coordinate>();
 		for (Entry<Coordinate,String> s : moves.entrySet()) {
 			moveDescs.add("Move "+ relativeMovementString(p.position(),s.getKey()) 
 					+".\n\t"+ s.getValue());
+			moveCoords.add(s.getKey());
 		}
 		/* if the player was forcibly moved, they may not want to leave this room. */
 		if (players.get(activePlayer).wasForced()) {
@@ -230,13 +237,10 @@ public class Game {
 		textUI.printList(moveDescs);
 
 		int userChoice = textUI.askIntBetween(PROMPT,1,moveDescs.size())-1;
-		for (Entry<Coordinate,String> s : moves.entrySet()) {
-			/* when the user-selected move is found, move the player */
-			if (s.getValue().equalsIgnoreCase(moveDescs.get(userChoice))) {
-				toggleOccupied(p.position(),s.getKey());
-				p.move(s.getKey());
-			}
-		}
+		//gets the coordinate that matched the selection then updates player and board accordingly
+		Coordinate newCoord = moveCoords.get(userChoice);
+		toggleOccupied(p.position(),newCoord);
+		p.move(newCoord);
 	}
 
 	/** Given a player and the entry, return a relative statement about the 
@@ -260,17 +264,17 @@ public class Game {
 		} else if (Math.max(pY, cY) == cY) { // when the destination has the largest Y
 			s = "south-";
 		} else { // when the destination has the smallest Y
-			s = "south-";
+			s = "north-";
 		}
 		
 		if (pX == cX) { 
 			/* if there's no change in X, we're going straight up or down,
 			 * so replace whatever we've just done, given that we know the player is going 
 			 * north or south. */		
-			if (s.charAt(0) == 'N') { 
-				s = "due north";
-			} else if (s.charAt(0) == 'S') {
+			if (Math.max(pY, cY) == cY) { 
 				s = "due south";
+			} else {
+				s = "due north";
 			}
 		} else if (Math.max(pX, cX) == cX) {
 			s += "east";
