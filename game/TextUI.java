@@ -33,7 +33,7 @@ public class TextUI {
 	public static final String HELP_WINNING = "How do you win?";
 	public static final String HELP_BODY = "Who is Dr Body?";
 	public static final String HELP_EXIT = "Exit help.";
-	
+
 	private static final String[] PLAYER_OPTIONS = {
 		OPT_MOVE,
 		OPT_SUGGEST,
@@ -136,6 +136,15 @@ public class TextUI {
 		System.out.print(DIVIDE);
 	}
 
+	/**
+	 * Prints the given question and then scans for an integer with a value between the
+	 * given integers (inclusive). Repeats until user has entered a valid integer to System.in
+	 *
+	 * @param question String to print before scanning
+	 * @param min Minimum bound of requested integer
+	 * @param max Maximum bound of requested integer
+	 * @return User inputed integer
+	 */
 	public int askIntBetween(String question, int min, int max){
 		System.out.println();
 		System.out.print(question + PROMPT + NEWLINE);
@@ -148,6 +157,11 @@ public class TextUI {
 		return answer;
 	}
 
+	/**
+	 * Scans System.in for an integer. If scan.next() can not be parsed to an integer, prints a
+	 * message then scans again, repeating until a valid integer input has been enter
+	 * @return Inputed integer
+	 */
 	private int receiveInteger(){
 		int answer = Integer.MIN_VALUE;
 		String input = scan.next();
@@ -174,7 +188,7 @@ public class TextUI {
 		printDivide();
 		printText("\t\t      Cluedo \n       the classic detective game, digitised.".toUpperCase());
 		printDivide();
-		// then ask if the player wants to read rules or start game 
+		// then ask if the player wants to read rules or start game
 		printArray(new String[] { "Rules","Start game"});
 		int select = askIntBetween(Game.NEWLINE, 1, 2)-1;
 		if (select == 1) { return; } // if the player doesn't want to play, avoid the loop
@@ -182,7 +196,7 @@ public class TextUI {
 			select = printRules(select);
 		}
 	}
-	
+
 	/** Prompts the user to select the number of players and then
 	 * prompts them to select the character names that they will
 	 * be using throughout the game.
@@ -453,7 +467,7 @@ public class TextUI {
 	 * to print the player's detective notebook.
 	 * @param game TODO
 	 * @param p
-	 * @throws ActingOutOfTurnException 
+	 * @throws ActingOutOfTurnException
 	 */
 	void viewNotebook(Game game, Player p) throws ActingOutOfTurnException {
 		if (game.activePlayer < 0 || game.players.indexOf(p) != game.activePlayer) {
