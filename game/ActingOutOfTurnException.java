@@ -9,4 +9,8 @@ public class ActingOutOfTurnException extends Exception {
 	public ActingOutOfTurnException() {
 	}
 
+	public ActingOutOfTurnException(String string) {
+		super(string);
+	}
+
 }

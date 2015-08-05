@@ -17,8 +17,8 @@ import org.junit.Test;
 public class CardTests {
 	private static final long seed = 304494949;
 
-	public static List<CardImpl> sameDeck() {
-		List<CardImpl> deck = Game.createNewDeck(Card.SCARLET,Card.DAGGER,Card.CONSERVATORY);
+	public static List<Card> sameDeck() {
+		List<Card> deck = Game.createNewDeck(Card.SCARLET,Card.DAGGER,Card.CONSERVATORY);
 		Collections.sort(deck);
 		Collections.shuffle(deck, new Random(seed));
 		return deck;
@@ -51,10 +51,10 @@ public class CardTests {
 	@Test
 	/** Tests the natural sort of Cards */
 	public void test2_cardSort1() {
-		List<CardImpl> cards = sameDeck();
+		List<Card> cards = sameDeck();
 		assertEquals(cards,sameDeck());
 		Collections.sort(cards);
-		List<CardImpl> deck = sameDeck();
+		List<Card> deck = sameDeck();
 		Collections.sort(deck);
 		assertEquals(cards,deck);
 	}

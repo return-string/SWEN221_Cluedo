@@ -76,8 +76,8 @@ public class PlayerTests {
 	@Test
 	public void test4_vindication1() {
 		Player white = new Player(Card.WHITE);
-		List<CardImpl> hand = white.getHand();
-		for(CardImpl c : hand) {
+		List<Card> hand = white.getHand();
+		for(Card c : hand) {
 			assertTrue(white.isInnocent(c));
 			assertTrue(white.isInnocent(c.getType(), c.getValue()));
 			if (!c.getType().equals(Card.Type.CHARACTER)) {

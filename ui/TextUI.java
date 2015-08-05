@@ -1,5 +1,13 @@
-package game;
+package ui;
 
+import game.ActingOutOfTurnException;
+import game.Board;
+import game.Card;
+import game.CardImpl;
+import game.Coordinate;
+import game.Game;
+import game.GameStateModificationException;
+import game.Player;
 import game.Card.Type;
 
 import java.util.ArrayList;
@@ -135,11 +143,11 @@ public class TextUI {
 	/** Returns the given list as a grammatically-sound String, eg:
 	 * "Miss Scarlet, pipe and conservatory".
 	 */
-	public String toStringFromCards(List<? extends CardImpl> list) {
+	public String toStringFromCards(List<Card> list) {
 		System.out.println();
 		String string = "";
 		int i = 0;
-		for(CardImpl s : list) {
+		for(Card s : list) {
 			if (i == list.size() - 1) {
 				string += s.getValue();
 			} else if (i == list.size() - 2) {
@@ -203,14 +211,14 @@ public class TextUI {
 	}
 
 	/** Simple method to manage the 'do you want to print rules' option. */
-	void printWelcomeAndRules() {
+	public void printWelcomeAndRules() {
 		// welcome text
 		printDivide();
 		printText("\t\t      Cluedo \n       the classic detective game, digitised.".toUpperCase());
 		printDivide();
 		// then ask if the player wants to read rules or start game
 		printArray(new String[] { "Rules","Start game"});
-		int select = askIntBetween(Game.NEWLINE, 1, 2)-1;
+		int select = askIntBetween(NEWLINE, 1, 2)-1;
 		if (select == 1) { return; } // if the player doesn't want to play, avoid the loop
 		while (select < HELP_OPTIONS.length) {
 			select = printRules(select);
@@ -339,7 +347,7 @@ public class TextUI {
 
 	/** Returns a random message, such that it completes the phrase:
 	 * CHARACTER_NAME accuses ACCUSED_NAME of _____________ in the ROOM with the WEAPON */
-	String randomMurderDescription() {
+	public String randomMurderDescription() {
 		String[] m = { "bloody treachery",
 					"violent actions",
 					"unwanted attention",
@@ -354,7 +362,7 @@ public class TextUI {
 
 	/** Returns a random message, to be printed instead of a
 	 * 'dead' player taking their turn. */
-	String randomDeathMessage() {
+	public String randomDeathMessage() {
 		String[] m = { "files some paperwork.",
 					"is looking lost.",
 					"is returning their Detective of the Month plaque.",
@@ -423,7 +431,7 @@ public class TextUI {
 		int pX = c.getX();
 		int pY = c.getY();
 
-		int division = (int)(game.BOARD.width() / 3 + 0.5);
+		int division = (int)(game.getBoard().width() / 3 + 0.5);
 
 		/** a complex series of if statements to determine the player's location. */
 		if (pY < division) {
@@ -455,7 +463,7 @@ public class TextUI {
 	public void printPlayerStatus(Game game, Player p) throws ActingOutOfTurnException {
 		if (p.isPlaying()) {
 			printText(p.getName() +"'s turn begins in the "+
-					relativeBoardPosString(game, p.position()) + " "+ game.BOARD.getRoom(p.position()));
+					relativeBoardPosString(game, p.position()) + " "+ game.getBoard().getRoom(p.position()));
 		} else { // if they're not playing, just print something interesting.
 			printText(p.getName() + " " + randomDeathMessage());
 		}
@@ -489,8 +497,8 @@ public class TextUI {
 	 * @param p
 	 * @throws ActingOutOfTurnException
 	 */
-	void viewNotebook(Game game, Player p) throws ActingOutOfTurnException {
-		if (game.activePlayer < 0 || game.getPlayers().indexOf(p) != game.activePlayer) {
+	public void viewNotebook(Game game, Player p) throws ActingOutOfTurnException {
+		if (game.getActivePlayer() < 0 || game.getPlayers().indexOf(p) != game.getActivePlayer()) {
 			throw new ActingOutOfTurnException();
 		}
 		printDivide();
@@ -507,7 +515,7 @@ public class TextUI {
 	 * @param p
 	 * @param t TODO
 	 */
-	String[] createNotesToPrint(Game game, Player p, Card.Type t) {
+	public String[] createNotesToPrint(Game game, Player p, Card.Type t) {
 		String[] printing;
 		String[] from;
 		if (t == Card.Type.CHARACTER) {
