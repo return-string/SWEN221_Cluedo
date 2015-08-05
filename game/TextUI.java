@@ -3,6 +3,7 @@ package game;
 import game.Card.Type;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -16,7 +17,7 @@ import javax.management.InvalidAttributeValueException;
  *
  */
 public class TextUI {
-	private static final String DIVIDE = "==================================================";
+	private static final String DIVIDE = "=======================================================";
 	public static final String NEWLINE = "\n > ";
 	public static final String PROMPT = "Select an option: ";
 	public static final String OPT_MOVE = "Roll to move";
@@ -96,21 +97,40 @@ public class TextUI {
 	/** Returns the given list as a grammatically-sound String, eg:
 	 * 	"cumin, beans and cheese".
 	 */
-	public String toStringFromStrings(List<? extends String> list) {
+	public String toStringFromCollection(Collection<?> coll) {
 		System.out.println();
 		String string = "";
 		int i = 0;
-		for(String s : list) {
-			if (i == list.size() - 1) {
-				string += s;
-			} else if (i == list.size() - 2) {
-				string += s +" and ";
+		for(Object o : coll) {
+			if (i == coll.size() - 1) {
+				string += o.toString();
+			} else if (i == coll.size() - 2) {
+				string += o.toString() +" and ";
 			} else {
-				string += s +", ";
+				string += o.toString() +", ";
 			}
 		}
 		return string;
 	}
+
+//	/** Returns the given list as a grammatically-sound String, eg:
+//	 * 	"cumin, beans and cheese".
+//	 */
+//	public String toStringFromStrings(List<? extends String> list) {
+//		System.out.println();
+//		String string = "";
+//		int i = 0;
+//		for(String s : list) {
+//			if (i == list.size() - 1) {
+//				string += s;
+//			} else if (i == list.size() - 2) {
+//				string += s +" and ";
+//			} else {
+//				string += s +", ";
+//			}
+//		}
+//		return string;
+//	}
 
 	/** Returns the given list as a grammatically-sound String, eg:
 	 * "Miss Scarlet, pipe and conservatory".
@@ -473,7 +493,7 @@ public class TextUI {
 	 * @param p
 	 * @param t TODO
 	 */
-	String[] createNotesToPrint(Game game, Player p, Type t) {
+	String[] createNotesToPrint(Game game, Player p, Card.Type t) {
 		String[] printing;
 		String[] from;
 		if (t == Card.Type.CHARACTER) {
@@ -491,8 +511,17 @@ public class TextUI {
 		for (int i = 0; i < printing.length; i++) {
 			// if the player is proven innocent, prepend (X), else ( )
 			printing[i] = (p.isInnocent(t,from[i]) ? "(X)":"( )") + " "
-				+ game.BOARD.capitaliseString(from[i]);
+				+ capitalise(from[i]);
 		}
 		return printing;
+	}
+
+	/** Capitalises the first word in the given string. Assumes the string
+	 * is valid and the first character is alphabetic. 
+	 * @param string
+	 * @return
+	 */
+	public String capitalise(String string) {
+		return string.substring(0, 1).toUpperCase() + string.substring(1, string.length());
 	}
 }

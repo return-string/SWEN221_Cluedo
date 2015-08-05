@@ -1,14 +1,13 @@
 package game;
 
 /* A deck of Cards is made by the Game when play begins,
- * and each CardInter is in the hand of a player, unless
+ * and each Card is in the hand of a player, unless
  * it is the murderer, murder weapon or location.
  *
- * @author Someone
+ * @author Badi James & Vicki McKay
  */
 
 public class Card implements Comparable<Card> {
-
 	public static enum Type {CHARACTER, WEAPON, ROOM};
 
 	public static final String WHITE = "Mrs White";
@@ -87,10 +86,11 @@ public class Card implements Comparable<Card> {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
+		final int prime1 = 31;
+		final int prime2 = 1103;
 		int result = 1;
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		result = prime * result + ((value == null) ? 0 : value.hashCode());
+		result = prime1 * result + ((type == null) ? 0 : type.hashCode());
+		result = prime2 * result + ((value == null) ? 0 : value.hashCode());
 		return result;
 	}
 
@@ -113,6 +113,7 @@ public class Card implements Comparable<Card> {
 		return true;
 	}
 
+	/** Returns the value of this card. */
 	public String toString() {
 		return value;
 	}
@@ -166,7 +167,7 @@ public class Card implements Comparable<Card> {
 	 * For a given Card.Type and value, returns the index of
 	 * that value in the relevant array.
 	 */
-	static int indexOf(Type t, String name) {
+	public static int indexOf(Type t, String name) {
 		String[] arr = null;
 		switch (t) {
 			case CHARACTER:
@@ -189,10 +190,8 @@ public class Card implements Comparable<Card> {
 		throw new IllegalArgumentException();
 	}
 
-	/** Returns the unique start coordinate for each character, as
-	 * defined in Card.
-	 *
-	 */
+	/** Returns the unique start coordinate for each character name, as
+	 * defined in Card. */
 	public static Coordinate getStart(String c) {
 		switch(c) {
 			case SCARLET:

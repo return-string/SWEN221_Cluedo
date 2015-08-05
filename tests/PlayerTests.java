@@ -3,6 +3,7 @@ package tests;
 import static org.junit.Assert.*;
 import game.ActingOutOfTurnException;
 import game.Card;
+import game.Card;
 import game.Coordinate;
 import game.Player;
 

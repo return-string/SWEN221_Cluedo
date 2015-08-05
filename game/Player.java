@@ -1,6 +1,7 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class Player implements Comparable<Player> {
 	private boolean isPlaying = true;
 	private HashSet<Card> guiltMap;
 	private Coordinate pos;
+	private boolean stopGivingCards = false;
 	private boolean wasForced = false;
 	private boolean hasMoved = false;
 
@@ -59,12 +61,13 @@ public class Player implements Comparable<Player> {
 	 * @return This player's List of cards in their hand.
 	 */
 	public List<Card> getHand() {
-		return hand;
+		return Collections.unmodifiableList(hand);
 	}
 
 	/** Updates the player's coordinates. 
 	 * @throws ActingOutOfTurnException */
 	public void move(Coordinate pos) throws ActingOutOfTurnException {
+		stopGivingCards = true;
 		if (hasMoved) { throw new ActingOutOfTurnException(); }
 		this.pos = pos;
 		wasForced = false;
@@ -78,7 +81,7 @@ public class Player implements Comparable<Player> {
 	}
 	
 	/** When a player's turn is ended, call this method to allow them to move again. */
-	public void canMove() {
+	public void enableMovement() {
 		hasMoved = false;
 	}
 
@@ -86,8 +89,10 @@ public class Player implements Comparable<Player> {
 	 *
 	 * @param c Card to add to this player's hand.
 	 * @return Whether the card was successfully added or not.
+	 * @throws GameStateModificationException 
 	 */
-	public boolean giveCard(Card c) {
+	public boolean giveCard(Card c) throws GameStateModificationException {
+		if (stopGivingCards) { throw new GameStateModificationException("Cannot add cards to a player's hand once they have acted!"); }
 		if (c != null) {
 			if (hand.contains(c)) {
 				throw new IllegalArgumentException("Player "+ getName() +" hand cannot contain duplicate cards!");

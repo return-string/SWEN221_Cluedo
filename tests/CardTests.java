@@ -3,6 +3,7 @@ package tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import game.Card;
+import game.Card.Type;
 import game.Game;
 import game.GameStateModificationException;
 
@@ -93,4 +94,49 @@ public class CardTests {
 		return list;
 	}
 
+	@Test
+	public void test5_equalCardValue() {
+		assertEquals(new Card(Type.CHARACTER, Card.SCARLET),
+				new Card(Type.CHARACTER, Card.SCARLET));
+		assertEquals(new Card(Type.WEAPON, Card.WRENCH),
+				new Card(Type.WEAPON, Card.WRENCH));
+		assertEquals(new Card(Type.ROOM, Card.CONSERVATORY),
+				new Card(Type.ROOM, Card.CONSERVATORY));
+	}
+
+	@Test
+	public void test6_notEqualCardValue() {
+		assertNotEquals(new Card(Type.CHARACTER, Card.SCARLET),
+				new Card(Type.WEAPON, Card.WRENCH));
+		assertNotEquals(new Card(Type.WEAPON, Card.WRENCH),
+				new Card(Type.ROOM, Card.CONSERVATORY));
+		assertNotEquals(new Card(Type.ROOM, Card.BALL),
+				new Card(Type.CHARACTER, Card.PLUM));
+	}
+
+	@Test
+	public void test7_hashCode() {
+		assertEquals(new Card(Type.CHARACTER, Card.SCARLET).hashCode(),
+				new Card(Type.CHARACTER, Card.SCARLET).hashCode() );
+		assertEquals(new Card(Type.WEAPON, Card.WRENCH).hashCode(),
+				new Card(Type.WEAPON, Card.WRENCH).hashCode());
+		assertEquals(new Card(Type.ROOM, Card.CONSERVATORY).hashCode(),
+				new Card(Type.ROOM, Card.CONSERVATORY).hashCode());
+	}
+	@Test
+	public void test7_notEqualHashCode() {
+		assertNotEquals(new Card(Type.CHARACTER, Card.SCARLET).hashCode(),
+				new Card(Type.WEAPON, Card.WRENCH).hashCode() );
+		assertNotEquals(new Card(Type.WEAPON, Card.WRENCH).hashCode(),
+				new Card(Type.ROOM, Card.CONSERVATORY).hashCode());
+		assertNotEquals(new Card(Type.ROOM, Card.CONSERVATORY).hashCode(),
+				new Card(Type.CHARACTER, Card.PLUM).hashCode());
+	}
+	
+	@Test
+	public void test8_indexOf() {
+		assertEquals(Card.indexOf(Card.Type.CHARACTER, Card.MUSTARD),1);
+		assertEquals(Card.indexOf(Card.Type.WEAPON, Card.DAGGER),1);
+		assertEquals(Card.indexOf(Card.Type.ROOM, Card.BALL),1);
+	}
 }

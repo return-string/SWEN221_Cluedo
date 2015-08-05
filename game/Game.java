@@ -69,8 +69,8 @@ public class Game {
 	 * @throws ActingOutOfTurnException 
 	 */
 	public void playGame() throws InvalidAttributeValueException, ActingOutOfTurnException {
-		if (players == null) {
-			throw new InvalidAttributeValueException("Can't start a game without players!");
+		if (players == null || players.size() < 3 || players.size() > 6) {
+			throw new InvalidAttributeValueException((players==null||players.size()<3)? "Not enough":"Too many" +" players!");
 		}
 		if (guilty == null) {
 			initialiseDeck();
@@ -80,7 +80,7 @@ public class Game {
 		
 		/** the game plays at least one turn. */
 		do {
-			textUI.printText("\t\tRound "+roundCounter+" begins.");
+			textUI.printText("\t\tRound "+ roundCounter +" begins.");
 			textUI.printDivide();
 			for (activePlayer = 0; activePlayer < players.size(); activePlayer++) {
 				/** whenever the turn begins, get the player taking a turn and print some nice-looking stuff.*/
@@ -101,6 +101,7 @@ public class Game {
 				if (!isPlaying()) {
 					break;
 				}
+				p.enableMovement();
 				textUI.clearScreen();
 				textUI.printDivide();
 			}
@@ -152,13 +153,15 @@ public class Game {
 		}
 	}
 
-	/** Add a player to the game. 
-	 * @param select
+	/** Add a player to the game, using the integer index of the player's name
+	 * declared in the Card.CHARACTERS array. 
+	 * 
+	 * @param nameIndex 
 	 * @throws GameStateModificationException If this method is called after play begins.
 	 */
-	public void addPlayer(int select) throws GameStateModificationException {
+	public void addPlayer(int nameIndex) throws GameStateModificationException {
 		if (activePlayer < 0) {
-			players.add(new Player(Card.CHARACTERS[select]));
+			players.add(new Player(Card.CHARACTERS[nameIndex]));
 		} else {
 			throw new GameStateModificationException();
 		}
@@ -507,7 +510,12 @@ public class Game {
 			//textUI.printText(p.getName() +" starts at "+ cardIdx);
 			for (int i = 0; i < handSize; i++) {
 			//	textUI.printText("\t"+ cardIdx+" "+ deck.get(cardIdx).toString());
-				p.giveCard(deck.get(cardIdx));
+				try {
+					p.giveCard(deck.get(cardIdx));
+				} catch (GameStateModificationException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
 				cardIdx ++;
 			}
 		}
@@ -621,8 +629,8 @@ public class Game {
 	 *
 	 * @return The list of players in the game
 	 */
-	public Collection<Player> getPlayers() {
-		return Collections.unmodifiableCollection(players);
+	public List<Player> getPlayers() {
+		return Collections.unmodifiableList(players);
 	}
 
 	/** Given a coordinate, return a string describing its relative
@@ -708,18 +716,12 @@ public class Game {
 	 * 
 	 * @param p
 	 * @param breakAfter
+	 * @throws ActingOutOfTurnException 
 	 */
-	private void viewHand(Player p, boolean breakAfter) {
+	private void viewHand(Player p, boolean breakAfter) throws ActingOutOfTurnException {
+		if (!p.equals(players.get(activePlayer))) { throw new ActingOutOfTurnException(); }
 		Collection<Card> hand = p.getHand();
-		String print = "   ";
-		Iterator<Card> iter = hand.iterator();
-		for (int i = 0 ; i < hand.size(); i++) {
-			print += " ( "+ BOARD.capitaliseString(iter.next().getValue()) +" )";
-			if (i % 5+1 == 0 && i != 0) {
-				print += "\n   ";
-			}
-		}
-		textUI.printText(print);
+		textUI.printText(textUI.capitalise(textUI.toStringFromCollection(hand)));
 		if (breakAfter) { textUI.printText(""); }
 	}
 

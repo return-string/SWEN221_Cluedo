@@ -1,21 +1,17 @@
 package tests;
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.management.InvalidAttributeValueException;
+
 import org.junit.Test;
 
+import game.ActingOutOfTurnException;
 import game.Card;
 import game.Game;
 import game.GameStateModificationException;
-import game.Player;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.ReflectPermission;
-import java.security.Permission;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
 
 public class GameTests {
 
@@ -24,7 +20,7 @@ public class GameTests {
 		System.out.println("\tTEST EMPTY PLAYER SET EQUALITY");
 		Game g1 = new Game();
 		Game g2 = new Game();
-		assertEquals("",g1.getPlayers(),g2.getPlayers());
+		assertTrue(g1.toString() +" != "+ g2.toString(), g1.getPlayers().equals(g2.getPlayers()));
 	}
 
 	@Test
@@ -51,6 +47,22 @@ public class GameTests {
 	
 	@Test
 	public void test3_winning() {
-		
+		Game g1 = new Game();
+		List<String> names = new ArrayList<String>();
+		names.add(Card.SCARLET);
+		names.add(Card.PLUM);
+		try {
+			g1.addCharactersByName(names);
+		} catch (GameStateModificationException e1) {
+			fail();
+		}
+		try {
+			g1.playGame();
+		} catch (InvalidAttributeValueException e) {
+			return;
+		} catch (ActingOutOfTurnException e) {
+			fail();
+		}
+		fail();
 	}
 }
