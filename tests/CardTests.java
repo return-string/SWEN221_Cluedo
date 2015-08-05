@@ -3,7 +3,7 @@ package tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import game.Card;
-import game.Card.Type;
+import game.CardImpl;
 import game.Game;
 import game.GameStateModificationException;
 
@@ -17,8 +17,8 @@ import org.junit.Test;
 public class CardTests {
 	private static final long seed = 304494949;
 
-	public static List<Card> sameDeck() {
-		List<Card> deck = Game.createNewDeck(Card.SCARLET,Card.DAGGER,Card.CONSERVATORY);
+	public static List<CardImpl> sameDeck() {
+		List<CardImpl> deck = Game.createNewDeck(Card.SCARLET,Card.DAGGER,Card.CONSERVATORY);
 		Collections.sort(deck);
 		Collections.shuffle(deck, new Random(seed));
 		return deck;
@@ -51,10 +51,10 @@ public class CardTests {
 	@Test
 	/** Tests the natural sort of Cards */
 	public void test2_cardSort1() {
-		List<Card> cards = sameDeck();
+		List<CardImpl> cards = sameDeck();
 		assertEquals(cards,sameDeck());
 		Collections.sort(cards);
-		List<Card> deck = sameDeck();
+		List<CardImpl> deck = sameDeck();
 		Collections.sort(deck);
 		assertEquals(cards,deck);
 	}
@@ -62,15 +62,15 @@ public class CardTests {
 	@Test
 	/** Also tests the natural sort of Cards, small-scale. */
 	public void test3_cardSort2() {
-		List<Card> cards = new ArrayList<Card>();
-		cards.add(new Card(Card.Type.CHARACTER, Card.GREEN));
-		cards.add(new Card(Card.Type.WEAPON, Card.DAGGER));
-		cards.add(new Card(Card.Type.ROOM, Card.BILLIARD));
+		List<CardImpl> cards = new ArrayList<CardImpl>();
+		cards.add(new CardImpl(Card.Type.CHARACTER, Card.GREEN));
+		cards.add(new CardImpl(Card.Type.WEAPON, Card.DAGGER));
+		cards.add(new CardImpl(Card.Type.ROOM, Card.BILLIARD));
 
-		List<Card> sortedCards = new ArrayList<Card>();
-		sortedCards.add(new Card(Card.Type.WEAPON, Card.DAGGER));
-		sortedCards.add(new Card(Card.Type.ROOM, Card.BILLIARD));
-		sortedCards.add(new Card(Card.Type.CHARACTER, Card.GREEN));
+		List<CardImpl> sortedCards = new ArrayList<CardImpl>();
+		sortedCards.add(new CardImpl(Card.Type.WEAPON, Card.DAGGER));
+		sortedCards.add(new CardImpl(Card.Type.ROOM, Card.BILLIARD));
+		sortedCards.add(new CardImpl(Card.Type.CHARACTER, Card.GREEN));
 		Collections.sort(sortedCards);
 
 		assertEquals(cards,sortedCards);
@@ -78,16 +78,16 @@ public class CardTests {
 	@Test
 	/** Also tests the natural sort of Cards, small-scale. */
 	public void test4_cardSort2() {
-		Card green1 = new Card(Card.Type.CHARACTER, Card.GREEN);
-		Card green2 = new Card(Card.Type.CHARACTER, Card.GREEN);
+		Card green1 = new CardImpl(Card.Type.CHARACTER, Card.GREEN);
+		Card green2 = new CardImpl(Card.Type.CHARACTER, Card.GREEN);
 
 		assertEquals(green1,green2);
 		assertEquals(green1.hashCode(),green2.hashCode());
-		assertNotEquals(green1.hashCode(),new Card(Card.Type.ROOM,Card.CONSERVATORY));
+		assertNotEquals(green1.hashCode(),new CardImpl(Card.Type.ROOM,Card.CONSERVATORY));
 	}
 	// ========= helper methods! =============
 
-	public static List<Card> fillHandWith(List<Card> list, Card[] cards) {
+	public static List<CardImpl> fillHandWith(List<CardImpl> list, CardImpl[] cards) {
 		for (int i = 0; i < cards.length; i++) {
 			list.add(cards[i]);
 		}
@@ -96,47 +96,47 @@ public class CardTests {
 
 	@Test
 	public void test5_equalCardValue() {
-		assertEquals(new Card(Type.CHARACTER, Card.SCARLET),
-				new Card(Type.CHARACTER, Card.SCARLET));
-		assertEquals(new Card(Type.WEAPON, Card.WRENCH),
-				new Card(Type.WEAPON, Card.WRENCH));
-		assertEquals(new Card(Type.ROOM, Card.CONSERVATORY),
-				new Card(Type.ROOM, Card.CONSERVATORY));
+		assertEquals(new CardImpl(Card.Type.CHARACTER, Card.SCARLET),
+				new CardImpl(Card.Type.CHARACTER, Card.SCARLET));
+		assertEquals(new CardImpl(Card.Type.WEAPON, Card.WRENCH),
+				new CardImpl(Card.Type.WEAPON, Card.WRENCH));
+		assertEquals(new CardImpl(Card.Type.ROOM, Card.CONSERVATORY),
+				new CardImpl(Card.Type.ROOM, Card.CONSERVATORY));
 	}
 
 	@Test
 	public void test6_notEqualCardValue() {
-		assertNotEquals(new Card(Type.CHARACTER, Card.SCARLET),
-				new Card(Type.WEAPON, Card.WRENCH));
-		assertNotEquals(new Card(Type.WEAPON, Card.WRENCH),
-				new Card(Type.ROOM, Card.CONSERVATORY));
-		assertNotEquals(new Card(Type.ROOM, Card.BALL),
-				new Card(Type.CHARACTER, Card.PLUM));
+		assertNotEquals(new CardImpl(Card.Type.CHARACTER, Card.SCARLET),
+				new CardImpl(Card.Type.WEAPON, Card.WRENCH));
+		assertNotEquals(new CardImpl(Card.Type.WEAPON, Card.WRENCH),
+				new CardImpl(Card.Type.ROOM, Card.CONSERVATORY));
+		assertNotEquals(new CardImpl(Card.Type.ROOM, Card.BALL),
+				new CardImpl(Card.Type.CHARACTER, Card.PLUM));
 	}
 
 	@Test
 	public void test7_hashCode() {
-		assertEquals(new Card(Type.CHARACTER, Card.SCARLET).hashCode(),
-				new Card(Type.CHARACTER, Card.SCARLET).hashCode() );
-		assertEquals(new Card(Type.WEAPON, Card.WRENCH).hashCode(),
-				new Card(Type.WEAPON, Card.WRENCH).hashCode());
-		assertEquals(new Card(Type.ROOM, Card.CONSERVATORY).hashCode(),
-				new Card(Type.ROOM, Card.CONSERVATORY).hashCode());
+		assertEquals(new CardImpl(Card.Type.CHARACTER, Card.SCARLET).hashCode(),
+				new CardImpl(Card.Type.CHARACTER, Card.SCARLET).hashCode() );
+		assertEquals(new CardImpl(Card.Type.WEAPON, Card.WRENCH).hashCode(),
+				new CardImpl(Card.Type.WEAPON, Card.WRENCH).hashCode());
+		assertEquals(new CardImpl(Card.Type.ROOM, Card.CONSERVATORY).hashCode(),
+				new CardImpl(Card.Type.ROOM, Card.CONSERVATORY).hashCode());
 	}
 	@Test
 	public void test7_notEqualHashCode() {
-		assertNotEquals(new Card(Type.CHARACTER, Card.SCARLET).hashCode(),
-				new Card(Type.WEAPON, Card.WRENCH).hashCode() );
-		assertNotEquals(new Card(Type.WEAPON, Card.WRENCH).hashCode(),
-				new Card(Type.ROOM, Card.CONSERVATORY).hashCode());
-		assertNotEquals(new Card(Type.ROOM, Card.CONSERVATORY).hashCode(),
-				new Card(Type.CHARACTER, Card.PLUM).hashCode());
+		assertNotEquals(new CardImpl(Card.Type.CHARACTER, Card.SCARLET).hashCode(),
+				new CardImpl(Card.Type.WEAPON, Card.WRENCH).hashCode() );
+		assertNotEquals(new CardImpl(Card.Type.WEAPON, Card.WRENCH).hashCode(),
+				new CardImpl(Card.Type.ROOM, Card.CONSERVATORY).hashCode());
+		assertNotEquals(new CardImpl(Card.Type.ROOM, Card.CONSERVATORY).hashCode(),
+				new CardImpl(Card.Type.CHARACTER, Card.PLUM).hashCode());
 	}
 	
 	@Test
 	public void test8_indexOf() {
-		assertEquals(Card.indexOf(Card.Type.CHARACTER, Card.MUSTARD),1);
-		assertEquals(Card.indexOf(Card.Type.WEAPON, Card.DAGGER),1);
-		assertEquals(Card.indexOf(Card.Type.ROOM, Card.BALL),1);
+		assertEquals(CardImpl.indexOf(Card.Type.CHARACTER, Card.MUSTARD),1);
+		assertEquals(CardImpl.indexOf(Card.Type.WEAPON, Card.DAGGER),1);
+		assertEquals(CardImpl.indexOf(Card.Type.ROOM, Card.BALL),1);
 	}
 }

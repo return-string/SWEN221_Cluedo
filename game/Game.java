@@ -32,8 +32,8 @@ public class Game {
 	final Board BOARD = new Board();
 	final TextUI textUI = new TextUI();
 
-	List<Player> players;
-	Hypothesis guilty;
+	private List<Player> players;
+	private Theory guilty;
 	int activePlayer = -1; /* used to check when play has begun also, instead
 										of creating and setting an additional field.
 										if activePlayer < 0, game has not really started
@@ -147,14 +147,14 @@ public class Game {
 			/* if Miss Scarlet hasn't been selected yet, remind the user she always plays first. */
 			int select = textUI.askIntBetween("Please add a character. "+
 					(options.get(0)==Card.SCARLET?("("+ Card.SCARLET +" always goes first)."):"") + NEWLINE,1,options.size())-1;
-			int realIndex = Card.indexOf(Card.Type.CHARACTER, options.get(select));
+			int realIndex = CardImpl.indexOf(Card.Type.CHARACTER, options.get(select));
 			addPlayer(realIndex);
 			options.remove(select);
 		}
 	}
 
 	/** Add a player to the game, using the integer index of the player's name
-	 * declared in the Card.CHARACTERS array. 
+	 * declared in the CardImpl.CHARACTERS array. 
 	 * 
 	 * @param nameIndex 
 	 * @throws GameStateModificationException If this method is called after play begins.
@@ -321,7 +321,7 @@ public class Game {
 		textUI.printArray(textUI.createNotesToPrint(this, p, Card.Type.CHARACTER));
 		int select = textUI.askIntBetween(PROMPT+NEWLINE,1,Card.CHARACTERS.length)-1;
 		try {
-			h.setCharacter(new Card(Card.Type.CHARACTER,Card.CHARACTERS[select]));
+			h.setCharacter(new CardImpl(Card.Type.CHARACTER,Card.CHARACTERS[select]));
 		} catch (IllegalAccessException e) {
 			// this isn't actually possible
 		}
@@ -330,20 +330,20 @@ public class Game {
 		textUI.printArray(textUI.createNotesToPrint(this, p, Card.Type.WEAPON));
 		select = textUI.askIntBetween(PROMPT+NEWLINE,1,Card.WEAPONS.length)-1;
 		try {
-			h.setWeapon(new Card(Card.Type.WEAPON,Card.WEAPONS[select]));
+			h.setWeapon(new CardImpl(Card.Type.WEAPON,Card.WEAPONS[select]));
 		} catch (IllegalAccessException e) {
 			// this isn't possible
 		}
 
-		Card roomCard;
+		CardImpl roomCard;
 		if (isFinalAccusation) {
 			textUI.printText("These are the possible murder locations:");
 			textUI.printArray(textUI.createNotesToPrint(this, p, Card.Type.ROOM));
 			select = textUI.askIntBetween(PROMPT+NEWLINE,1,Card.ROOMS.length)-1;
-			roomCard = new Card(Card.Type.ROOM,Card.ROOMS[select]);
+			roomCard = new CardImpl(Card.Type.ROOM,Card.ROOMS[select]);
 		} else {
 			String room = BOARD.getRoom(p.position());
-			roomCard = new Card(Card.Type.ROOM,room);
+			roomCard = new CardImpl(Card.Type.ROOM,room);
 			textUI.printText("In the "+ room +".");
 			for (int i=0; i < players.size(); i++) {
 				if (players.get(i).equalsName(h.getCharacter().getValue())) {
@@ -399,7 +399,7 @@ public class Game {
 		 */
 		int i = (activePlayer+1) % players.size();;
 		do {
-			List<Card> l = players.get(i).refuteHypothesis(h);
+			List<CardImpl> l = players.get(i).refuteHypothesis(h);
 			if (l.size() > 0) {
 				// the ternary check just says: if this is new information to the asking player, mention that fact in the printout.
 				textUI.printText(players.get(i).getName() +" shares some "+ (p.isInnocent(l.get(0))? "":"new ") +"evidence with "+ p.getName() +".");
@@ -412,18 +412,18 @@ public class Game {
 		return true;
 	}
 
-	/** If the given Card matches a player in the game, return them. */
-	public Player getPlayer(Card character) {
+	/** If the given CardImpl matches a player in the game, return them. */
+	public Player getPlayer(Card card) {
 		for (Player p : players) {
-			if (p.getName().equals(character.getValue())) {
+			if (p.getName().equals(card.getValue())) {
 				return p;
 			}
 		}
 		return null;
 	}
 
-	/** Iff the given Card matches a player in the game, return true. */
-	public boolean isPlayer(Card character) {
+	/** Iff the given CardImpl matches a player in the game, return true. */
+	public boolean isPlayer(CardImpl character) {
 		for (Player p : players) {
 			if (p.getName().equals(character.getValue())) {
 				return true;
@@ -494,17 +494,17 @@ public class Game {
 		}
 
 		// put guilty cards into fields
-		guilty = new Hypothesis(new Card(Card.Type.CHARACTER, c),
-								new Card(Card.Type.WEAPON, w),
-								new Card(Card.Type.ROOM, r));
+		guilty = new Hypothesis(new CardImpl(Card.Type.CHARACTER, c),
+								new CardImpl(Card.Type.WEAPON, w),
+								new CardImpl(Card.Type.ROOM, r));
 
-		ArrayList<Card> deck = createNewDeck(c, w, r); // creates, shuffles a new deck of cards
+		ArrayList<CardImpl> deck = createNewDeck(c, w, r); // creates, shuffles a new deck of cards
 		int remainder = (Card.DECKSIZE-3) % players.size();
 		int handSize = (Card.DECKSIZE-3-remainder) / players.size();
 
 		// add cards to each player's hand
 		int cardIdx = 0;
-		//textUI.printText((double)(Card.DECKSIZE-3)/players.size() +" cards between "+ players.size() +" and "+deck.size()+" cards, "+remainder+" remaining, to deal between "+ handSize +"-sized hands.");
+		//textUI.printText((double)(CardImpl.DECKSIZE-3)/players.size() +" cards between "+ players.size() +" and "+deck.size()+" cards, "+remainder+" remaining, to deal between "+ handSize +"-sized hands.");
 
 		for (Player p : players) {
 			//textUI.printText(p.getName() +" starts at "+ cardIdx);
@@ -523,11 +523,11 @@ public class Game {
 
 		// if there are any cards remaining, print a message
 		if (remainder != 0) {
-			//textUI.printText(handSize +" * "+ players.size() +"("+ handSize * players.size() +") != "+ Card.DECKSIZE);
+			//textUI.printText(handSize +" * "+ players.size() +"("+ handSize * players.size() +") != "+ CardImpl.DECKSIZE);
 			showSpareCards(deck.subList(cardIdx, deck.size()));
 			// then ensure every player has these cards marked off...
 			for (Player p : players) {
-				for (Card spareCard : deck.subList(cardIdx,deck.size())) {
+				for (CardImpl spareCard : deck.subList(cardIdx,deck.size())) {
 					p.vindicate(spareCard);
 				}
 			}
@@ -535,7 +535,7 @@ public class Game {
 	}
 
 	/** If there are spare cards, prints a message informing the user. */
-	private void showSpareCards(List<Card> subList) {
+	private void showSpareCards(List<CardImpl> subList) {
 		if (subList.size() < 1) {return;}
 		String list = "";
 		for (int i = 0; i < subList.size(); i++) {
@@ -558,8 +558,8 @@ public class Game {
 	 * @param r One of the ROOM strings.
 	 * @return A shuffled list of the remaining cards, ready to be dealt to players.
 	 */
-	public static ArrayList<Card> createNewDeck(String c, String w, String r) {
-		ArrayList<Card> deck = new ArrayList<Card>();
+	public static ArrayList<CardImpl> createNewDeck(String c, String w, String r) {
+		ArrayList<CardImpl> deck = new ArrayList<CardImpl>();
 		if (c == null || w == null || r == null) {
 			throw new IllegalArgumentException("Parameters cannot be null when creating a deck.");
 		}
@@ -567,17 +567,17 @@ public class Game {
 		// add some cards to the deck
 		for (int i = 0; i < Card.CHARACTERS.length; i++) {
 			if (Card.CHARACTERS[i] != c) {
-				deck.add(new Card(Card.Type.CHARACTER, Card.CHARACTERS[i]));
+				deck.add(new CardImpl(Card.Type.CHARACTER, Card.CHARACTERS[i]));
 			}
 		}
 		for (int i = 0; i < Card.WEAPONS.length; i++) {
 			if (Card.WEAPONS[i] != w) {
-				deck.add(new Card(Card.Type.WEAPON, Card.WEAPONS[i]));
+				deck.add(new CardImpl(Card.Type.WEAPON, Card.WEAPONS[i]));
 			}
 		}
 		for (int i = 0; i < Card.ROOMS.length; i++) {
 			if (Card.ROOMS[i] != r) {
-				deck.add(new Card(Card.Type.ROOM, Card.ROOMS[i]));
+				deck.add(new CardImpl(Card.Type.ROOM, Card.ROOMS[i]));
 			}
 		}
 
@@ -619,7 +619,7 @@ public class Game {
 	}
 
 	/** Returns the Hypothesis containing the guilty cards.*/
-	public Hypothesis getGuilty() {
+	public Theory getGuilty() {
 		return guilty;
 	}
 
@@ -720,7 +720,7 @@ public class Game {
 	 */
 	private void viewHand(Player p, boolean breakAfter) throws ActingOutOfTurnException {
 		if (!p.equals(players.get(activePlayer))) { throw new ActingOutOfTurnException(); }
-		Collection<Card> hand = p.getHand();
+		Collection<CardImpl> hand = p.getHand();
 		textUI.printText(textUI.capitalise(textUI.toStringFromCollection(hand)));
 		if (breakAfter) { textUI.printText(""); }
 	}

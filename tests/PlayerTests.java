@@ -3,7 +3,8 @@ package tests;
 import static org.junit.Assert.*;
 import game.ActingOutOfTurnException;
 import game.Card;
-import game.Card;
+import game.CardImpl;
+import game.CardImpl;
 import game.Coordinate;
 import game.Player;
 
@@ -75,8 +76,8 @@ public class PlayerTests {
 	@Test
 	public void test4_vindication1() {
 		Player white = new Player(Card.WHITE);
-		List<Card> hand = white.getHand();
-		for(Card c : hand) {
+		List<CardImpl> hand = white.getHand();
+		for(CardImpl c : hand) {
 			assertTrue(white.isInnocent(c));
 			assertTrue(white.isInnocent(c.getType(), c.getValue()));
 			if (!c.getType().equals(Card.Type.CHARACTER)) {

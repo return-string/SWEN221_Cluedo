@@ -19,9 +19,9 @@ import java.util.List;
 public class Player implements Comparable<Player> {
 	public final String NAME;
 
-	private List<Card> hand;
+	private List<CardImpl> hand;
 	private boolean isPlaying = true;
-	private HashSet<Card> guiltMap;
+	private HashSet<CardImpl> guiltMap;
 	private Coordinate pos;
 	private boolean stopGivingCards = false;
 	private boolean wasForced = false;
@@ -29,16 +29,16 @@ public class Player implements Comparable<Player> {
 
 	public Player(String characterName, Coordinate startPos) {
 		this.NAME = characterName;
-		this.hand = new ArrayList<Card>();
+		this.hand = new ArrayList<CardImpl>();
 		this.pos = startPos;
-		this.guiltMap = new HashSet<Card>();
+		this.guiltMap = new HashSet<CardImpl>();
 	}
 
 	public Player(String characterName) {
 		this.NAME = characterName;
-		this.hand = new ArrayList<Card>();
-		this.pos = Card.getStart(characterName);
-		this.guiltMap = new HashSet<Card>();
+		this.hand = new ArrayList<CardImpl>();
+		this.pos = Card.getCoordinate(characterName);
+		this.guiltMap = new HashSet<CardImpl>();
 	}
 
 	/** Construct a player with a given hand and mark all the cards as innocent.
@@ -46,21 +46,21 @@ public class Player implements Comparable<Player> {
 	 * @param c
 	 * @param h
 	 */
-	public Player(String characterName, List<Card> hand, Coordinate startPos) {
+	public Player(String characterName, List<CardImpl> hand, Coordinate startPos) {
 		this.NAME = characterName;
 		this.hand = hand;
 		this.pos = startPos;
-		for (Card card : hand) {
+		for (CardImpl card : hand) {
 			vindicate(card);
 		}
-		this.guiltMap = new HashSet<Card>();
+		this.guiltMap = new HashSet<CardImpl>();
 	}
 
 	/** This method should only be used for debugging/testing.
 	 *
 	 * @return This player's List of cards in their hand.
 	 */
-	public List<Card> getHand() {
+	public List<CardImpl> getHand() {
 		return Collections.unmodifiableList(hand);
 	}
 
@@ -87,11 +87,11 @@ public class Player implements Comparable<Player> {
 
 	/** When play begins, cards should be dealt to Players using this method.
 	 *
-	 * @param c Card to add to this player's hand.
+	 * @param c CardImpl to add to this player's hand.
 	 * @return Whether the card was successfully added or not.
 	 * @throws GameStateModificationException 
 	 */
-	public boolean giveCard(Card c) throws GameStateModificationException {
+	public boolean giveCard(CardImpl c) throws GameStateModificationException {
 		if (stopGivingCards) { throw new GameStateModificationException("Cannot add cards to a player's hand once they have acted!"); }
 		if (c != null) {
 			if (hand.contains(c)) {
@@ -116,9 +116,9 @@ public class Player implements Comparable<Player> {
 	 *
 	 * This is... really not a safe method to have for networked play. Grr. Any alternatives?
 	 */
-	public List<Card> refuteHypothesis(Hypothesis h) {
-		List<Card> l = new ArrayList<Card>();
-		for (Card c : hand) {
+	public List<CardImpl> refuteHypothesis(Hypothesis h) {
+		List<CardImpl> l = new ArrayList<CardImpl>();
+		for (CardImpl c : hand) {
 			if (h.contains(c)) {
 				l.add(c);
 			}
@@ -132,9 +132,9 @@ public class Player implements Comparable<Player> {
 	}
 
 	/** A player vindicates a card when it is shown to them by another player.
-	 * @param Card Card to vindicate for this Player
+	 * @param CardImpl CardImpl to vindicate for this Player
 	 */
-	public void vindicate(Card c) {
+	public void vindicate(CardImpl c) {
 		guiltMap.add(c);
 	}
 
@@ -143,7 +143,7 @@ public class Player implements Comparable<Player> {
 	}
 
 	public boolean isInnocent(Card.Type t, String c) {
-		return guiltMap.contains(new Card(t,c));
+		return guiltMap.contains(new CardImpl(t,c));
 	}
 
 	public boolean isPlaying() {

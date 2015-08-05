@@ -135,11 +135,11 @@ public class TextUI {
 	/** Returns the given list as a grammatically-sound String, eg:
 	 * "Miss Scarlet, pipe and conservatory".
 	 */
-	public String toStringFromCards(List<? extends Card> list) {
+	public String toStringFromCards(List<? extends CardImpl> list) {
 		System.out.println();
 		String string = "";
 		int i = 0;
-		for(Card s : list) {
+		for(CardImpl s : list) {
 			if (i == list.size() - 1) {
 				string += s.getValue();
 			} else if (i == list.size() - 2) {
@@ -490,7 +490,7 @@ public class TextUI {
 	 * @throws ActingOutOfTurnException
 	 */
 	void viewNotebook(Game game, Player p) throws ActingOutOfTurnException {
-		if (game.activePlayer < 0 || game.players.indexOf(p) != game.activePlayer) {
+		if (game.activePlayer < 0 || game.getPlayers().indexOf(p) != game.activePlayer) {
 			throw new ActingOutOfTurnException();
 		}
 		printDivide();
