@@ -71,7 +71,7 @@ public abstract class Card implements Comparable<Card>{
 
 	/** Returns the unique start coordinate for each character name, as
 	 * defined in CardImpl. */
-	public static Coordinate getCoordinate(String c) throws IllegalArgumentException{
+	public static Coordinate getPlayerStart(String c) throws IllegalArgumentException{
 		switch(c) {
 			case Card.SCARLET:
 				return new Coordinate(7,24);

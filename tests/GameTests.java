@@ -12,8 +12,29 @@ import game.ActingOutOfTurnException;
 import game.Card;
 import game.Game;
 import game.GameStateModificationException;
+import game.Player;
 
 public class GameTests {
+	private Game setupGame() {
+		Game g = new Game();
+		List<String> names = new ArrayList<String>();
+		names.add(Card.SCARLET);
+		names.add(Card.PLUM);
+		names.add(Card.MUSTARD);
+		try {
+			g.addCharactersByName(names);
+		} catch (GameStateModificationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			g.playGame();
+		} catch (InvalidAttributeValueException | ActingOutOfTurnException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return g;
+	}
 
 	@Test
 	public void test1_newGamePlayerEquality() {
@@ -46,7 +67,7 @@ public class GameTests {
 	}
 	
 	@Test
-	public void test3_winning() {
+	public void invalidNumOfPlayers() {
 		Game g1 = new Game();
 		List<String> names = new ArrayList<String>();
 		names.add(Card.SCARLET);

@@ -21,7 +21,7 @@ public class Player implements Comparable<Player> {
 
 	private List<Card> hand;
 	private boolean isPlaying = true;
-	private HashSet<Card> guiltMap;
+	private HashSet<Card> innocentCards;
 	private Coordinate pos;
 	private boolean stopGivingCards = false;
 	private boolean wasForced = false;
@@ -31,14 +31,14 @@ public class Player implements Comparable<Player> {
 		this.NAME = characterName;
 		this.hand = new ArrayList<Card>();
 		this.pos = startPos;
-		this.guiltMap = new HashSet<Card>();
+		this.innocentCards = new HashSet<Card>();
 	}
 
 	public Player(String characterName) {
 		this.NAME = characterName;
 		this.hand = new ArrayList<Card>();
-		this.pos = Card.getCoordinate(characterName);
-		this.guiltMap = new HashSet<Card>();
+		this.pos = Card.getPlayerStart(characterName);
+		this.innocentCards = new HashSet<Card>();
 	}
 
 	/** Construct a player with a given hand and mark all the cards as innocent.
@@ -53,7 +53,7 @@ public class Player implements Comparable<Player> {
 		for (Card card : hand) {
 			vindicate(card);
 		}
-		this.guiltMap = new HashSet<Card>();
+		this.innocentCards = new HashSet<Card>();
 	}
 
 	/** This method should only be used for debugging/testing.
@@ -135,15 +135,15 @@ public class Player implements Comparable<Player> {
 	 * @param Card Card to vindicate for this Player
 	 */
 	public void vindicate(Card c) {
-		guiltMap.add(c);
+		innocentCards.add(c);
 	}
 
 	public boolean isInnocent(Card c) {
-		return guiltMap.contains(c);
+		return innocentCards.contains(c);
 	}
 
 	public boolean isInnocent(Card.Type t, String c) {
-		return guiltMap.contains(new CardImpl(t,c));
+		return innocentCards.contains(new CardImpl(t,c));
 	}
 
 	public boolean isPlaying() {

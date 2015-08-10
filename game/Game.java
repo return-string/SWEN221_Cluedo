@@ -51,7 +51,7 @@ public class Game {
 	 */
 	public void startGame() throws GameStateModificationException, ActingOutOfTurnException {
 		textUI.printWelcomeAndRules();
-		int numPlayers = textUI.askIntBetween("How many players? (3 - 6 people can play.)",3,6);
+		int numPlayers = textUI.askIntBetween("How many people are playing? (3-6 people can play at once.) ",3,6);
 		selectCharacters(numPlayers);
 		Collections.sort(players);
 		try {
@@ -98,9 +98,10 @@ public class Game {
 
 	/** Plays a round of Cluedo.
 	 * 
-	 * @param roundCounter
-	 * @return
-	 * @throws ActingOutOfTurnException
+	 * @param roundCounter A cosmetic value; prints the round number. 
+	 * @return The new round number, should always be roundCounter++
+	 * @throws ActingOutOfTurnException Passes on an exceptions thrown by moving/acting
+	 * 	out of turn from descendant methods.  
 	 */
 	private int playTurn(int roundCounter) throws ActingOutOfTurnException {
 		textUI.printText("\t\tRound "+ roundCounter +" begins.");
@@ -109,14 +110,13 @@ public class Game {
 			/** whenever the turn begins, get the player taking a turn and print some nice-looking stuff.*/
 			Player p = players.get(activePlayer);
 			/* we can throw away the confirm value-- we just want the UI to wait until the next player's ready.*/
-			textUI.askIntBetween("It's "+ p.getName() +"'s turn now! "+p.getName()+", are you there? (Enter 1 to confirm.)\n",1,1);
 			/* once the player has confirmed */
 			if (p.isPlaying()) {
+				textUI.askIntBetween("It's "+ p.getName() +"'s turn now! "+p.getName()+", are you there? (Enter 1 to confirm.)\n",1,1);
 				textUI.printText(p.getName() +"'s turn begins in the "+
-						relativeBoardPosString(p.position()) + " "+ getBoard().getRoom(p.position()));
+						textUI.relativeBoardPosString(BOARD.width(), p.position()) + " "+ getBoard().getRoom(p.position()));
 
 				while (managePlayerOptions(p));
-				p.enableMovement();
 				//textUI.showPlayerOptions(p);
 			} else { // if they're not playing, just print something interesting.
 				textUI.printText(p.getName() + " " + textUI.randomDeathMessage());
@@ -124,8 +124,10 @@ public class Game {
 			if (!isPlaying()) {
 				break;
 			}
+			if (p.hasMoved()) {
+				textUI.clearScreen();
+			}
 			p.enableMovement();
-			textUI.clearScreen();
 			textUI.printDivide();
 		}
 		roundCounter++;
@@ -207,11 +209,7 @@ public class Game {
 		textUI.printText("---------------------------------");
 		/* get the map of options a player has and put them into an array */
 		Map<Coordinate,String> moves = getBoard().possibleMoves(p.position(), roll);
-		if(moves.isEmpty()){
-			System.out.printf("\nERROR for %s at %s\nPossible move list is empty\n",
-					p.getName(), p.position().toString());
-			return;
-		}
+		/* now we have a map of possible moves, let's print them for the user */
 		List<String> moveDescs = new ArrayList<String>();
 		List<Coordinate> moveCoords = new ArrayList<Coordinate>();
 		for (Entry<Coordinate,String> s : moves.entrySet()) {
@@ -219,24 +217,21 @@ public class Game {
 					+".\n\t"+ s.getValue());
 			moveCoords.add(s.getKey());
 		}
-		/* if the player was forcibly moved, they may not want to leave this room. */
+		/* if the player was forcibly moved, they have the option to stay here.
+		 * (if they were forced, we also know that they have to be in a room, so no need to check.) */
 		if (players.get(activePlayer).wasForced()) {
 			moveDescs.add("Stay here.");
 			moveCoords.add(p.position());
 		}
 		/* then we can print these options and ask the user to select an option*/
-		textUI.printText("\nEnter number assigned to square you want to move to:\n");
+		textUI.printText("\nEnter the number of the square you want to move to:\n");
 		textUI.printList(moveDescs);
 
-		int userChoice = textUI.askIntBetween(TextUI.PROMPT,1,moveDescs.size())-1;
+		int userChoice = textUI.askIntBetween("",1,moveDescs.size())-1;
 		//gets the coordinate that matched the selection then updates player and board accordingly
 		Coordinate newCoord = moveCoords.get(userChoice);
 		toggleOccupied(p.position(),newCoord);
-		try {
-			p.move(newCoord);
-		} catch (ActingOutOfTurnException e) {
-			textUI.printText(p+" seems rooted to the spot.");
-		}
+		p.move(newCoord);
 	}
 
 	/** Once a player has moved, set their current coordinate to occupied if it is
@@ -276,8 +271,8 @@ public class Game {
 	 * @throws ActingOutOfTurnException
 	 */
 	public boolean managePlayerOptions(Player p) throws ActingOutOfTurnException {
-		List<String> options = textUI.printPlayerOptions(getBoard(), p);
-		String option = options.get( textUI.askIntBetween(TextUI.PROMPT,1,options.size()) - 1 ); // subtract one because we've asked for a number between 1 and length, and we want 0-to-length-minus-1
+		List<String> options = textUI.printPlayerOptions(BOARD.getRoom(p.position()), p);
+		String option = options.get( textUI.askIntBetween("",1,options.size()) - 1 ); // subtract one because we've asked for a number between 1 and length, and we want 0-to-length-minus-1
 		/* do the selected option! */
 
 		boolean turnContinues = true; // true if the turn continues after choosing this option
@@ -302,19 +297,19 @@ public class Game {
 			int select = textUI.askIntBetween("", 1, 2)-1;
 			if (select == 0) {
 				testAccusation(p);
+				turnContinues = false;
+				textUI.askIntBetween("(Enter 1 to continue.)\n",1,1);
 			}
-			turnContinues = false;
-			textUI.askIntBetween("(Enter 1 to continue.) ",1,1);
 		}
 		// if they want to view their hand...
 		else if (option.equals(textUI.OPT_HAND)) {
 			textUI.printText("YOUR HAND");
-			viewHand(p, false);
+			viewHand(p);
 		}
 		// if they want to open their notebook...
 		else if (option.equals(textUI.OPT_NOTES)) {
 			textUI.printText("VIEW NOTEBOOK");
-			textUI.viewNotebook(this, p);
+			textUI.viewNotebook(p);
 		}
 		// if they ask to end their turn
 		else if (option.equals(textUI.OPT_END)) {
@@ -322,73 +317,7 @@ public class Game {
 		}
 		return turnContinues;
 	}
-
-	/** This method is called when a player wants to make an accusation or
-	 * a suggestion: each block prints part of their detective notebook and
-	 * waits for them to select which character, weapon and room they would
-	 * like to test with this guess.
-	 *
-	 * @param p The player making the guess
-	 * @return A hypothesis to be tested against the hands of the other players
-	 * or the guilty cards.
-	 */
-	private Theory makeTheory(Player p, boolean isFinalAccusation) {
-		Theory h = new Hypothesis();
-		textUI.printText(p.getName() +" is considering the evidence...");
-
-		textUI.printText("These are the possible guilty characters:");
-		textUI.printArray(textUI.createNotesToPrint(this, p, Card.Type.CHARACTER));
-		int select = textUI.askIntBetween("",1,Card.CHARACTERS.length)-1;
-		try {
-			h.setCharacter(new CardImpl(Card.Type.CHARACTER,Card.CHARACTERS[select]));
-		} catch (IllegalAccessException e) {
-			// this isn't actually possible
-		}
-
-		textUI.printText("These are the possible murder weapons:");
-		textUI.printArray(textUI.createNotesToPrint(this, p, Card.Type.WEAPON));
-		select = textUI.askIntBetween("",1,Card.WEAPONS.length)-1;
-		try {
-			h.setWeapon(new CardImpl(Card.Type.WEAPON,Card.WEAPONS[select]));
-		} catch (IllegalAccessException e) {
-			// this isn't possible
-		}
-
-		Card roomCard;
-		if (isFinalAccusation) {
-			textUI.printText("These are the possible murder locations:");
-			textUI.printArray(textUI.createNotesToPrint(this, p, Card.Type.ROOM));
-			select = textUI.askIntBetween("",1,Card.ROOMS.length)-1;
-			roomCard = new CardImpl(Card.Type.ROOM,Card.ROOMS[select]);
-		} else {
-			String room = getBoard().getRoom(p.position());
-			roomCard = new CardImpl(Card.Type.ROOM,room);
-			textUI.printText("In the "+ room +".");
-			for (int i=0; i < players.size(); i++) {
-				if (players.get(i).equalsName(h.getCharacter().getValue())) {
-					players.get(i).forciblyMove(p.position());
-				}
-			}
-		}
-		try {
-			h.setRoom(roomCard);
-		} catch (IllegalAccessException e) {
-			// this isn't possible
-		}
-		/* this statement prints the accusation text, according to the format:
-		 * NAME (accuses ACCUSED of murder)|(theorises it was [themself|ACCUSED]) with the WEAPON in the ROOM.
-		 */
-		String accused = null;
-		if (h.getCharacter().getValue().equals(p.getName())) {
-			accused = "themself";
-		} else { accused = h.getCharacter().getValue(); }
-		textUI.printText(p.getName() + ( isFinalAccusation?
-						" accuses "+ accused +" of "+ textUI.randomMurderDescription()
-						:" theorises that it was "+	accused )
-					+" with the "+ h.getWeapon() +" in the "+ h.getRoom() +".");
-		return h;
-	}
-
+	
 	/** This method is used when a player p wants to make a suggestion about
 	 * who they suspect the murderer is.
 	 *
@@ -440,19 +369,7 @@ public class Game {
 		}
 		return null;
 	}
-
-	/** Iff the given Card matches a player in the game, return true. */
-	public boolean isPlayer(Card character) {
-		for (Player p : players) {
-			if (p.getName().equals(character.getValue())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-
-
+	
 	/** The player has chosen to make an accusation! Assemble their
 	 * hypothesis, see if it equals the guilty one. If not, end them.
 	 * Otherwise, they win. The player list is cleared and the game
@@ -463,7 +380,7 @@ public class Game {
 	private boolean testAccusation(Player p) {
 		Theory h = makeTheory(p,true);
 		if (!h.equals(guilty)) {
-			textUI.printText(p.getName()+"'s guess was incorrect.");
+			textUI.printText(p.getName()+"'s accusation was proven false! "+ p.getName() +" has been barred from the investigation.");
 			p.kill();
 			toggleOccupied(p.position(),null);
 			return false;
@@ -480,6 +397,82 @@ public class Game {
 			return true;
 		}
 	}
+	
+	/** This method is called when a player wants to make an accusation or
+	 * a suggestion: each block prints part of their detective notebook and
+	 * waits for them to select which character, weapon and room they would
+	 * like to test with this guess.
+	 *
+	 * @param p The player making the guess
+	 * @return A hypothesis to be tested against the hands of the other players
+	 * or the guilty cards.
+	 */
+	private Theory makeTheory(Player p, boolean isFinalAccusation) {
+		Theory h = new Hypothesis();
+		textUI.printText(p.getName() +" is considering the evidence...");
+
+		textUI.printText("These are the possible guilty characters:");
+		textUI.printArray(textUI.createNotesToPrint(p, Card.Type.CHARACTER));
+		int select = textUI.askIntBetween("",1,Card.CHARACTERS.length)-1;
+		try {
+			h.setCharacter(new CardImpl(Card.Type.CHARACTER,Card.CHARACTERS[select]));
+		} catch (IllegalAccessException e) {
+			// this isn't actually possible
+		}
+
+		textUI.printText("These are the possible murder weapons:");
+		textUI.printArray(textUI.createNotesToPrint(p, Card.Type.WEAPON));
+		select = textUI.askIntBetween("",1,Card.WEAPONS.length)-1;
+		try {
+			h.setWeapon(new CardImpl(Card.Type.WEAPON,Card.WEAPONS[select]));
+		} catch (IllegalAccessException e) {
+			// this isn't possible
+		}
+
+		Card roomCard;
+		if (isFinalAccusation) {
+			textUI.printText("These are the possible murder locations:");
+			textUI.printArray(textUI.createNotesToPrint(p, Card.Type.ROOM));
+			select = textUI.askIntBetween("",1,Card.ROOMS.length)-1;
+			roomCard = new CardImpl(Card.Type.ROOM,Card.ROOMS[select]);
+		} else {
+			String room = getBoard().getRoom(p.position());
+			roomCard = new CardImpl(Card.Type.ROOM,room);
+			textUI.printText("In the "+ room +".");
+			for (int i=0; i < players.size(); i++) {
+				if (players.get(i).equalsName(h.getCharacter().getValue())) {
+					players.get(i).forciblyMove(p.position());
+				}
+			}
+		}
+		try {
+			h.setRoom(roomCard);
+		} catch (IllegalAccessException e) {
+			// this isn't possible
+		}
+		/* this statement prints the accusation text, according to the format:
+		 * NAME (accuses ACCUSED of murder)|(theorises it was [themself|ACCUSED]) with the WEAPON in the ROOM.
+		 */
+		String accused = null;
+		if (h.getCharacter().getValue().equals(p.getName())) {
+			accused = "themself";
+		} else { accused = h.getCharacter().getValue(); }
+		textUI.printText(p.getName() + ( isFinalAccusation?
+						" accuses "+ accused +" of "+ textUI.randomMurderDescription()
+						:" theorises that it was "+	accused )
+					+" with the "+ h.getWeapon() +" in the "+ h.getRoom() +".");
+		return h;
+	}
+
+	/** Iff the given Card matches a player in the game, return true. */
+	public boolean isPlayer(Card character) {
+		for (Player p : players) {
+			if (p.getName().equals(character.getValue())) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/** This method selects the guilty character, weapon and room and deals
 	 * the remaining cards to the players.
@@ -492,6 +485,8 @@ public class Game {
 	 * this information to create the guilty Hypothesis, then deals
 	 * the remaining cards to the players.
 	 * Leave any parameter(s) as null to select randomly.
+	 * 
+	 * This method exists only for testing purposes. 
 	 *
 	 * @param c Guilty character
 	 * @param w Guilty weapon
@@ -548,22 +543,6 @@ public class Game {
 		}
 	}
 
-	/** If there are spare cards, prints a message informing the user. */
-	private void showSpareCards(List<Card> subList) {
-		if (subList.size() < 1) {return;}
-		String list = "";
-		for (int i = 0; i < subList.size(); i++) {
-			if (i < subList.size()-2) {
-				list += subList.get(i) +", ";
-			} else if (i < subList.size()-1){
-				list += subList.get(i) +" ";
-			} else {
-				list += subList.get(i);
-			}
-		}
-		textUI.printText("Everyone knows that "+ textUI.toStringFromCards(subList) +" had nothing to do with the murder.");
-	}
-
 	/** Given the values of the guilty cards, this method assembles a shuffled list
 	 * containing the remaining innocent cards and returns it.
 	 *
@@ -599,6 +578,28 @@ public class Game {
 		return deck;
 	}
 
+	/** If there are spare cards, prints a message informing the user. */
+	private void showSpareCards(List<Card> subList) {
+		if (subList.size() < 1) {return;}
+		String list = "";
+		for (int i = 0; i < subList.size(); i++) {
+			if (i < subList.size()-2) {
+				list += subList.get(i) +", ";
+			} else if (i < subList.size()-1){
+				list += subList.get(i) +" ";
+			} else {
+				list += subList.get(i);
+			}
+		}
+		textUI.printText("Everyone knows that "+ textUI.toStringFromCards(subList) +" had nothing to do with the murder.");
+	}
+
+	
+	
+	
+	
+	
+	
 	// ---------------------------------------------------
 	// HELPER METHODS
 	// ---------------------------------------------------
@@ -633,13 +634,14 @@ public class Game {
 	}
 
 	/**
-	 * @return the bOARD
+	 * @return the Board object used by this game to calculate valid moves, 
+	 * player location etc. 
 	 */
 	public Board getBoard() {
 		return BOARD;
 	}
 
-	/** Returns the Hypothesis containing the guilty cards.*/
+	/** Returns the Theory containing the guilty cards.*/
 	public Theory getGuilty() {
 		return guilty;
 	}
@@ -652,40 +654,6 @@ public class Game {
 	 */
 	public List<Player> getPlayers() {
 		return Collections.unmodifiableList(players);
-	}
-
-	/** Given a coordinate, return a string describing its relative
-	 * position on the board.
-	 *
-	 * @param c
-	 * @return
-	 */
-	public String relativeBoardPosString(Coordinate c) {
-		String s = "Moving";
-		int pX = c.getX();
-		int pY = c.getY();
-
-		int division = (int)(getBoard().width() / 3 + 0.5);
-
-		/** a complex series of if statements to determine the player's location. */
-		if (pY < division) {
-			s = "north";
-		} else if (pY < division*2) {
-			s = "central";
-		} else {
-			s = "south";
-		}
-
-		if (pX < division) {
-			s += "-west";
-		} else if (pX < division*2) {
-			if (! (s.charAt(0) == 'c')) {
-				s += "-and-central";
-			}
-		} else {
-			s += "-east";
-		}
-		return s;
 	}
 
 	/* (non-Javadoc)
@@ -736,14 +704,12 @@ public class Game {
 	/** Given a player, prints the things they know are innocent.
 	 *
 	 * @param p
-	 * @param breakAfter
 	 * @throws ActingOutOfTurnException 
 	 */
-	private void viewHand(Player p, boolean breakAfter) throws ActingOutOfTurnException {
+	private void viewHand(Player p) throws ActingOutOfTurnException {
 		if (!p.equals(players.get(activePlayer))) { throw new ActingOutOfTurnException(); }
 		Collection<Card> hand = p.getHand();
-		textUI.printText(textUI.capitalise(textUI.toStringFromCollection(hand)));
-		if (breakAfter) { textUI.printText(""); }
+		textUI.printText(textUI.capitalise(textUI.toStringFromCollection(hand))+"\n");
 	}
 
 }

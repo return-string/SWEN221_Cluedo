@@ -21,7 +21,7 @@ import javax.management.InvalidAttributeValueException;
 
 /**
  *
- * @author badiJames
+ * @author Badi James
  *
  */
 public class TextUI {
@@ -93,7 +93,7 @@ public class TextUI {
 		}
 	}
 
-	public void printList(List<? extends String> list) {
+	public void printList(List<String> list) {
 		System.out.println();
 		int i = 0;
 		for(String s : list) {
@@ -106,7 +106,6 @@ public class TextUI {
 	 * 	"cumin, beans and cheese".
 	 */
 	public String toStringFromCollection(Collection<?> coll) {
-		System.out.println();
 		String string = "";
 		int i = 0;
 		for(Object o : coll) {
@@ -117,28 +116,10 @@ public class TextUI {
 			} else {
 				string += o.toString() +", ";
 			}
+			i++;
 		}
 		return string;
 	}
-
-//	/** Returns the given list as a grammatically-sound String, eg:
-//	 * 	"cumin, beans and cheese".
-//	 */
-//	public String toStringFromStrings(List<? extends String> list) {
-//		System.out.println();
-//		String string = "";
-//		int i = 0;
-//		for(String s : list) {
-//			if (i == list.size() - 1) {
-//				string += s;
-//			} else if (i == list.size() - 2) {
-//				string += s +" and ";
-//			} else {
-//				string += s +", ";
-//			}
-//		}
-//		return string;
-//	}
 
 	/** Returns the given list as a grammatically-sound String, eg:
 	 * "Miss Scarlet, pipe and conservatory".
@@ -174,8 +155,9 @@ public class TextUI {
 	 * @return User inputed integer
 	 */
 	public int askIntBetween(String question, int min, int max){
+		if (min > max) { throw new IllegalArgumentException(); }
 		System.out.println();
-		System.out.print(question + PROMPT + NEWLINE);
+		System.out.print(question + (min!=max? PROMPT:"") + NEWLINE);
 		int answer = receiveInteger();
 
 		while(answer < min || answer > max){
@@ -426,12 +408,12 @@ public class TextUI {
 	 * @param c
 	 * @return
 	 */
-	public String relativeBoardPosString(Game game, Coordinate c) {
+	public String relativeBoardPosString(int boardwidth, Coordinate c) {
 		String s = "Moving";
 		int pX = c.getX();
 		int pY = c.getY();
 
-		int division = (int)(game.getBoard().width() / 3 + 0.5);
+		int division = (int)(boardwidth / 3 + 0.5);
 
 		/** a complex series of if statements to determine the player's location. */
 		if (pY < division) {
@@ -460,16 +442,16 @@ public class TextUI {
 	 * @param p
 	 * @throws ActingOutOfTurnException
 	 */
-	public void printPlayerStatus(Game game, Player p) throws ActingOutOfTurnException {
+	public void printPlayerStatus(int boardwidth, Player p, String roomName) throws ActingOutOfTurnException {
 		if (p.isPlaying()) {
 			printText(p.getName() +"'s turn begins in the "+
-					relativeBoardPosString(game, p.position()) + " "+ game.getBoard().getRoom(p.position()));
+					relativeBoardPosString(boardwidth, p.position()) + " "+ roomName);
 		} else { // if they're not playing, just print something interesting.
 			printText(p.getName() + " " + randomDeathMessage());
 		}
 	}
 
-	public List<String> printPlayerOptions(Board b, Player p) {
+	public List<String> printPlayerOptions(String room, Player p) {
 		List<String> options = new ArrayList<String>();
 		/* if the player is in a room, give them the option to make a suggestion.
 		 * Otherwise limit their options to making an accusation, viewing their
@@ -477,7 +459,7 @@ public class TextUI {
 		options.add(OPT_HAND);
 		options.add(OPT_NOTES);
 		if (p.hasMoved()) {
-			if (!b.getRoom(p.position()).equals(Board.HALLWAYSTRING)) {
+			if (!room.equals(Board.HALLWAYSTRING)) {
 				options.add(OPT_SUGGEST);
 			}
 			options.add(OPT_ACCUSE);
@@ -493,29 +475,24 @@ public class TextUI {
 
 	/** This repeatedly calls textUI.printArray and createNotesToPrint
 	 * to print the player's detective notebook.
-	 * @param game TODO
 	 * @param p
 	 * @throws ActingOutOfTurnException
 	 */
-	public void viewNotebook(Game game, Player p) throws ActingOutOfTurnException {
-		if (game.getActivePlayer() < 0 || game.getPlayers().indexOf(p) != game.getActivePlayer()) {
-			throw new ActingOutOfTurnException();
-		}
+	public void viewNotebook(Player p) throws ActingOutOfTurnException {
 		printDivide();
-		printArray(game.textUI.createNotesToPrint(game, p,Card.Type.CHARACTER));
-		printArray(game.textUI.createNotesToPrint(game, p,Card.Type.WEAPON));
-		printArray(game.textUI.createNotesToPrint(game, p,Card.Type.ROOM));
+		printArray(createNotesToPrint(p, Card.Type.CHARACTER));
+		printArray(createNotesToPrint(p, Card.Type.WEAPON));
+		printArray(createNotesToPrint(p, Card.Type.ROOM));
 		printDivide();
 	}
 
 	/** Creates an array of the cards of a given type and, for each card,
 	 * adds this to an array of strings, with empty open brackets if
 	 * unproven and an X if proven innocent.
-	 * @param game TODO
 	 * @param p
 	 * @param t TODO
 	 */
-	public String[] createNotesToPrint(Game game, Player p, Card.Type t) {
+	public String[] createNotesToPrint(Player p, Card.Type t) {
 		String[] printing;
 		String[] from;
 		if (t == Card.Type.CHARACTER) {

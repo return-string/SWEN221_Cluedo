@@ -294,7 +294,7 @@ public final class Hypothesis implements Theory {
 			total += o.getWeapon().compareTo(getCharacter())*5;
 			total += o.getCharacter().compareTo(getCharacter())*7;
 		return total;
-	} 
+	}
 
 	public class HypothesisIter implements Iterator<Card> {
 		int idx = 0;
@@ -302,7 +302,7 @@ public final class Hypothesis implements Theory {
 
 		@Override
 		public boolean hasNext() {
-			return idx != 2;
+			return idx != 3;
 		}
 
 		@Override
