@@ -2,6 +2,7 @@ package tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.fail;
 import game.Card;
 import game.CardImpl;
 import game.Game;
@@ -17,8 +18,8 @@ import org.junit.Test;
 public class CardTests {
 	private static final long seed = 304494949;
 
-	public static List<CardImpl> sameDeck() {
-		List<CardImpl> deck = Game.createNewDeck(Card.SCARLET,Card.DAGGER,Card.CONSERVATORY);
+	public static List<Card> sameDeck() {
+		List<Card> deck = Game.createNewDeck(Card.SCARLET,Card.DAGGER,Card.CONSERVATORY);
 		Collections.sort(deck);
 		Collections.shuffle(deck, new Random(seed));
 		return deck;
@@ -51,10 +52,10 @@ public class CardTests {
 	@Test
 	/** Tests the natural sort of Cards */
 	public void test2_cardSort1() {
-		List<CardImpl> cards = sameDeck();
+		List<Card> cards = sameDeck();
 		assertEquals(cards,sameDeck());
 		Collections.sort(cards);
-		List<CardImpl> deck = sameDeck();
+		List<Card> deck = sameDeck();
 		Collections.sort(deck);
 		assertEquals(cards,deck);
 	}
@@ -132,7 +133,7 @@ public class CardTests {
 		assertNotEquals(new CardImpl(Card.Type.ROOM, Card.CONSERVATORY).hashCode(),
 				new CardImpl(Card.Type.CHARACTER, Card.PLUM).hashCode());
 	}
-	
+
 	@Test
 	public void test8_indexOf() {
 		assertEquals(CardImpl.indexOf(Card.Type.CHARACTER, Card.MUSTARD),1);

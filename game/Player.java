@@ -19,9 +19,9 @@ import java.util.List;
 public class Player implements Comparable<Player> {
 	public final String NAME;
 
-	private List<CardImpl> hand;
+	private List<Card> hand;
 	private boolean isPlaying = true;
-	private HashSet<CardImpl> guiltMap;
+	private HashSet<Card> guiltMap;
 	private Coordinate pos;
 	private boolean stopGivingCards = false;
 	private boolean wasForced = false;
@@ -29,16 +29,16 @@ public class Player implements Comparable<Player> {
 
 	public Player(String characterName, Coordinate startPos) {
 		this.NAME = characterName;
-		this.hand = new ArrayList<CardImpl>();
+		this.hand = new ArrayList<Card>();
 		this.pos = startPos;
-		this.guiltMap = new HashSet<CardImpl>();
+		this.guiltMap = new HashSet<Card>();
 	}
 
 	public Player(String characterName) {
 		this.NAME = characterName;
-		this.hand = new ArrayList<CardImpl>();
+		this.hand = new ArrayList<Card>();
 		this.pos = Card.getCoordinate(characterName);
-		this.guiltMap = new HashSet<CardImpl>();
+		this.guiltMap = new HashSet<Card>();
 	}
 
 	/** Construct a player with a given hand and mark all the cards as innocent.
@@ -46,25 +46,25 @@ public class Player implements Comparable<Player> {
 	 * @param c
 	 * @param h
 	 */
-	public Player(String characterName, List<CardImpl> hand, Coordinate startPos) {
+	public Player(String characterName, List<Card> hand, Coordinate startPos) {
 		this.NAME = characterName;
 		this.hand = hand;
 		this.pos = startPos;
-		for (CardImpl card : hand) {
+		for (Card card : hand) {
 			vindicate(card);
 		}
-		this.guiltMap = new HashSet<CardImpl>();
+		this.guiltMap = new HashSet<Card>();
 	}
 
 	/** This method should only be used for debugging/testing.
 	 *
 	 * @return This player's List of cards in their hand.
 	 */
-	public List<CardImpl> getHand() {
+	public List<Card> getHand() {
 		return Collections.unmodifiableList(hand);
 	}
 
-	/** Updates the player's coordinates. 
+	/** Updates the player's coordinates.
 	 * @throws ActingOutOfTurnException */
 	public void move(Coordinate pos) throws ActingOutOfTurnException {
 		stopGivingCards = true;
@@ -79,7 +79,7 @@ public class Player implements Comparable<Player> {
 		this.pos = pos;
 		wasForced = true;
 	}
-	
+
 	/** When a player's turn is ended, call this method to allow them to move again. */
 	public void enableMovement() {
 		hasMoved = false;
@@ -89,9 +89,9 @@ public class Player implements Comparable<Player> {
 	 *
 	 * @param c CardImpl to add to this player's hand.
 	 * @return Whether the card was successfully added or not.
-	 * @throws GameStateModificationException 
+	 * @throws GameStateModificationException
 	 */
-	public boolean giveCard(CardImpl c) throws GameStateModificationException {
+	public boolean giveCard(Card c) throws GameStateModificationException {
 		if (stopGivingCards) { throw new GameStateModificationException("Cannot add cards to a player's hand once they have acted!"); }
 		if (c != null) {
 			if (hand.contains(c)) {
@@ -116,9 +116,9 @@ public class Player implements Comparable<Player> {
 	 *
 	 * This is... really not a safe method to have for networked play. Grr. Any alternatives?
 	 */
-	public List<CardImpl> refuteHypothesis(Hypothesis h) {
-		List<CardImpl> l = new ArrayList<CardImpl>();
-		for (CardImpl c : hand) {
+	public List<Card> refuteHypothesis(Hypothesis h) {
+		List<Card> l = new ArrayList<Card>();
+		for (Card c : hand) {
 			if (h.contains(c)) {
 				l.add(c);
 			}
@@ -134,7 +134,7 @@ public class Player implements Comparable<Player> {
 	/** A player vindicates a card when it is shown to them by another player.
 	 * @param CardImpl CardImpl to vindicate for this Player
 	 */
-	public void vindicate(CardImpl c) {
+	public void vindicate(Card c) {
 		guiltMap.add(c);
 	}
 
@@ -153,7 +153,7 @@ public class Player implements Comparable<Player> {
 	public boolean wasForced() {
 		return wasForced;
 	}
-	
+
 	public boolean hasMoved() {
 		return hasMoved;
 	}

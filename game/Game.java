@@ -154,9 +154,9 @@ public class Game {
 	}
 
 	/** Add a player to the game, using the integer index of the player's name
-	 * declared in the CardImpl.CHARACTERS array. 
-	 * 
-	 * @param nameIndex 
+	 * declared in the CardImpl.CHARACTERS array.
+	 *
+	 * @param nameIndex
 	 * @throws GameStateModificationException If this method is called after play begins.
 	 */
 	public void addPlayer(int nameIndex) throws GameStateModificationException {
@@ -399,7 +399,7 @@ public class Game {
 		 */
 		int i = (activePlayer+1) % players.size();;
 		do {
-			List<CardImpl> l = players.get(i).refuteHypothesis(h);
+			List<Card> l = players.get(i).refuteHypothesis(h);
 			if (l.size() > 0) {
 				// the ternary check just says: if this is new information to the asking player, mention that fact in the printout.
 				textUI.printText(players.get(i).getName() +" shares some "+ (p.isInnocent(l.get(0))? "":"new ") +"evidence with "+ p.getName() +".");
@@ -423,7 +423,7 @@ public class Game {
 	}
 
 	/** Iff the given CardImpl matches a player in the game, return true. */
-	public boolean isPlayer(CardImpl character) {
+	public boolean isPlayer(Card character) {
 		for (Player p : players) {
 			if (p.getName().equals(character.getValue())) {
 				return true;
@@ -498,7 +498,7 @@ public class Game {
 								new CardImpl(Card.Type.WEAPON, w),
 								new CardImpl(Card.Type.ROOM, r));
 
-		ArrayList<CardImpl> deck = createNewDeck(c, w, r); // creates, shuffles a new deck of cards
+		List<Card> deck = createNewDeck(c, w, r); // creates, shuffles a new deck of cards
 		int remainder = (Card.DECKSIZE-3) % players.size();
 		int handSize = (Card.DECKSIZE-3-remainder) / players.size();
 
@@ -527,7 +527,7 @@ public class Game {
 			showSpareCards(deck.subList(cardIdx, deck.size()));
 			// then ensure every player has these cards marked off...
 			for (Player p : players) {
-				for (CardImpl spareCard : deck.subList(cardIdx,deck.size())) {
+				for (Card spareCard : deck.subList(cardIdx,deck.size())) {
 					p.vindicate(spareCard);
 				}
 			}
@@ -535,7 +535,7 @@ public class Game {
 	}
 
 	/** If there are spare cards, prints a message informing the user. */
-	private void showSpareCards(List<CardImpl> subList) {
+	private void showSpareCards(List<Card> subList) {
 		if (subList.size() < 1) {return;}
 		String list = "";
 		for (int i = 0; i < subList.size(); i++) {
@@ -558,8 +558,8 @@ public class Game {
 	 * @param r One of the ROOM strings.
 	 * @return A shuffled list of the remaining cards, ready to be dealt to players.
 	 */
-	public static ArrayList<CardImpl> createNewDeck(String c, String w, String r) {
-		ArrayList<CardImpl> deck = new ArrayList<CardImpl>();
+	public static List<Card> createNewDeck(String c, String w, String r) {
+		ArrayList<Card> deck = new ArrayList<Card>();
 		if (c == null || w == null || r == null) {
 			throw new IllegalArgumentException("Parameters cannot be null when creating a deck.");
 		}
@@ -716,11 +716,11 @@ public class Game {
 	 *
 	 * @param p
 	 * @param breakAfter
-	 * @throws ActingOutOfTurnException 
+	 * @throws ActingOutOfTurnException
 	 */
 	private void viewHand(Player p, boolean breakAfter) throws ActingOutOfTurnException {
 		if (!p.equals(players.get(activePlayer))) { throw new ActingOutOfTurnException(); }
-		Collection<CardImpl> hand = p.getHand();
+		Collection<Card> hand = p.getHand();
 		textUI.printText(textUI.capitalise(textUI.toStringFromCollection(hand)));
 		if (breakAfter) { textUI.printText(""); }
 	}

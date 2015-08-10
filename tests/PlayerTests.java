@@ -40,7 +40,7 @@ public class PlayerTests {
 		Collections.sort(players);
 		assertEquals(players.toString() +" \n=/=\n "+ ps2.toString()+"\n",ps2,players);
 	}
-	
+
 	/** Tests updating of player position */
 	@Test
 	public void test2_playerMovement1() {
@@ -54,7 +54,7 @@ public class PlayerTests {
 		} // player doesn't check its moves
 		assertNotEquals(c,white.position());
 	}
-	
+
 	/** Tests invalid player moves */
 	@Test
 	public void test3_playerMovement2() {
@@ -71,13 +71,13 @@ public class PlayerTests {
 		}
 		fail();
 	}
-	
+
 	/** Tests that adding cards to hand also marks them innocent */
 	@Test
 	public void test4_vindication1() {
 		Player white = new Player(Card.WHITE);
-		List<CardImpl> hand = white.getHand();
-		for(CardImpl c : hand) {
+		List<Card> hand = white.getHand();
+		for(Card c : hand) {
 			assertTrue(white.isInnocent(c));
 			assertTrue(white.isInnocent(c.getType(), c.getValue()));
 			if (!c.getType().equals(Card.Type.CHARACTER)) {
@@ -85,7 +85,7 @@ public class PlayerTests {
 			} else {
 				assertFalse(white.isInnocent(Card.Type.ROOM, c.getValue()));
 			}
-			
+
 		}
 	}
 }

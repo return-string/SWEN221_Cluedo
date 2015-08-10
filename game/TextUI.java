@@ -113,36 +113,17 @@ public class TextUI {
 		return string;
 	}
 
-//	/** Returns the given list as a grammatically-sound String, eg:
-//	 * 	"cumin, beans and cheese".
-//	 */
-//	public String toStringFromStrings(List<? extends String> list) {
-//		System.out.println();
-//		String string = "";
-//		int i = 0;
-//		for(String s : list) {
-//			if (i == list.size() - 1) {
-//				string += s;
-//			} else if (i == list.size() - 2) {
-//				string += s +" and ";
-//			} else {
-//				string += s +", ";
-//			}
-//		}
-//		return string;
-//	}
-
 	/** Returns the given list as a grammatically-sound String, eg:
 	 * "Miss Scarlet, pipe and conservatory".
 	 */
-	public String toStringFromCards(List<? extends CardImpl> list) {
+	public String toStringFromCards(List<Card> cardList) {
 		System.out.println();
 		String string = "";
 		int i = 0;
-		for(CardImpl s : list) {
-			if (i == list.size() - 1) {
+		for(Card s : cardList) {
+			if (i == cardList.size() - 1) {
 				string += s.getValue();
-			} else if (i == list.size() - 2) {
+			} else if (i == cardList.size() - 2) {
 				string += s.getValue() +" and ";
 			} else {
 				string += s.getValue() +", ";
@@ -309,7 +290,7 @@ public class TextUI {
 						   + "information about the murder from the other players.");
 		} else if (page == 3) { // suggestions and accusations
 			printText("-- "+ HELP_OPTIONS[3].toUpperCase());
-			printText("Suggestions can be made when you start your turn in a new room.\n"
+			printText("Suggestions can be made when you are in any room.\n"
 						   + "This room will be part of your suggestion. Choose the character and weapon\n"
 						   + "to complete the suggestion, and then (following turn order) if a player\n"
 						   + "holds a card that can refute any part of your hypothesis, they'll show it\n "
@@ -531,7 +512,7 @@ public class TextUI {
 	}
 
 	/** Capitalises the first word in the given string. Assumes the string
-	 * is valid and the first character is alphabetic. 
+	 * is valid and the first character is alphabetic.
 	 * @param string
 	 * @return
 	 */
