@@ -1,6 +1,7 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class Player implements Comparable<Player> {
 	private boolean isPlaying = true;
 	private HashSet<Card> guiltMap;
 	private Coordinate pos;
+	private boolean stopGivingCards = false;
 	private boolean wasForced = false;
 	private boolean hasMoved = false;
 
@@ -35,7 +37,7 @@ public class Player implements Comparable<Player> {
 	public Player(String characterName) {
 		this.NAME = characterName;
 		this.hand = new ArrayList<Card>();
-		this.pos = Card.getStart(characterName);
+		this.pos = Card.getCoordinate(characterName);
 		this.guiltMap = new HashSet<Card>();
 	}
 
@@ -59,12 +61,13 @@ public class Player implements Comparable<Player> {
 	 * @return This player's List of cards in their hand.
 	 */
 	public List<Card> getHand() {
-		return hand;
+		return Collections.unmodifiableList(hand);
 	}
 
-	/** Updates the player's coordinates. 
+	/** Updates the player's coordinates.
 	 * @throws ActingOutOfTurnException */
 	public void move(Coordinate pos) throws ActingOutOfTurnException {
+		stopGivingCards = true;
 		if (hasMoved) { throw new ActingOutOfTurnException(); }
 		this.pos = pos;
 		wasForced = false;
@@ -76,18 +79,20 @@ public class Player implements Comparable<Player> {
 		this.pos = pos;
 		wasForced = true;
 	}
-	
+
 	/** When a player's turn is ended, call this method to allow them to move again. */
-	public void canMove() {
+	public void enableMovement() {
 		hasMoved = false;
 	}
 
 	/** When play begins, cards should be dealt to Players using this method.
 	 *
-	 * @param c Card to add to this player's hand.
+	 * @param c CardImpl to add to this player's hand.
 	 * @return Whether the card was successfully added or not.
+	 * @throws GameStateModificationException
 	 */
-	public boolean giveCard(Card c) {
+	public boolean giveCard(Card c) throws GameStateModificationException {
+		if (stopGivingCards) { throw new GameStateModificationException("Cannot add cards to a player's hand once they have acted!"); }
 		if (c != null) {
 			if (hand.contains(c)) {
 				throw new IllegalArgumentException("Player "+ getName() +" hand cannot contain duplicate cards!");
@@ -127,7 +132,7 @@ public class Player implements Comparable<Player> {
 	}
 
 	/** A player vindicates a card when it is shown to them by another player.
-	 * @param Card Card to vindicate for this Player
+	 * @param CardImpl CardImpl to vindicate for this Player
 	 */
 	public void vindicate(Card c) {
 		guiltMap.add(c);
@@ -138,7 +143,7 @@ public class Player implements Comparable<Player> {
 	}
 
 	public boolean isInnocent(Card.Type t, String c) {
-		return guiltMap.contains(new Card(t,c));
+		return guiltMap.contains(new CardImpl(t,c));
 	}
 
 	public boolean isPlaying() {
@@ -148,7 +153,7 @@ public class Player implements Comparable<Player> {
 	public boolean wasForced() {
 		return wasForced;
 	}
-	
+
 	public boolean hasMoved() {
 		return hasMoved;
 	}

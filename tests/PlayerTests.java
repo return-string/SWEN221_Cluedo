@@ -3,6 +3,8 @@ package tests;
 import static org.junit.Assert.*;
 import game.ActingOutOfTurnException;
 import game.Card;
+import game.CardImpl;
+import game.CardImpl;
 import game.Coordinate;
 import game.Player;
 
@@ -38,7 +40,7 @@ public class PlayerTests {
 		Collections.sort(players);
 		assertEquals(players.toString() +" \n=/=\n "+ ps2.toString()+"\n",ps2,players);
 	}
-	
+
 	/** Tests updating of player position */
 	@Test
 	public void test2_playerMovement1() {
@@ -52,7 +54,7 @@ public class PlayerTests {
 		} // player doesn't check its moves
 		assertNotEquals(c,white.position());
 	}
-	
+
 	/** Tests invalid player moves */
 	@Test
 	public void test3_playerMovement2() {
@@ -69,7 +71,7 @@ public class PlayerTests {
 		}
 		fail();
 	}
-	
+
 	/** Tests that adding cards to hand also marks them innocent */
 	@Test
 	public void test4_vindication1() {
@@ -83,7 +85,7 @@ public class PlayerTests {
 			} else {
 				assertFalse(white.isInnocent(Card.Type.ROOM, c.getValue()));
 			}
-			
+
 		}
 	}
 }

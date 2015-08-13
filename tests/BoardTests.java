@@ -1,7 +1,7 @@
 package tests;
 import static org.junit.Assert.*;
 import game.Board;
-import game.Card;
+import game.CardImpl;
 import game.Coordinate;
 import game.Game;
 import game.Player;
