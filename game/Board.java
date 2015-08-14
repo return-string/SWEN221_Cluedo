@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 /**
- * 
+ *
  * @author Badi James
  *
  */
@@ -76,18 +76,27 @@ public class Board {
 			pathFringe.offer(new PathFringeEntry(startSquare, null, 0));
 			do{
 				PathFringeEntry current = pathFringe.poll();
+//				System.out.printf("Looking at %s\n", current.square.getClosestCoordinate(start).toString());
 				current.square.setVisited(true);
 				//if it finds the room it's currently looking for
 				if(current.square.getRoom().equals(rm)){
+//					System.out.printf("Found room %s!\n", rm);
 					if(current.distance <= steps){//if can get to it this turn
+//						System.out.printf("Can enter %s on this turn\n", rm);
 						descriptionString = "Enter the " + rm;
 						moveCoord = current.square.getClosestCoordinate(start);
 					} else { //finds the square player can reach closest to room
+//						System.out.printf("Backtracking to find closest square player can move to\n");
 						int finalLength = current.distance;
+//						System.out.printf("%s %d squares away from player\n", rm, finalLength);
 						PathFringeEntry roomEntry = current;
 						while(roomEntry.distance > steps){
+//							System.out.printf("Backtracking to %s, %d squares away from player\n",
+//									roomEntry.square.getClosestCoordinate(start).toString(), roomEntry.distance);
 							roomEntry = roomEntry.from;
 						}
+//						System.out.printf("Player can move to %s, %d squares away from player\n",
+//								roomEntry.square.getClosestCoordinate(start).toString(), roomEntry.distance);
 						int stepsToRoom = finalLength - steps;
 						descriptionString = stepsToRoom + " steps away from " + rm;
 						moveCoord = roomEntry.square.getACoordinate();
@@ -96,6 +105,7 @@ public class Board {
 									descriptionString);
 						}
 					}
+//					System.out.println("Putting move on map to return");
 					moves.put(moveCoord, descriptionString);
 					clearVisits();
 					break;
@@ -104,9 +114,11 @@ public class Board {
 					 * puts all the neighbours on the fringe if they haven't been visited
 					 * and they are not occupied, with this entry as their 'from' and an
 					 * incremented 'dist' (path length)*/
+//					System.out.println("Putting neighbours on fringe");
 					if(!current.square.isRoom() || current.distance == 0){
 						for(BoardSquare neighbour : current.square.getNeighbours()){
 							if(!neighbour.isVisited() && !neighbour.isOccupied()){
+//								System.out.printf("Putting %s on fringe\n", neighbour.getClosestCoordinate(start).toString());
 								pathFringe.offer(new PathFringeEntry(neighbour, current,
 										current.distance+1));
 							}
@@ -117,15 +129,15 @@ public class Board {
 		}
 		return moves;
 	}
-	
+
 	/**
-	 * Used when adding to a description of steps to room from a square to preserve the 
+	 * Used when adding to a description of steps to room from a square to preserve the
 	 * order of the description.
-	 * 
+	 *
 	 * Splits up the description to find a place to insert the addition, then rebuilds.
 	 * Keeps the order shortest to longest.
-	 * 
-	 * @param description Current description of steps to rooms from a square 
+	 *
+	 * @param description Current description of steps to rooms from a square
 	 * @param add Description of steps to a particular room to add
 	 * @return Updated description
 	 */
@@ -218,7 +230,7 @@ public class Board {
 	public int width() {
 		return squares.length;
 	}
-	
+
 	public int height() {
 		return squares[0].length;
 	}

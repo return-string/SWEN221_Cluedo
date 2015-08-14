@@ -725,4 +725,14 @@ public class Game {
 		if (breakAfter) { textUI.printText(""); }
 	}
 
+	public void printRules() {
+		textUI.printRules();
+
+	}
+
+	public void printDiceRoll() {
+		System.out.println(RNG.nextInt(6) + 1);
+
+	}
+
 }

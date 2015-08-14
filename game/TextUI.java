@@ -318,6 +318,49 @@ public class TextUI {
 		return select;
 	}
 
+	public void printRules(){
+		printText("-- "+ HELP_OPTIONS[0].toUpperCase());
+		printText("You and your fellow detectives have been invited to stay at the home\n"
+						+"of known recluse Dr. Body. However, one morning, you all wake only to be\n"
+						+"informed that Dr. Body is nowhere to be found. Then word arrives that he\n"
+						+"has been discovered some distance from his estate--murdered!\n"
+						+"The body has clearly been moved and you are prevented from seeing it, \n"
+						+"but the house has been left otherwise untouched so you may pursue your\n"
+						+"investigations, and now it is up to you to solve this grisly crime.");
+		printText("-- "+ HELP_OPTIONS[1].toUpperCase());
+		printText( "First, exit this help menu. How else will you start?\n"
+						+ "Play begins once a number of players has been entered, between 3 and 6,\n"
+						+ "and you have selected the character you want to play. \n"
+						+ "All players then take turns moving, making suggestions and using the\n"
+						+ "information they gather to deduce who killed Dr. Body. \n"
+						+ "You're all competing against each other, so be sure to end your turn\n"
+						+ "fully before you hand the controls to the next player!");
+		printText("-- "+ HELP_OPTIONS[2].toUpperCase());
+		printText("When your turn starts, you will be able to move your piece or check your\n"
+					   + "notes. The game rolls between 1 and 6 spaces for you to move and works\n"
+					   + "out the best squares for you to move to. Select one to move!\n"
+					   + "If you can, move into a new room and make a suggestion to learn\n"
+					   + "information about the murder from the other players.");
+		printText("-- "+ HELP_OPTIONS[3].toUpperCase());
+		printText("Suggestions can be made when you are in any room.\n"
+					   + "This room will be part of your suggestion. Choose the character and weapon\n"
+					   + "to complete the suggestion, and then (following turn order) if a player\n"
+					   + "holds a card that can refute any part of your hypothesis, they'll show it\n "
+					   + "to you. (If you accuse a player, they'll move into the room too.)\n"
+					   + "Accusations are how you win (or lose) the game. Once you are certain who,\n"
+					   + "what and where, choose 'Make final accusation' and enter your results.\n"
+					   + "If you are correct, you win! If you are wrong, you are out of the game (but\n"
+					   + "your cards can still be used to refute other players' suggestions).");
+		printText("-- "+ HELP_OPTIONS[4].toUpperCase());
+		printText("Whoever makes the first correct final accusation wins the game! If only\n"
+					   + "one player is left, they win by default.");
+		printText("-- "+ HELP_OPTIONS[5].toUpperCase());
+		printText("Shame on you! Your dear friend? Slightly socially-awkward recluse?\n"
+				       + "Invited you to stay here out of the kindness of his heart?"
+				       + "\nYes, *that* Dr. Body!");
+
+	}
+
 	/** Returns a random message, such that it completes the phrase:
 	 * CHARACTER_NAME accuses ACCUSED_NAME of _____________ in the ROOM with the WEAPON */
 	String randomMurderDescription() {

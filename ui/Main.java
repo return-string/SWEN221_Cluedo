@@ -19,6 +19,7 @@ public class Main {
 	public static void main(String[] args) {
 		Game g = new Game();
 		try {
+			new CluedoFrame(g);
 			g.startGame();
 		} catch (ActingOutOfTurnException e) {
 			e.printStackTrace();
