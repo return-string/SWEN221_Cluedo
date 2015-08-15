@@ -701,4 +701,14 @@ public class Game {
 		textUI.printText(textUI.capitalise(textUI.toStringFromCollection(hand))+"\n");
 	}
 
+	public void printRules() {
+		textUI.printRules();
+
+	}
+
+	public void printDiceRoll() {
+		System.out.println(RNG.nextInt(6) + 1);
+
+	}
+
 }
