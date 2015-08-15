@@ -88,7 +88,7 @@ public class TextUI {
 
 	public void printArray(String[] textArray){
 		System.out.println();
-		for(int i = 0; i < textArray.length; i++){
+		for(int i = 0; i < textArray.length; i++) {
 			System.out.printf("%d : %s\n", i+1, textArray[i]);
 		}
 	}
@@ -102,9 +102,7 @@ public class TextUI {
 		}
 	}
 
-	/** Returns the given list as a grammatically-sound String, eg:
-	 * 	"cumin, beans and cheese".
-	 */
+	
 	public String toStringFromCollection(Collection<?> coll) {
 		String string = "";
 		int i = 0;
@@ -299,7 +297,7 @@ public class TextUI {
 						   + "information about the murder from the other players.");
 		} else if (page == 3) { // suggestions and accusations
 			printText("-- "+ HELP_OPTIONS[3].toUpperCase());
-			printText("Suggestions can be made when you start your turn in a new room.\n"
+			printText("Suggestions can be made when you are in any room.\n"
 						   + "This room will be part of your suggestion. Choose the character and weapon\n"
 						   + "to complete the suggestion, and then (following turn order) if a player\n"
 						   + "holds a card that can refute any part of your hypothesis, they'll show it\n "
@@ -516,7 +514,7 @@ public class TextUI {
 	}
 
 	/** Capitalises the first word in the given string. Assumes the string
-	 * is valid and the first character is alphabetic. 
+	 * is valid and the first character is alphabetic.
 	 * @param string
 	 * @return
 	 */

@@ -2,6 +2,7 @@ package tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.fail;
 import game.Card;
 import game.CardImpl;
 import game.Game;
@@ -132,7 +133,7 @@ public class CardTests {
 		assertNotEquals(new CardImpl(Card.Type.ROOM, Card.CONSERVATORY).hashCode(),
 				new CardImpl(Card.Type.CHARACTER, Card.PLUM).hashCode());
 	}
-	
+
 	@Test
 	public void test8_indexOf() {
 		assertEquals(CardImpl.indexOf(Card.Type.CHARACTER, Card.MUSTARD),1);

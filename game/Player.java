@@ -64,7 +64,7 @@ public class Player implements Comparable<Player> {
 		return Collections.unmodifiableList(hand);
 	}
 
-	/** Updates the player's coordinates. 
+	/** Updates the player's coordinates.
 	 * @throws ActingOutOfTurnException */
 	public void move(Coordinate pos) throws ActingOutOfTurnException {
 		stopGivingCards = true;
@@ -79,7 +79,7 @@ public class Player implements Comparable<Player> {
 		this.pos = pos;
 		wasForced = true;
 	}
-	
+
 	/** When a player's turn is ended, call this method to allow them to move again. */
 	public void enableMovement() {
 		hasMoved = false;
@@ -89,7 +89,7 @@ public class Player implements Comparable<Player> {
 	 *
 	 * @param c Card to add to this player's hand.
 	 * @return Whether the card was successfully added or not.
-	 * @throws GameStateModificationException 
+	 * @throws GameStateModificationException
 	 */
 	public boolean giveCard(Card c) throws GameStateModificationException {
 		if (stopGivingCards) { throw new GameStateModificationException("Cannot add cards to a player's hand once they have acted!"); }
@@ -153,7 +153,7 @@ public class Player implements Comparable<Player> {
 	public boolean wasForced() {
 		return wasForced;
 	}
-	
+
 	public boolean hasMoved() {
 		return hasMoved;
 	}

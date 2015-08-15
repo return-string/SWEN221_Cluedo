@@ -41,7 +41,7 @@ public class GameTests {
 		System.out.println("\tTEST EMPTY PLAYER SET EQUALITY");
 		Game g1 = new Game();
 		Game g2 = new Game();
-		assertTrue(g1.toString() +" != "+ g2.toString(), g1.getPlayers().equals(g2.getPlayers()));
+		assertEquals("",g1.getPlayers(),g2.getPlayers());
 	}
 
 	@Test

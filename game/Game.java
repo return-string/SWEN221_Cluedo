@@ -169,7 +169,7 @@ public class Game {
 	/** Add a player to the game, using the integer index of the player's name
 	 * declared in the Card.CHARACTERS array. 
 	 * 
-	 * @param nameIndex 
+	 * @param nameIndex
 	 * @throws GameStateModificationException If this method is called after play begins.
 	 */
 	public void addPlayer(int nameIndex) throws GameStateModificationException {
@@ -278,19 +278,19 @@ public class Game {
 		boolean turnContinues = true; // true if the turn continues after choosing this option
 
 		// if they want to move...
-		if (option.equals(textUI.OPT_MOVE)) {
+		if (option.equals(TextUI.OPT_MOVE)) {
 			textUI.printText("ROLL TO MOVE");
 			playerMovePhase(p);
 		}
 		// if they want to make a guess...
-		else if (option.equals(textUI.OPT_SUGGEST)) {
+		else if (option.equals(TextUI.OPT_SUGGEST)) {
 			textUI.printText("MAKE GUESS");
 			testSuggestion(p,null);
 			turnContinues = false;
 			textUI.askIntBetween("(Enter 1 to continue.) ",1,1);
 		}
 		// if they want to make a final accusation...
-		else if (option.equals(textUI.OPT_ACCUSE)) {
+		else if (option.equals(TextUI.OPT_ACCUSE)) {
 			textUI.printText("MAKE FINAL ACCUSATION");
 			textUI.printText("Are you sure you want to make your final accusation?");
 			textUI.printArray(new String[] {"Yes, I would like to make my final choice.","No! Stop! I misclicked! Help!"});
@@ -302,17 +302,17 @@ public class Game {
 			}
 		}
 		// if they want to view their hand...
-		else if (option.equals(textUI.OPT_HAND)) {
+		else if (option.equals(TextUI.OPT_HAND)) {
 			textUI.printText("YOUR HAND");
 			viewHand(p);
 		}
 		// if they want to open their notebook...
-		else if (option.equals(textUI.OPT_NOTES)) {
+		else if (option.equals(TextUI.OPT_NOTES)) {
 			textUI.printText("VIEW NOTEBOOK");
 			textUI.viewNotebook(p);
 		}
 		// if they ask to end their turn
-		else if (option.equals(textUI.OPT_END)) {
+		else if (option.equals(TextUI.OPT_END)) {
 			turnContinues = false;
 		}
 		return turnContinues;
@@ -511,8 +511,7 @@ public class Game {
 		guilty = new Hypothesis(new CardImpl(Card.Type.CHARACTER, c),
 								new CardImpl(Card.Type.WEAPON, w),
 								new CardImpl(Card.Type.ROOM, r));
-
-		ArrayList<Card> deck = createNewDeck(c, w, r); // creates, shuffles a new deck of cards
+		List<Card> deck = createNewDeck(c, w, r); // creates, shuffles a new deck of cards
 		int remainder = (Card.DECKSIZE-3) % players.size();
 		int handSize = (Card.DECKSIZE-3-remainder) / players.size();
 
@@ -551,7 +550,7 @@ public class Game {
 	 * @param r One of the ROOM strings.
 	 * @return A shuffled list of the remaining cards, ready to be dealt to players.
 	 */
-	public static ArrayList<Card> createNewDeck(String c, String w, String r) {
+	public static List<Card> createNewDeck(String c, String w, String r) {
 		ArrayList<Card> deck = new ArrayList<Card>();
 		if (c == null || w == null || r == null) {
 			throw new IllegalArgumentException("Parameters cannot be null when creating a deck.");
@@ -581,16 +580,6 @@ public class Game {
 	/** If there are spare cards, prints a message informing the user. */
 	private void showSpareCards(List<Card> subList) {
 		if (subList.size() < 1) {return;}
-		String list = "";
-		for (int i = 0; i < subList.size(); i++) {
-			if (i < subList.size()-2) {
-				list += subList.get(i) +", ";
-			} else if (i < subList.size()-1){
-				list += subList.get(i) +" ";
-			} else {
-				list += subList.get(i);
-			}
-		}
 		textUI.printText("Everyone knows that "+ textUI.toStringFromCards(subList) +" had nothing to do with the murder.");
 	}
 
@@ -704,7 +693,7 @@ public class Game {
 	/** Given a player, prints the things they know are innocent.
 	 *
 	 * @param p
-	 * @throws ActingOutOfTurnException 
+	 * @throws ActingOutOfTurnException
 	 */
 	private void viewHand(Player p) throws ActingOutOfTurnException {
 		if (!p.equals(players.get(activePlayer))) { throw new ActingOutOfTurnException(); }
