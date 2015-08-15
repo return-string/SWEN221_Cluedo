@@ -1,23 +1,19 @@
 PUBLIC METHODS AND CONSTRUCTORS
 ===============================
 
-TextUI:
+Working pannel dimentions: 800X600
+
+Controller:
 ----------------
 
-/**Prints the inputed text to System.out
-  *@param text Text to print out
-  */
-public void printText(String text){}
+public void startGame(Set<String> players){}
 
-/**Prints the given message to System.out then 
-  *asks user for an integer. Can be used to get
-  *user to select an option etc
-  *@param question Message to print out
-  *@return User inputed integer
-  */
-public int askInt(String question){}
+public void repaintBoard(Graphics g)
 
-/* Additionally: askIntBetween(String question, int min, int max) ? */
+public void nextTurn()
+
+public void testHypothesis(Set<String> hypothesis)
+
 
 Game:
 ---------------------------------
@@ -26,6 +22,15 @@ Game:
  */
 public boolean isPlaying(){
 }
+
+public Game(Set<String> players)
+
+public void repaintBoard(Graphics g)
+
+public Player getCurrentPlayer()
+
+public void testHypothesis(Set<String> hypothesis)
+
 
 Player:
 ----------------------------------
@@ -53,6 +58,8 @@ public void setPosition(Coordinate move){}
  */
 public boolean cardInHand(Card card){}
 
+public void repaint(Graphics g){}
+
 
 Card:
 ------------------------------------
@@ -65,6 +72,8 @@ Card:
 public Card(Type type, String value){}
 
 /*Needs good hash code and equals methods*/
+
+public void repaint(Graphics g){}
 
 
 Coordinate:
@@ -108,16 +117,89 @@ public boolean isLegal(Coordinate coord){}
  */
 public String getRoom(Coordinate coord){}
 
-/**Determines the legal moves that can be made from the
- * given coordinate moving the given number of steps.
- * Returns a map of Coordinates to Strings, where the 
- * coordinates are the choice of new board positions and
- * the strings are descriptions of distances to different
- * rooms.
- * @param start Coordinate to move from
- * @param steps Number of steps to move
- * @return Map of coordinate choices to string descriptions
- * of choices 
- */
-public Map<Coordinate, String> possibleMoves(Coordinate start, int steps){}
+
+public Coordinate findMove(Coordinate clicked, Coordinate start, int steps){}
+
+public void highlightMoves(Coordinate start, int steps){}
+
+public void toggleOccupied(Coordinate c){}
+
+public void unhighlight(){}
+
+public void repaint(Graphics g)
+
+
+CluedoFrame extends JFrame
+---------------------------
+
+public void repaint()
+
+public void showRules()
+
+public void showTurn()
+
+public void showGameOver()
+
+public void nextTurn()
+
+
+interface CluedoPanel extends JPanel
+-------------------------------------
+
+public void nextTurn()
+
+
+MenuPanel
+-----------
+
+public MenuPanel(Controller c)
+
+Buttons:
+"New Game"
+"Rules"
+"Exit"
+
+
+DeckPanel
+--------------
+
+public DeckPanel(Controller c, Player p)
+
+Buttons:
+"Roll Dice"
+
+
+PlayerPanel
+-----------------
+
+public DeckPanel(Set<Player> players)
+
+
+BoardPanel implements MouseListener
+------------------
+
+public BoardPanel(Controller c)
+
+
+TurnPanel
+----------------
+
+public TurnPanel(Controller c)
+
+
+HypothesisPanel
+-----------------
+
+public HypothesisPanel(Controller c)
+
+
+GameOverPanel
+----------------
+
+public GameOverPanel(Controller c)
+
+Buttons:
+"New Game"
+"Exit"
+
 
