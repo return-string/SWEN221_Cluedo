@@ -1,0 +1,23 @@
+1
+You and your fellow detectives have been invited to stay at the home of known recluse Dr. Body. However, one morning, you all wake only to be informed that Dr. Body is nowhere to be found. Then word arrives that he has been discovered some distance from his estate--murdered!
+The body has clearly been moved and you are prevented from seeing it, but the house has been left otherwise untouched so you may pursue your investigations, and now it is up to you to solve this grisly crime.
+
+2
+First, exit this help menu. How else will you start? 
+Play begins once a number of players has been entered, between 3 and 6, and you have selected the character you want to play. All players then take turns moving, making suggestions and using the information they gather to deduce who killed Dr. Body. 
+You're all competing against each other, so be sure to end your turn fully before you hand the controls to the next player!
+
+3
+When your turn starts, you will be able to move your piece or check your notes. Roll the dice to determine the number of spaces you can move, and select one to move to! (You can also click on any room to choose the best route towards it.)
+If you can, move into a new room and make a suggestion to learn information about the murder from the other players.
+
+4
+Suggestions can be made when you are in any room. This room will be part of your suggestion. Choose the character and weapon to complete the suggestion, and then (following turn order) if a player holds a card that can refute any part of your hypothesis, they'll show it to you. (If you accuse a player, they'll move into the room too.) 
+Accusations are how you win (or lose) the game. Once you are certain who, what and where, choose 'Make final accusation' and enter your results. If you are correct, you win! If you are wrong, you are out of the game (but your cards can still be used to refute other players' suggestions).
+
+5
+Whoever makes the first correct final accusation wins the game! If only one player is left, they win by default.
+
+6
+Shame on you! Your dear friend? Slightly socially-awkward recluse? Invited you to stay here out of the kindness of his heart?
+Yes, *that* Dr. Body!

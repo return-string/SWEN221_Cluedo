@@ -8,7 +8,7 @@ package game;
  * @author Vicki
  *
  */
-public abstract class Card implements Comparable<Card>{
+public abstract class Card implements Comparable<Card> {
 	public static enum Type {CHARACTER, WEAPON, ROOM};
 	public static final String WHITE = "Mrs White";
 	public static final String SCARLET = "Miss Scarlet";
