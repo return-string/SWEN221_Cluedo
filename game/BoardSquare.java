@@ -20,6 +20,7 @@ public class BoardSquare {
 	private boolean isRoom;
 	private boolean isVisited = false;
 	private boolean occupied = false;
+	private boolean highlight = false;
 
 	public BoardSquare(Coordinate coordinate, String room, boolean isRoom){
 		this.coordinates = new HashSet<Coordinate>();
@@ -171,6 +172,14 @@ public class BoardSquare {
 
 	public void setOccupied(boolean occupied) {
 		this.occupied = occupied;
+	}
+	
+	public boolean isHighlighted(){
+		return highlight;
+	}
+	
+	public void setHighlight(boolean b){
+		this.highlight = b;
 	}
 
 	@Override
