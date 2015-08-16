@@ -1,6 +1,6 @@
 package ui;
 
-<<<<<<< HEAD
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Set;
@@ -20,19 +20,45 @@ public class Controller implements ActionListener {
 		this.cluedoGame = new Game(players);
 	}
 	
+	public void nextTurn(){
+		gameFrame.nextTurn();
+	}
+	
+	public void repaintBoard(Graphics g){
+		if(cluedoGame != null){
+			cluedoGame.repaintBoard(g);
+		}
+	}
+	
+	public void testHypothesis(Set<String> hypothesis){
+		if(cluedoGame != null){
+			cluedoGame.testHypothesis(hypothesis);
+		}
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-
+		if(e.getActionCommand().equals("New Game")){
+			gameFrame.showGameSetup();
+		}
+		if(e.getActionCommand().equals("Rules")){
+			gameFrame.showRules();
+		}
+		if(e.getActionCommand().equals("Exit")){
+			gameFrame.exit();
+		}
+		if(e.getActionCommand().equals("Roll Dice")){
+			if(cluedoGame != null){
+				cluedoGame.rollDice();
+			}
+		}
+	}
+	
+	public boolean checkGameState(){
+		if(cluedoGame != null){
+			return cluedoGame.isPlaying();
+		}
+		return true;
 	}
 
-=======
-public class Controller {
-
-//	public void listenTo(JComponent... things) {
-//		for (JComponent j : things) {
-//			j.add
-//		}
-//	}
->>>>>>> 59cdfbf979ee603e91db0a514ce3f629e4c3fc93
 }
