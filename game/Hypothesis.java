@@ -32,13 +32,69 @@ public final class Hypothesis implements Theory {
 	public Hypothesis() {
 		
 	}
+	
+	public Hypothesis(Set<String> names) {
+		if (names.size() != 0) {
+			throw new IllegalArgumentException("Must have three string parameters to make a hypothesis.");
+		}
+		for (String s : names) {
+			try {
+				Card.Type type = Card.typeOf(s);
+				Card c = new CardImpl(type,s);
+				switch(type) {
+					case CHARACTER:
+						set[0] = c;
+						break;
+					case WEAPON:
+						set[1] = c;
+						break;
+					case ROOM:
+						set[2] = c;
+						break;
+				}
+			} catch (IllegalArgumentException e) {
+				throw new IllegalArgumentException("Can't find a Card.Type for value "+ s +"!");
+			}
+		}
+		if (size() != 3) {
+			throw new IllegalArgumentException("Set did not contain a single value of each card type!");
+		}
+	}
 
 	/* (non-Javadoc)
 	 * @see game.Theory#setCharacter(game.Card)
 	 */
 	public void setCharacter(Card c) throws IllegalAccessException {
 		if (set[0] != null) { throw new IllegalAccessException(); }
+		else if (Card.indexOf(Card.Type.CHARACTER, c.getValue()) != 
+					Card.indexOf(c.getType(), c.getValue())) {
+			throw new IllegalArgumentException();
+		}
 		set[0] = c;
+	}
+
+	/* (non-Javadoc)
+	 * @see game.Theory#setCharacter(game.Card)
+	 */
+	public void setWeapon(Card c) throws IllegalAccessException {
+		if (set[1] != null) { throw new IllegalAccessException(); }
+		else if (Card.indexOf(Card.Type.WEAPON, c.getValue()) != 
+					Card.indexOf(c.getType(), c.getValue())) {
+			throw new IllegalArgumentException();
+		}
+		set[1] = c;
+	}
+
+	/* (non-Javadoc)
+	 * @see game.Theory#setCharacter(game.Card)
+	 */
+	public void setRoom(Card c) throws IllegalAccessException {
+		if (set[2] != null) { throw new IllegalAccessException(); }
+		else if (Card.indexOf(Card.Type.ROOM, c.getValue()) != 
+					Card.indexOf(c.getType(), c.getValue())) {
+			throw new IllegalArgumentException();
+		}
+		set[2] = c;
 	}
 
 	/* (non-Javadoc)
@@ -47,28 +103,12 @@ public final class Hypothesis implements Theory {
 	public Card getCharacter() {
 		return set[0];
 	}
-
-	/* (non-Javadoc)
-	 * @see game.Theory#setWeapon(game.Card)
-	 */
-	public void setWeapon(Card c) throws IllegalAccessException {
-		if (set[1] != null) { throw new IllegalAccessException(); }
-		set[1] = c;
-	}
-
+	
 	/* (non-Javadoc)
 	 * @see game.Theory#getWeapon()
 	 */
 	public Card getWeapon() {
 		return set[1];
-	}
-
-	/* (non-Javadoc)
-	 * @see game.Theory#setRoom(game.Card)
-	 */
-	public void setRoom(Card c) throws IllegalAccessException {
-		if (set[2] != null) { throw new IllegalAccessException(); }
-		set[2] = c;
 	}
 
 	/* (non-Javadoc)
@@ -90,9 +130,6 @@ public final class Hypothesis implements Theory {
 	}
 
 	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	/* (non-Javadoc)
 	 * @see game.Theory#hashCode()
 	 */
 	@Override
@@ -103,9 +140,6 @@ public final class Hypothesis implements Theory {
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	/* (non-Javadoc)
 	 * @see game.Theory#equals(java.lang.Object)
 	 */
@@ -126,6 +160,7 @@ public final class Hypothesis implements Theory {
 		}
 		return true;
 		}
+	
 	/* (non-Javadoc)
 	 * @see game.Theory#size()
 	 */
@@ -139,8 +174,6 @@ public final class Hypothesis implements Theory {
 		}
 		return s;
 	}
-
-
 
 	/* (non-Javadoc)
 	 * @see game.Theory#isEmpty()

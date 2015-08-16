@@ -1,3 +1,6 @@
 V: Woooooh, a secret document! So secret-looking.  
 V: Hey, I just rebased, and this is crazy,
    But Git is working, so rejoice, maybe?
+   
+   THEY TOLD ME THE DEVIL WOULD BE ATTRACTIVE...
+   ... instead he's manifested in the form of a GUI assignment. Huh.  

@@ -31,6 +31,7 @@ public abstract class Card implements Comparable<Card> {
 	public static final String LIBRARY = "library";
 	public static final String LOUNGE = "lounge";
 	public static final String STUDY = "study";
+	/** note that the order of CHARACTERS determines the order of play. */
 	public static final String[] CHARACTERS = { SCARLET,MUSTARD,WHITE,GREEN,PEACOCK,PLUM };
 	public static final String[] WEAPONS = { CANDLESTICK, DAGGER, REVOLVER, ROPE, PIPE, WRENCH };
 	public static final String[] ROOMS = { CONSERVATORY, BALL, BILLIARD, DINING, LIBRARY,
@@ -64,6 +65,25 @@ public abstract class Card implements Comparable<Card> {
 		for (int i = 0; i < arr.length; i++){
 			if (arr[i].equalsIgnoreCase(name)) {
 				return i;
+			}
+		}
+		throw new IllegalArgumentException();
+	}
+	
+	public static Card.Type typeOf(String value) {
+		for (String s : Card.CHARACTERS) {
+			if (s.equals(value)) {
+				return Card.Type.CHARACTER;
+			}
+		}
+		for (String s : Card.WEAPONS) {
+			if (s.equals(value)) {
+				return Card.Type.WEAPON;
+			}
+		}
+		for (String s : Card.ROOMS) {
+			if (s.equals(value)) {
+				return Card.Type.ROOM;
 			}
 		}
 		throw new IllegalArgumentException();
