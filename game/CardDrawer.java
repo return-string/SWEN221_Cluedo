@@ -4,16 +4,18 @@
 package game;
 
 import java.awt.Color;
+import java.awt.FontFormatException;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.io.IOException;
+
+import ui.MutedSkin;
 
 /**
  * @author Vicki
  *
  */
 public class CardDrawer {
-	public static final Color CARDBACK = new Color(20,41,38);
-	public static final Color CARDFRONT = new Color(33,20,92);
 	
 	private int x = Integer.MIN_VALUE;
 	private int y = Integer.MIN_VALUE;
@@ -47,7 +49,17 @@ public class CardDrawer {
 	public void setY(int y) 	{ this.y = y; }
 	
 	public void repaint(Graphics g) {
-		g.setColor(CARDFRONT);
+		MutedSkin sk = null;
+		try {
+			sk = new MutedSkin();
+		} catch (FontFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		g.setColor(sk.cardBack());
 		g.fillRect(x,y,width,height());
 		// we'll print some pretty pictures later, but for now, this is OK
 		String text = c.getType().toString().toUpperCase();

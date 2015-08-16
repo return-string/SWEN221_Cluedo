@@ -1,0 +1,16 @@
+Badi			Vicki
+---------------------------------------------------
+Board		C	Game			C
+BoardPanel	C	HypothesisPanel		C
+Controller	C	TurnPanel		C
+JFrame		C	DeckPanel		C
+Main		M	PlayersPanel		C
+MenuPanel	C	AbstractPanel		A
+Players		?	CardDrawer		C
+AbstractToken	C	GameSetupPanel		C
+
+
+Also probably relevant:
+	Events
+	Inheritance, if desired (eg extra interfaces, abstract classes)
+	
