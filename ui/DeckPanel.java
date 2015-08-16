@@ -10,7 +10,7 @@ import java.awt.Dimension;
  * @author Vicki
  *
  */
-public class DeckPanel extends AbstractPanel {
+public class DeckPanel extends CluedoPanel {
 	private static final long serialVersionUID = 1045273197150007538L;
 
 	public DeckPanel(Controller c) {
@@ -18,6 +18,12 @@ public class DeckPanel extends AbstractPanel {
 		setPreferredSize(new Dimension(800, 120));
 		setAlignmentX(RIGHT_ALIGNMENT);
 		setAlignmentY(TOP_ALIGNMENT);
+	}
+
+	@Override
+	public void nextTurn() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	// contains player's hand, player's notebook and text output pane. 

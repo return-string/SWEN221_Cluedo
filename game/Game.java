@@ -1,5 +1,6 @@
 package game;
 
+import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -54,6 +55,10 @@ public class Game {
 
 	public Game() {
 		this.players = new ArrayList<Player>();
+	}
+
+	public Game(Set<String> players2) {
+		// TODO Auto-generated constructor stub
 	}
 
 	/** This is the normal method that should be called to start a game.
@@ -115,7 +120,7 @@ public class Game {
 		if (gameState != PLAYER_ROLLING || p.hasMoved()) { return; }
 		
 		roll = RNG.nextInt(5)+1;
-		BOARD.highlightMove(p.position(),roll);
+		BOARD.highlightMoves(p.position(),roll);
 	}
 	
 	/** Returns the last rolled dice value. 
@@ -168,7 +173,7 @@ public class Game {
 	 * @throws ActingOutOfTurnException 
 	 *
 	 */
-	private void testHypothesis(Set<String> hypothesis) throws ActingOutOfTurnException {
+	public void testHypothesis(Set<String> hypothesis) throws ActingOutOfTurnException {
 		Player p = players.get(activePlayer);
 		if (hypothesis.size() != 3) { 
 			throw new IllegalArgumentException("Hypothesis must have exactly 3 parameters.");  
@@ -477,5 +482,10 @@ public class Game {
 	private List<Card> viewHand(Player p) throws ActingOutOfTurnException {
 		if (!p.equals(players.get(activePlayer))) { throw new ActingOutOfTurnException(); }
 		return Collections.unmodifiableList(p.getHand());
+	}
+
+	public void repaintBoard(Graphics g) {
+		// TODO Auto-generated method stub
+		
 	}
 }

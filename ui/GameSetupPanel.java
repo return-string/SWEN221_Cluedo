@@ -6,10 +6,16 @@ package ui;
  * @author Vicki
  *
  */
-public class GameSetupPanel extends AbstractPanel {
+public class GameSetupPanel extends CluedoPanel {
 
 	public GameSetupPanel(Controller c) {
 		super(c);
+	}
+
+	@Override
+	public void nextTurn() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

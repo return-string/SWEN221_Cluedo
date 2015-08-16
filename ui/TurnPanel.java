@@ -14,9 +14,9 @@ import java.util.Set;
  * @author Vicki
  *
  */
-public class TurnPanel extends AbstractPanel {
+public class TurnPanel extends CluedoPanel {
 	private static final long serialVersionUID = -7388102847863707082L;
-	private Set<AbstractPanel> contents;
+	private Set<CluedoPanel> contents;
 	
 	// contains DeckPanel, PlayersPanel and BoardPanel
 	
@@ -25,5 +25,11 @@ public class TurnPanel extends AbstractPanel {
 		contents.add(new BoardPanel(c));
 		contents.add(new PlayersPanel(c));
 		contents.add(new DeckPanel(c));
+	}
+
+	@Override
+	public void nextTurn() {
+		// TODO Auto-generated method stub
+		
 	}
 }
