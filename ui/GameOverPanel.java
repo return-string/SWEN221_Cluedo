@@ -7,8 +7,8 @@ package ui;
  */
 public class GameOverPanel extends AbstractPanel {
 
-	public GameOverPanel() {
-		// TODO Auto-generated constructor stub
+	public GameOverPanel(Controller c) {
+		super(c);
 	}
 
 }

@@ -8,4 +8,8 @@ package ui;
  */
 public class GameSetupPanel extends AbstractPanel {
 
+	public GameSetupPanel(Controller c) {
+		super(c);
+	}
+
 }

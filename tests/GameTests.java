@@ -2,9 +2,14 @@ package tests;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.management.InvalidAttributeValueException;
+
+import jdk.nashorn.internal.ir.SetSplitState;
 
 import org.junit.Test;
 
@@ -29,7 +34,7 @@ public class GameTests {
 		}
 		try {
 			g.playGame();
-		} catch (InvalidAttributeValueException | ActingOutOfTurnException e) {
+		} catch (ActingOutOfTurnException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -49,14 +54,22 @@ public class GameTests {
 		System.out.println("\tTEST HYPOTHESIS/CARD EQUALITY");
 		Game g1 = new Game();
 		Game g2 = new Game();
-		for (int i = 0; i < 3; i++) {
-			try {
-				g2.addPlayer(i);
-				g1.addPlayer(i);
-			} catch (GameStateModificationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		
+		Set<String> s1 = new HashSet<String>();
+		Set<String> s2 = new HashSet<String>();
+		
+		s1.add(Card.SCARLET);
+		s2.add(Card.SCARLET);
+		s1.add(Card.GREEN);
+		s2.add(Card.GREEN);
+		s1.add(Card.PLUM);
+		s2.add(Card.PLUM);
+		
+		try {
+			g1.startGame(s1);
+			g2.startGame(s2);
+		} catch (GameStateModificationException | ActingOutOfTurnException e) {
+			fail();
 		}
 		assertTrue("The player lists should be the same for these games.",
 				g1.getPlayers().equals(g2.getPlayers()));
@@ -79,8 +92,6 @@ public class GameTests {
 		}
 		try {
 			g1.playGame();
-		} catch (InvalidAttributeValueException e) {
-			return;
 		} catch (ActingOutOfTurnException e) {
 			fail();
 		}
