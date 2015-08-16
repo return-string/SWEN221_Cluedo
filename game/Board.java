@@ -50,84 +50,128 @@ public class Board {
 		if(!isLegal(coord)) {throw new IllegalArgumentException();}
 		return squares[coord.getX()][coord.getY()].getRoom();
 	}
-
-	/**Determines the legal moves that can be made from the
-	 * given coordinate moving the given number of steps.
-	 * Returns a map of Coordinates to Strings, where the
-	 * coordinates are the choice of new board positions and
-	 * the strings are descriptions of distances to different
-	 * rooms.
-	 * @param start Coordinate to move from
-	 * @param steps Number of steps to move
-	 * @return Map of coordinate choices to string descriptions
-	 * of choices
+	
+	/**
+	 * Highlights all the board squares a player can reach with from a
+	 * given square with a given number of steps.
+	 * @param start Square to begin search from (typically square a player is on)
+	 * @param steps Number of steps can travel from square
 	 */
-	public Map<Coordinate, String> possibleMoves(Coordinate start, int steps){
+	public void highlightMoves(Coordinate start, int steps){
+		//Checks start coordinate is legit
 		if(!isLegal(start)) {throw new IllegalArgumentException();}
 		BoardSquare startSquare = squares[start.getX()][start.getY()];
-		HashMap<Coordinate, String> moves = new HashMap<Coordinate, String>();
-		HashSet<String> roomsToFind = new HashSet<String>(Arrays.asList(Card.ROOMS));
-		roomsToFind.remove(startSquare.getRoom());
-		for(String rm : roomsToFind){
-			String descriptionString = "";
-			Coordinate moveCoord = null;
-			//does a breadth first search for squares of room rm
-			LinkedList<PathFringeEntry> pathFringe = new LinkedList<PathFringeEntry>();
-			pathFringe.offer(new PathFringeEntry(startSquare, null, 0));
-			do{
-				PathFringeEntry current = pathFringe.poll();
-//				System.out.printf("Looking at %s\n", current.square.getClosestCoordinate(start).toString());
-				current.square.setVisited(true);
-				//if it finds the room it's currently looking for
-				if(current.square.getRoom().equals(rm)){
-//					System.out.printf("Found room %s!\n", rm);
-					if(current.distance <= steps){//if can get to it this turn
-//						System.out.printf("Can enter %s on this turn\n", rm);
-						descriptionString = "Enter the " + rm;
-						moveCoord = current.square.getClosestCoordinate(start);
-					} else { //finds the square player can reach closest to room
-//						System.out.printf("Backtracking to find closest square player can move to\n");
-						int finalLength = current.distance;
-//						System.out.printf("%s %d squares away from player\n", rm, finalLength);
-						PathFringeEntry roomEntry = current;
-						while(roomEntry.distance > steps){
-//							System.out.printf("Backtracking to %s, %d squares away from player\n",
-//									roomEntry.square.getClosestCoordinate(start).toString(), roomEntry.distance);
-							roomEntry = roomEntry.from;
-						}
-//						System.out.printf("Player can move to %s, %d squares away from player\n",
-//								roomEntry.square.getClosestCoordinate(start).toString(), roomEntry.distance);
-						int stepsToRoom = finalLength - steps;
-						descriptionString = stepsToRoom + " steps away from " + rm;
-						moveCoord = roomEntry.square.getACoordinate();
-						if(moves.containsKey(moveCoord)){
-							descriptionString = addToMoveDescription(moves.get(moveCoord),
-									descriptionString);
-						}
+		//Creates a pathFringe for a breadth first traversal of the board
+		LinkedList<PathFringeEntry> pathFringe = new LinkedList<PathFringeEntry>();
+		pathFringe.offer(new PathFringeEntry(startSquare, null, 0));
+		do{//polls square off fringe and highlights it
+			PathFringeEntry current = pathFringe.poll();
+			current.square.setVisited(true);
+			current.square.setHighlight(true);
+			//If the current square is not at the end of the player's reach, and is
+			// either the start square or not a room, puts the current square's 
+			//neighbours on the fringe
+			if(current.distance < steps && (!current.square.isRoom() || current.distance == 0)){
+				for(BoardSquare neighbour : current.square.getNeighbours()){
+					if(!neighbour.isVisited() && !neighbour.isOccupied()){
+						pathFringe.offer(new PathFringeEntry(neighbour, current,
+								current.distance+1));
 					}
-//					System.out.println("Putting move on map to return");
-					moves.put(moveCoord, descriptionString);
-					clearVisits();
-					break;
-				} else {
-					/*If the current square is the start square or isn't a room square,
-					 * puts all the neighbours on the fringe if they haven't been visited
-					 * and they are not occupied, with this entry as their 'from' and an
-					 * incremented 'dist' (path length)*/
-//					System.out.println("Putting neighbours on fringe");
-					if(!current.square.isRoom() || current.distance == 0){
-						for(BoardSquare neighbour : current.square.getNeighbours()){
-							if(!neighbour.isVisited() && !neighbour.isOccupied()){
-//								System.out.printf("Putting %s on fringe\n", neighbour.getClosestCoordinate(start).toString());
-								pathFringe.offer(new PathFringeEntry(neighbour, current,
-										current.distance+1));
-							}
+				}
+			}
+		} while(!pathFringe.isEmpty());
+		clearVisits();
+	}
+	
+	/**
+	 * Goes through all the board squares in squares, unhighlighting them
+	 */
+	public void unhighlight(){
+		for(int i = 0; i < this.squares.length; i++){
+			for(int j = 0; j < squares[0].length; j++){
+				BoardSquare bs = squares[i][j];
+				if(bs != null){
+					bs.setHighlight(false);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Gets a coordinate that can be moved to from a start coordinate, determined by 
+	 * a coordinate that has been selected (i.e been clicked)
+	 * 
+	 * Returns the selected coordinate if selected coordinate is highlighted.
+	 * If the selected coordinate is a room, returns the square closest to the room
+	 * that can be reached from the start square with the given number of steps
+	 * Otherwise returns null
+	 * 
+	 * @param clicked Selected coordinate on board
+	 * @param start Coordinate to start movement from
+	 * @param steps Number of steps to move
+	 * @return Coordinate player can move to
+	 */
+	public Coordinate findMove(Coordinate clicked, Coordinate start, int steps){
+		if(!isLegal(clicked)) {return null;}
+		BoardSquare clickedSquare = squares[clicked.getX()][clicked.getY()];
+		if(clickedSquare.isHighlighted()) {
+			return clicked;
+		} else if(clickedSquare.isRoom()) {
+			return findClosestToRoom(getRoom(clicked), start, steps);
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * Finds the square closest to the given room that can be reached from the 
+	 * start square with the given number of steps
+	 * 
+	 * @param rm Room to find closest reachable square to
+	 * @param start Coordinate of square to start movement from
+	 * @param steps Number of steps that can be moved
+	 * @return Coordinate of closest reachable square to room
+	 */
+	private Coordinate findClosestToRoom(String rm, Coordinate start, int steps){
+		if(!isLegal(start)) {throw new IllegalArgumentException();}
+		BoardSquare startSquare = squares[start.getX()][start.getY()];
+		
+		Coordinate moveCoord = null;
+		//does a breadth first search for squares of room rm
+		LinkedList<PathFringeEntry> pathFringe = new LinkedList<PathFringeEntry>();
+		pathFringe.offer(new PathFringeEntry(startSquare, null, 0));
+		do{
+			PathFringeEntry current = pathFringe.poll();
+			current.square.setVisited(true);
+			//if it finds the room it's currently looking for
+			if(current.square.getRoom().equals(rm)){
+				if(current.distance <= steps){//if can get to it this turn
+					moveCoord = current.square.getClosestCoordinate(start);
+				} else { //finds the square player can reach closest to room	
+					PathFringeEntry roomEntry = current;
+					while(roomEntry.distance > steps){
+						roomEntry = roomEntry.from;
+					}
+					moveCoord = roomEntry.square.getACoordinate();
+				}
+				clearVisits();
+				break;
+			} else {
+				/*If the current square is the start square or isn't a room square,
+				 * puts all the neighbours on the fringe if they haven't been visited
+				 * and they are not occupied, with this entry as their 'from' and an
+				 * incremented 'dist' (path length)*/
+				if(!current.square.isRoom() || current.distance == 0){
+					for(BoardSquare neighbour : current.square.getNeighbours()){
+						if(!neighbour.isVisited() && !neighbour.isOccupied()){
+							pathFringe.offer(new PathFringeEntry(neighbour, current,
+									current.distance+1));
 						}
 					}
 				}
-			} while(!pathFringe.isEmpty());
-		}
-		return moves;
+			}
+		} while(!pathFringe.isEmpty());
+		return moveCoord;
 	}
 
 	/**
