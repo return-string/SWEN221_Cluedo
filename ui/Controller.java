@@ -7,8 +7,9 @@ import java.util.Set;
 
 import game.ActingOutOfTurnException;
 import game.Game;
+import java.util.EventListener;
 
-public class Controller implements ActionListener {
+public class Controller implements ActionListener, EventListener {
 	
 	private Game cluedoGame;
 	private CluedoFrame gameFrame;
@@ -57,6 +58,9 @@ public class Controller implements ActionListener {
 			}
 		}
 	}
+        
+        @Override
+        public void 
 	
 	public boolean checkGameState(){
 		if(cluedoGame != null){

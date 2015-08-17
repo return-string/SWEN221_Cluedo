@@ -3,12 +3,10 @@ package ui;
 import game.ActingOutOfTurnException;
 import game.Board;
 import game.Card;
-import game.CardImpl;
 import game.Coordinate;
 import game.Game;
 import game.GameStateModificationException;
 import game.Player;
-import game.Card.Type;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -18,7 +16,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
-import javax.management.InvalidAttributeValueException;
 
 /**
  *

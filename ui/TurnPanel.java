@@ -1,5 +1,7 @@
 package ui;
 
+import static java.awt.Component.TOP_ALIGNMENT;
+import java.awt.Dimension;
 import java.util.Set;
 
 /**
@@ -15,21 +17,25 @@ import java.util.Set;
  *
  */
 public class TurnPanel extends CluedoPanel {
-	private static final long serialVersionUID = -7388102847863707082L;
-	private Set<CluedoPanel> contents;
-	
-	// contains DeckPanel, PlayersPanel and BoardPanel
-	
-	public TurnPanel(Controller c) {
-		super(c);
-		contents.add(new BoardPanel(c));
-		contents.add(new PlayersPanel(c));
-		contents.add(new DeckPanel(c));
-	}
+    private static final long serialVersionUID = -7388102847863707082L;
+    private Set<CluedoPanel> contents;
 
-	@Override
-	public void nextTurn() {
-		// TODO Auto-generated method stub
-		
-	}
+    // contains DeckPanel, PlayersPanel and BoardPanel
+
+    public TurnPanel(Controller c) {
+        super(c);
+        setPreferredSize(new Dimension(800, 120));
+        setAlignmentX(LEFT_ALIGNMENT);
+        setAlignmentY(TOP_ALIGNMENT);
+        contents.add(new BoardPanel(c));
+        contents.add(new PlayersPanel(c));
+        contents.add(new DeckPanel(c));
+    }
+
+    @Override
+    public void nextTurn() {
+        for (CluedoPanel cp : contents) {
+            cp.nextTurn();
+        }
+    }
 }

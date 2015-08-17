@@ -2,18 +2,13 @@ package game;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 
 import javax.management.InvalidAttributeValueException;
 
-import ui.TextUI;
 
 /** The Game class is used to model the Cluedo game, including the
  * list of players, turn progression and ending the game.
@@ -227,8 +222,9 @@ public class Game {
 	 *
 	 * @param p
 	 */
-	private boolean testAccusation(Player p) {
-		Theory h = makeTheory(p,true);
+	private boolean testAccusation(Set<String> hs) {
+            Player p = players.get(activePlayer);
+		Theory h = new Hypothesis(hs);
 		if (!h.equals(guilty)) {
 //			textUI.printText(p.getName()+"'s accusation was proven false! "+ p.getName() +" has been barred from the investigation.");
 			p.kill();
@@ -250,6 +246,7 @@ public class Game {
 
 	/** Iff the given Card matches a player in the game, return true. */
 	public boolean isPlayer(Card character) {
+            if (players == null) { return false; }
 		for (Player p : players) {
 			if (p.getName().equals(character.getValue())) {
 				return true;
@@ -316,7 +313,6 @@ public class Game {
 
 		// if there are any cards remaining, print a message
 		if (remainder != 0) {
-			showSpareCards(deck.subList(cardIdx, deck.size()));
 			// then ensure every player has these cards marked off...
 			for (Player p : players) {
 				for (Card spareCard : deck.subList(cardIdx,deck.size())) {

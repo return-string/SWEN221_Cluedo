@@ -1,6 +1,7 @@
 package ui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 
 import javax.swing.JFrame;
 
@@ -24,6 +25,7 @@ public class CluedoFrame extends JFrame {
 		this.currentPanel = this.menu;
 		add(this.currentPanel, BorderLayout.CENTER);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                setPreferredSize(new Dimension(800,600)); // V: just added this for sizing!
 		pack(); // pack components tightly together
 		setResizable(false); // prevent us from being resizeable
 		setVisible(true); // make sure we are visible!

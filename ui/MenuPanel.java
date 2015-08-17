@@ -37,8 +37,6 @@ public class MenuPanel extends CluedoPanel {
 		this.exit.addActionListener(c);
 	}
 	
-	
-	
 	@Override
 	public void nextTurn() {
 	}

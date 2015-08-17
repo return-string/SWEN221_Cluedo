@@ -9,6 +9,8 @@ abstract class CluedoPanel extends JPanel {
 	public CluedoPanel(Controller c){
 		C = c;
 	}
+        
+        public Controller controller() { return C; }
 	
 	public abstract void nextTurn();
 	
