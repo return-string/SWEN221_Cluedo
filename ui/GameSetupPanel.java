@@ -27,184 +27,219 @@ public class GameSetupPanel extends javax.swing.JDialog {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         charSelect = new javax.swing.ButtonGroup();
         jButton1 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jRadioButton3 = new javax.swing.JRadioButton();
-        jRadioButton4 = new javax.swing.JRadioButton();
-        jRadioButton5 = new javax.swing.JRadioButton();
-        jRadioButton6 = new javax.swing.JRadioButton();
-        jButton2 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        filler7 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0));
+        buttonGroup1 = new javax.swing.ButtonGroup();
+        selectLabel = new javax.swing.JLabel();
+        NameSelection = new javax.swing.JPanel();
+        nameLabel = new javax.swing.JLabel();
+        nameTextInput = new javax.swing.JTextField();
+        selectPanel = new javax.swing.JPanel();
+        scarlet = new javax.swing.JRadioButton();
+        mustard = new javax.swing.JRadioButton();
+        white = new javax.swing.JRadioButton();
+        green = new javax.swing.JRadioButton();
+        peacock = new javax.swing.JRadioButton();
+        plum = new javax.swing.JRadioButton();
+        submitPanel = new javax.swing.JPanel();
+        okButton = new javax.swing.JButton();
+        startButton = new javax.swing.JButton();
 
         jButton1.setText("jButton1");
 
         jButton3.setText("jButton3");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        selectLabel.setText("Select a character:");
+
+        setTitle("Cluedo Setup");
         setBackground(new java.awt.Color(204, 204, 255));
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        nameLabel.setText("Enter your name:");
+
+        nameTextInput.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        nameTextInput.setMinimumSize(new java.awt.Dimension(4, 4));
+        nameTextInput.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                nameTextInputActionPerformed(evt);
             }
         });
 
-        jLabel1.setText("Enter your name:");
+        javax.swing.GroupLayout NameSelectionLayout = new javax.swing.GroupLayout(NameSelection);
+        NameSelection.setLayout(NameSelectionLayout);
+        NameSelectionLayout.setHorizontalGroup(
+            NameSelectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(NameSelectionLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(NameSelectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(NameSelectionLayout.createSequentialGroup()
+                        .addComponent(nameLabel)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(nameTextInput, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        NameSelectionLayout.setVerticalGroup(
+            NameSelectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(NameSelectionLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(nameLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(nameTextInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
-        jLabel2.setText("Select a character:");
+        selectPanel.setLayout(new java.awt.GridLayout(2, 3, 0, 3));
 
-        charSelect.add(jRadioButton1);
-        jRadioButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jRadioButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/scarlet.png"))); // NOI18N
-        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+        charSelect.add(scarlet);
+        scarlet.setAlignmentX(0.5F);
+        scarlet.setBorderPainted(true);
+        scarlet.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        scarlet.setDisabledIcon(null);
+        scarlet.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        scarlet.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        scarlet.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/scarlet.png"))); // NOI18N
+        scarlet.setNextFocusableComponent(mustard);
+        scarlet.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton1ActionPerformed(evt);
+                scarletActionPerformed(evt);
+            }
+        });
+        selectPanel.add(scarlet);
+
+        charSelect.add(mustard);
+        mustard.setAlignmentX(0.5F);
+        mustard.setBorderPainted(true);
+        mustard.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        mustard.setDisabledIcon(null);
+        mustard.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        mustard.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/mustard.png"))); // NOI18N
+        mustard.setNextFocusableComponent(white);
+        mustard.setOpaque(false);
+        selectPanel.add(mustard);
+
+        charSelect.add(white);
+        white.setAlignmentX(0.5F);
+        white.setBorderPainted(true);
+        white.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        white.setDisabledIcon(null);
+        white.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        white.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/white.png"))); // NOI18N
+        white.setNextFocusableComponent(green);
+        white.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                whiteActionPerformed(evt);
+            }
+        });
+        selectPanel.add(white);
+
+        charSelect.add(green);
+        green.setAlignmentX(0.5F);
+        green.setBorderPainted(true);
+        green.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        green.setDisabledIcon(null);
+        green.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        green.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        green.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/green.png"))); // NOI18N
+        green.setNextFocusableComponent(peacock);
+        selectPanel.add(green);
+
+        charSelect.add(peacock);
+        peacock.setAlignmentX(0.5F);
+        peacock.setBorderPainted(true);
+        peacock.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        peacock.setDisabledIcon(null);
+        peacock.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        peacock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/peacock.png"))); // NOI18N
+        peacock.setNextFocusableComponent(plum);
+        selectPanel.add(peacock);
+
+        charSelect.add(plum);
+        plum.setAlignmentX(0.5F);
+        plum.setBorderPainted(true);
+        plum.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        plum.setDisabledIcon(null);
+        plum.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        plum.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/plum.png"))); // NOI18N
+        plum.setNextFocusableComponent(okButton);
+        selectPanel.add(plum);
+
+        okButton.setText("OK");
+        okButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                okButtonActionPerformed(evt);
             }
         });
 
-        charSelect.add(jRadioButton2);
-        jRadioButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/mustard.png"))); // NOI18N
+        startButton.setText("Start Game");
 
-        charSelect.add(jRadioButton3);
-        jRadioButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/white.png"))); // NOI18N
-
-        charSelect.add(jRadioButton4);
-        jRadioButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/peacock.png"))); // NOI18N
-        jRadioButton4.setLabel("");
-        jRadioButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton4ActionPerformed(evt);
-            }
-        });
-
-        charSelect.add(jRadioButton5);
-        jRadioButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/green.png"))); // NOI18N
-        jRadioButton5.setLabel("");
-        jRadioButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton5ActionPerformed(evt);
-            }
-        });
-
-        charSelect.add(jRadioButton6);
-        jRadioButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/plum.png"))); // NOI18N
-        jRadioButton6.setPreferredSize(new java.awt.Dimension(137, 179));
-        jRadioButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton6ActionPerformed(evt);
-            }
-        });
-
-        jButton2.setText("OK");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
-        jButton4.setText("Start Game");
+        javax.swing.GroupLayout submitPanelLayout = new javax.swing.GroupLayout(submitPanel);
+        submitPanel.setLayout(submitPanelLayout);
+        submitPanelLayout.setHorizontalGroup(
+            submitPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(submitPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(okButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 542, Short.MAX_VALUE)
+                .addComponent(startButton)
+                .addContainerGap())
+        );
+        submitPanelLayout.setVerticalGroup(
+            submitPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, submitPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(submitPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(okButton)
+                    .addComponent(startButton))
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(30, 30, 30)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(27, 27, 27)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(302, 302, 302)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(jRadioButton4)
-                                            .addComponent(jRadioButton5)))
-                                    .addComponent(jRadioButton2)
-                                    .addComponent(jRadioButton1)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(jRadioButton3)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jRadioButton6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addGap(0, 34, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton4)))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(NameSelection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(submitPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(selectPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addComponent(jLabel1)
+                .addContainerGap()
+                .addComponent(NameSelection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jRadioButton4)
-                    .addComponent(jRadioButton1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jRadioButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jRadioButton3))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jRadioButton5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButton6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton4))
+                .addComponent(selectPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 229, Short.MAX_VALUE)
+                .addComponent(submitPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
-        jRadioButton1.getAccessibleContext().setAccessibleName("Miss Scarlet");
+        getAccessibleContext().setAccessibleName("GameSetup");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void nameTextInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameTextInputActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_nameTextInputActionPerformed
 
-    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
+    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton1ActionPerformed
+    }//GEN-LAST:event_okButtonActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void scarletActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_scarletActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_scarletActionPerformed
 
-    private void jRadioButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton4ActionPerformed
+    private void whiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_whiteActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton4ActionPerformed
-
-    private void jRadioButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton5ActionPerformed
-
-    private void jRadioButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton6ActionPerformed
+    }//GEN-LAST:event_whiteActionPerformed
 
     /**
      * @param args the command line arguments
@@ -249,19 +284,24 @@ public class GameSetupPanel extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel NameSelection;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup charSelect;
+    private javax.swing.Box.Filler filler7;
+    private javax.swing.JRadioButton green;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
-    private javax.swing.JRadioButton jRadioButton4;
-    private javax.swing.JRadioButton jRadioButton5;
-    private javax.swing.JRadioButton jRadioButton6;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JRadioButton mustard;
+    private javax.swing.JLabel nameLabel;
+    private javax.swing.JTextField nameTextInput;
+    private javax.swing.JButton okButton;
+    private javax.swing.JRadioButton peacock;
+    private javax.swing.JRadioButton plum;
+    private javax.swing.JRadioButton scarlet;
+    private javax.swing.JLabel selectLabel;
+    private javax.swing.JPanel selectPanel;
+    private javax.swing.JButton startButton;
+    private javax.swing.JPanel submitPanel;
+    private javax.swing.JRadioButton white;
     // End of variables declaration//GEN-END:variables
 }
