@@ -112,6 +112,7 @@
             </Property>
           </Properties>
           <Events>
+            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="nameTextInputFocusLost"/>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nameTextInputActionPerformed"/>
           </Events>
         </Component>
@@ -159,7 +160,7 @@
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="scarletActionPerformed"/>
+            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="scarletFocusGained"/>
           </Events>
         </Component>
         <Component class="javax.swing.JRadioButton" name="mustard">
@@ -193,6 +194,9 @@
               <Image iconType="3" name="/assets/imgs/mustard_c.png"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="mustardFocusLost"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JRadioButton" name="white">
           <Properties>
@@ -226,7 +230,7 @@
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="whiteActionPerformed"/>
+            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="whiteFocusLost"/>
           </Events>
         </Component>
         <Component class="javax.swing.JRadioButton" name="green">
@@ -261,6 +265,9 @@
               <Image iconType="3" name="/assets/imgs/green_c.png"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="greenFocusLost"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JRadioButton" name="peacock">
           <Properties>
@@ -293,6 +300,9 @@
               <Image iconType="3" name="/assets/imgs/peacock_c.png"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="peacockFocusLost"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JRadioButton" name="plum">
           <Properties>
@@ -325,6 +335,9 @@
               <Image iconType="3" name="/assets/imgs/plum_c.png"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="plumFocusLost"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -365,8 +378,12 @@
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="submitCharacter"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="okButtonActionPerformed"/>
           </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="okButton.setActionCommand(GameSetupPanel.SUBMIT);"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="okButton.addActionListener(this);"/>
+          </AuxValues>
         </Component>
         <Component class="javax.swing.JButton" name="startButton">
           <Properties>
@@ -375,6 +392,9 @@
               <Color id="Hand Cursor"/>
             </Property>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_allCodePost" type="java.lang.String" value="if (futurePlayers.size() &gt;= 3) {     startButton.setVisible(true); } else {     startButton.setVisible(false); }"/>
+          </AuxValues>
         </Component>
       </SubComponents>
     </Container>

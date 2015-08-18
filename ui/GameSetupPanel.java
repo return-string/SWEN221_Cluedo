@@ -5,47 +5,80 @@
  */
 package ui;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import game.Card;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashSet;
-import java.util.Map.Entry;
 import java.util.Set;
 import javax.swing.AbstractButton;
-import javax.swing.ButtonModel;
+import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import javax.swing.JRadioButton;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 /**
  *
  * @author mckayvick
  */
-public class GameSetupPanel extends javax.swing.JDialog {
-    private class Pair {
-        String name = null;
-        String plays = null;
-        Pair (String name, String chara) {
+public class GameSetupPanel extends javax.swing.JDialog implements ActionListener {
+    static final String SUBMIT = "submitChars";
+    static final String START = "startGame";
+    private boolean falsePositive = true; // to prevent the dialogue boxes opening twice: checks if the box was last opened in error. 
+    
+    private Pair<String,String> currentPlayers = new Pair<String,String>();
+    private Set<Pair<String,String>> futurePlayers = new HashSet<Pair<String,String>> ();
+    
+    private class Pair<T,K> {
+        T name = null;
+        K plays = null;
+        
+        Pair() {}
+        Pair (T name, K chara) {
             this.name = name;
             this.plays = chara;
         }
-        String name () { return name; }
-        String plays() { return plays; }
-        void name(String n) { name = n; }
-        void plays(String p) { plays = p; }
+        T name () { return name; }
+        K plays() { return plays; }
+        void name(T n) { name = n; }
+        void plays(K p) { plays = p; }
     }
-    
-    private Set<Pair> futurePlayers = new HashSet<Pair>();
     
     /**
      * Creates new form GameSetupPanel
      */
     public GameSetupPanel(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        
         initComponents();
+        setupButtons();
+    }
+    
+    public void setupButtons() {
+        if (characters.size() <= 0) {
+            characters.add(new Pair(Card.SCARLET,scarlet));
+            characters.add(new Pair(Card.MUSTARD,mustard));
+            characters.add(new Pair(Card.WHITE,white));
+            characters.add(new Pair(Card.GREEN,green));
+            characters.add(new Pair(Card.PEACOCK,peacock));
+            characters.add(new Pair(Card.PLUM,plum));   
+        }
+        for (Pair p : futurePlayers) {
+            for (Pair q : characters) {
+                ((JRadioButton)q.plays()).setSelected(false);
+                ((JRadioButton)q.plays()).setRequestFocusEnabled(false);
+                if (p.plays().equals(q.name())) {
+                    ((JRadioButton)q.plays()).setEnabled(false);
+                }
+            }
+        }
     }
 
     /**
@@ -70,6 +103,7 @@ public class GameSetupPanel extends javax.swing.JDialog {
         plum = new javax.swing.JRadioButton();
         submitPanel = new javax.swing.JPanel();
         okButton = new javax.swing.JButton();
+        okButton.setActionCommand(GameSetupPanel.SUBMIT);
         startButton = new javax.swing.JButton();
         textPanel = new javax.swing.JPanel();
 
@@ -85,6 +119,11 @@ public class GameSetupPanel extends javax.swing.JDialog {
         nameTextInput.setMinimumSize(new java.awt.Dimension(4, 4));
         nameTextInput.setName("name"); // NOI18N
         nameTextInput.setNextFocusableComponent(scarlet);
+        nameTextInput.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                nameTextInputFocusLost(evt);
+            }
+        });
         nameTextInput.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nameTextInputActionPerformed(evt);
@@ -126,9 +165,9 @@ public class GameSetupPanel extends javax.swing.JDialog {
         scarlet.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/scarlet.png"))); // NOI18N
         scarlet.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/scarlet_c.png"))); // NOI18N
         scarlet.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/scarlet_c.png"))); // NOI18N
-        scarlet.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                scarletActionPerformed(evt);
+        scarlet.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                scarletFocusGained(evt);
             }
         });
         selectPanel.add(scarlet);
@@ -145,6 +184,11 @@ public class GameSetupPanel extends javax.swing.JDialog {
         mustard.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/mustard.png"))); // NOI18N
         mustard.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/mustard_c.png"))); // NOI18N
         mustard.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/mustard_c.png"))); // NOI18N
+        mustard.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                mustardFocusLost(evt);
+            }
+        });
         selectPanel.add(mustard);
 
         charSelect.add(white);
@@ -159,9 +203,9 @@ public class GameSetupPanel extends javax.swing.JDialog {
         white.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/white.png"))); // NOI18N
         white.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/white_c.png"))); // NOI18N
         white.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/white_c.png"))); // NOI18N
-        white.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                whiteActionPerformed(evt);
+        white.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                whiteFocusLost(evt);
             }
         });
         selectPanel.add(white);
@@ -179,6 +223,11 @@ public class GameSetupPanel extends javax.swing.JDialog {
         green.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/green.png"))); // NOI18N
         green.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/green_c.png"))); // NOI18N
         green.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/green_c.png"))); // NOI18N
+        green.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                greenFocusLost(evt);
+            }
+        });
         selectPanel.add(green);
 
         charSelect.add(peacock);
@@ -193,6 +242,11 @@ public class GameSetupPanel extends javax.swing.JDialog {
         peacock.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/peacock.png"))); // NOI18N
         peacock.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/peacock_c.png"))); // NOI18N
         peacock.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/peacock_c.png"))); // NOI18N
+        peacock.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                peacockFocusLost(evt);
+            }
+        });
         selectPanel.add(peacock);
 
         charSelect.add(plum);
@@ -207,15 +261,21 @@ public class GameSetupPanel extends javax.swing.JDialog {
         plum.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/plum.png"))); // NOI18N
         plum.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/plum_c.png"))); // NOI18N
         plum.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/plum_c.png"))); // NOI18N
+        plum.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                plumFocusLost(evt);
+            }
+        });
         selectPanel.add(plum);
 
         okButton.setText("OK");
         okButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         okButton.setNextFocusableComponent(((futurePlayers.size() < 3)) ? (nameTextInput) : (startButton)
         );
-        okButton.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                submitCharacter(evt);
+        okButton.addActionListener(this);
+        okButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                okButtonActionPerformed(evt);
             }
         });
 
@@ -240,6 +300,8 @@ public class GameSetupPanel extends javax.swing.JDialog {
                     .addComponent(startButton))
                 .addContainerGap())
         );
+
+        if (futurePlayers.size() >= 3) {     startButton.setVisible(true); } else {     startButton.setVisible(false); }
 
         textPanel.setToolTipText("This will be the character you play as during the game.");
         textPanel.setMinimumSize(new java.awt.Dimension(0, 0));
@@ -289,49 +351,81 @@ public class GameSetupPanel extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void submitCharacter(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_submitCharacter
-        // TODO add your handling code here:
-        System.out.print("hi ");
-        if (true) { // if the button has been pressed...
-            String player = nameTextInput.getText();
-            for (char c : player.toCharArray()) {
-                if (!Character.isLetterOrDigit(c) || !Character.isWhitespace(c)) {
-                    JOptionPane optionPane = new JOptionPane("message",JOptionPane.QUESTION_MESSAGE,JOptionPane.YES_NO_OPTION);
-                    JDialog dialog = new JDialog(new JFrame(), "Click a button", true);
-                    dialog.setContentPane(optionPane);
-                    dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-                    optionPane.addPropertyChangeListener(
-                        new PropertyChangeListener() {
-                            public void propertyChange(PropertyChangeEvent e) {
-                                String prop = e.getPropertyName();
-
-                                if (dialog.isVisible() 
-                                 && (e.getSource() == optionPane)
-                                 && (prop.equals(JOptionPane.VALUE_PROPERTY))) {
-                                    // do something
-                                    dialog.setVisible(false);
-                                }
-                            };
-                    });
-                    dialog.pack();
-                    dialog.setVisible(true);
-                    dialog.setAlwaysOnTop(true);
-                }
-            }
-        }
-    }//GEN-LAST:event_submitCharacter
-
-    private void whiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_whiteActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_whiteActionPerformed
-
-    private void scarletActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_scarletActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_scarletActionPerformed
-
     private void nameTextInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameTextInputActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_nameTextInputActionPerformed
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        okButtonActionPerformed(e);
+    }
+    
+    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+        System.out.println("OK clicked!");
+        if (((JButton) evt.getSource()).getActionCommand().equalsIgnoreCase(SUBMIT)) { // if the button has been pressed...
+            if (!falsePositive) {
+                System.out.println("Performing action...!");
+                JButton b = (JButton)evt.getSource();
+                String player = nameTextInput.getText();
+                if (player.length() < 3) {
+                    setupError("Please enter a name"+ ((player.length()==0)?"!":" of at least three characters."));
+                    falsePositive = true;
+                    return;
+                } else {
+                    for (char c : player.toCharArray()) {
+                        if (!Character.isLetterOrDigit(c) && !Character.isWhitespace(c)) {
+                            setupError("Please enter a player name with only numbers, letters or spaces.");
+                            falsePositive = true;
+                            return;
+                        }
+                    }
+                }
+                // now we know the player has a name! have they selected a character?
+                if (currentPlayers.plays() == null) {
+                    setupError("Select a character to play as.");
+                    falsePositive = true;
+                    return;
+                }
+                System.out.println("Got through the ifs!");
+                
+                futurePlayers.add(currentPlayers);
+                System.out.println(futurePlayers.size() +": "+currentPlayers.name()+" plays "+currentPlayers.plays());
+                currentPlayers = new Pair<String,String>();
+                
+                nameTextInput.setText("");
+                setupButtons();
+            }
+        }
+        falsePositive = false;
+    }//GEN-LAST:event_okButtonActionPerformed
+
+    private void nameTextInputFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_nameTextInputFocusLost
+        currentPlayers.name(((JTextField)evt.getSource()).getText());
+    }//GEN-LAST:event_nameTextInputFocusLost
+
+    private void scarletFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_scarletFocusGained
+        currentPlayers.plays(Card.SCARLET);
+    }//GEN-LAST:event_scarletFocusGained
+
+    private void mustardFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_mustardFocusLost
+        currentPlayers.plays(Card.MUSTARD);
+    }//GEN-LAST:event_mustardFocusLost
+
+    private void greenFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_greenFocusLost
+        currentPlayers.plays(Card.GREEN);
+    }//GEN-LAST:event_greenFocusLost
+
+    private void peacockFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_peacockFocusLost
+        currentPlayers.plays(Card.PEACOCK);
+    }//GEN-LAST:event_peacockFocusLost
+
+    private void plumFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_plumFocusLost
+        currentPlayers.plays(Card.PLUM);
+    }//GEN-LAST:event_plumFocusLost
+
+    private void whiteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_whiteFocusLost
+        currentPlayers.plays(Card.WHITE);
+    }//GEN-LAST:event_whiteFocusLost
 
     /**
      * @param args the command line arguments
@@ -373,7 +467,48 @@ public class GameSetupPanel extends javax.swing.JDialog {
             }
         });
     }
+    
+    private void setupError(String m) {
+        JOptionPane optionPane = new JOptionPane(m,JOptionPane.QUESTION_MESSAGE,JOptionPane.OK_OPTION);
+        JDialog dialog = new JDialog(new JFrame(), "Click a button", true);
+        dialog.setContentPane(optionPane);
+        dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        optionPane.addPropertyChangeListener(
+            new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent e) {
+                    String prop = e.getPropertyName();
 
+                    if (dialog.isVisible() 
+                     && (e.getSource() == optionPane)
+                     && (prop.equals(JOptionPane.VALUE_PROPERTY))) {
+                        // do something
+                        dialog.setVisible(false);
+                    }
+                };
+        });
+        dialog.pack();
+        dialog.setVisible(true);
+        dialog.setAlwaysOnTop(true);
+    }
+    
+    class CharacterSelectedEvent extends ActionEvent {
+        public CharacterSelectedEvent(Object source, int id, String command) {
+            super(source, id, command);
+        }
+    }
+
+    class SubmitPlayerEvent extends ActionEvent {
+        public SubmitPlayerEvent(Object source, int id, String command) {
+            super(source, id, command);
+        }
+    }
+    class StartGameEvent extends ActionEvent {
+        public StartGameEvent(Object source, int id, String command) {
+            super(source, id, command);
+        }
+    }
+    
+    private Set<Pair<String,JRadioButton>> characters = new HashSet<Pair<String,JRadioButton>>();
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel NameSelection;
     private javax.swing.ButtonGroup charSelect;
