@@ -18,7 +18,6 @@ public class CluedoFrame extends JFrame implements ActionListener {
 
 	public CluedoFrame(Game cluedoGame) {
 		super("Cluedo");
-		this.controller = new Controller(this);
 		setLayout(new BorderLayout()); // use border layout
 		this.canvas = new CluedoCanvas(cluedoGame);
 		add(canvas, BorderLayout.CENTER); // add canvas
