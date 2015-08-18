@@ -1,5 +1,6 @@
 package game;
 
+import java.awt.Graphics;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,12 +34,26 @@ public class Board {
 	 *@return Boolean representing legality of coordinate
 	 */
 	public boolean isLegal(Coordinate coord){
+		if(withinBounds(coord)){
+			return !isEmpty(coord);
+		} else {
+			return false;
+		}
+	}
+
+	public boolean isEmpty(Coordinate coord) {
+		return squares[coord.getX()][coord.getY()] == null;
+	}
+
+	public boolean withinBounds(Coordinate coord) {
 		if(coord.getX() < 0) {return false;}
 		if(coord.getY() < 0) {return false;}
 		if(coord.getX() >= squares.length) {return false;}
 		if(coord.getY() >= squares[0].length) {return false;}
-		return squares[coord.getX()][coord.getY()] != null;
+		return true;
 	}
+	
+	
 
 	/**Checks if the given coordinate is in a room. Returns
 	 * string name of room. ("Hallway" if player is not in a
@@ -49,6 +64,11 @@ public class Board {
 	public String getRoom(Coordinate coord){
 		if(!isLegal(coord)) {throw new IllegalArgumentException();}
 		return squares[coord.getX()][coord.getY()].getRoom();
+	}
+	
+	public boolean isRoom(Coordinate coord){
+		if(!isLegal(coord)) {throw new IllegalArgumentException();}
+		return squares[coord.getX()][coord.getY()].isRoom();
 	}
 	
 	/**
@@ -270,7 +290,6 @@ public class Board {
 		}
 	}
 
-
 	public int width() {
 		return squares.length;
 	}
@@ -278,4 +297,5 @@ public class Board {
 	public int height() {
 		return squares[0].length;
 	}
+	
 }

@@ -1,5 +1,6 @@
 package ui;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,6 +8,7 @@ import java.util.Set;
 
 import game.ActingOutOfTurnException;
 import game.Game;
+
 import java.util.EventListener;
 
 public class Controller implements ActionListener, EventListener {
@@ -26,9 +28,9 @@ public class Controller implements ActionListener, EventListener {
 		gameFrame.nextTurn();
 	}
 	
-	public void repaintBoard(Graphics g){
+	public void repaintBoard(Graphics g, Dimension d){
 		if(cluedoGame != null){
-			cluedoGame.repaintBoard(g);
+			cluedoGame.repaintBoard(g, d);
 		}
 	}
 	
@@ -58,9 +60,6 @@ public class Controller implements ActionListener, EventListener {
 			}
 		}
 	}
-        
-        @Override
-        public void 
 	
 	public boolean checkGameState(){
 		if(cluedoGame != null){
