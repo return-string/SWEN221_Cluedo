@@ -5,12 +5,41 @@
  */
 package ui;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.HashSet;
+import java.util.Map.Entry;
+import java.util.Set;
+import javax.swing.AbstractButton;
+import javax.swing.ButtonModel;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 /**
  *
  * @author mckayvick
  */
 public class GameSetupPanel extends javax.swing.JDialog {
-
+    private class Pair {
+        String name = null;
+        String plays = null;
+        Pair (String name, String chara) {
+            this.name = name;
+            this.plays = chara;
+        }
+        String name () { return name; }
+        String plays() { return plays; }
+        void name(String n) { name = n; }
+        void plays(String p) { plays = p; }
+    }
+    
+    private Set<Pair> futurePlayers = new HashSet<Pair>();
+    
     /**
      * Creates new form GameSetupPanel
      */
@@ -27,14 +56,8 @@ public class GameSetupPanel extends javax.swing.JDialog {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         charSelect = new javax.swing.ButtonGroup();
-        jButton1 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        filler7 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0));
-        buttonGroup1 = new javax.swing.ButtonGroup();
-        selectLabel = new javax.swing.JLabel();
         NameSelection = new javax.swing.JPanel();
         nameLabel = new javax.swing.JLabel();
         nameTextInput = new javax.swing.JTextField();
@@ -48,20 +71,20 @@ public class GameSetupPanel extends javax.swing.JDialog {
         submitPanel = new javax.swing.JPanel();
         okButton = new javax.swing.JButton();
         startButton = new javax.swing.JButton();
+        textPanel = new javax.swing.JPanel();
 
-        jButton1.setText("jButton1");
-
-        jButton3.setText("jButton3");
-
-        selectLabel.setText("Select a character:");
-
-        setTitle("Cluedo Setup");
+        setTitle("Player Setup");
+        setAlwaysOnTop(true);
         setBackground(new java.awt.Color(204, 204, 255));
+        setMinimumSize(new java.awt.Dimension(435, 526));
+        setSize(new java.awt.Dimension(435, 516));
 
         nameLabel.setText("Enter your name:");
 
         nameTextInput.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         nameTextInput.setMinimumSize(new java.awt.Dimension(4, 4));
+        nameTextInput.setName("name"); // NOI18N
+        nameTextInput.setNextFocusableComponent(scarlet);
         nameTextInput.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nameTextInputActionPerformed(evt);
@@ -72,14 +95,10 @@ public class GameSetupPanel extends javax.swing.JDialog {
         NameSelection.setLayout(NameSelectionLayout);
         NameSelectionLayout.setHorizontalGroup(
             NameSelectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(nameTextInput, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(NameSelectionLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(NameSelectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(NameSelectionLayout.createSequentialGroup()
-                        .addComponent(nameLabel)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(nameTextInput, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addComponent(nameLabel)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         NameSelectionLayout.setVerticalGroup(
             NameSelectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -97,11 +116,16 @@ public class GameSetupPanel extends javax.swing.JDialog {
         scarlet.setAlignmentX(0.5F);
         scarlet.setBorderPainted(true);
         scarlet.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        scarlet.setDisabledIcon(null);
+        scarlet.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/scarlet_s.png"))); // NOI18N
+        scarlet.setHideActionText(true);
         scarlet.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         scarlet.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         scarlet.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/scarlet.png"))); // NOI18N
         scarlet.setNextFocusableComponent(mustard);
+        scarlet.setOpaque(false);
+        scarlet.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/scarlet.png"))); // NOI18N
+        scarlet.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/scarlet_c.png"))); // NOI18N
+        scarlet.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/scarlet_c.png"))); // NOI18N
         scarlet.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 scarletActionPerformed(evt);
@@ -113,21 +137,28 @@ public class GameSetupPanel extends javax.swing.JDialog {
         mustard.setAlignmentX(0.5F);
         mustard.setBorderPainted(true);
         mustard.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        mustard.setDisabledIcon(null);
+        mustard.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/mustard_s.png"))); // NOI18N
         mustard.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         mustard.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/mustard.png"))); // NOI18N
         mustard.setNextFocusableComponent(white);
         mustard.setOpaque(false);
+        mustard.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/mustard.png"))); // NOI18N
+        mustard.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/mustard_c.png"))); // NOI18N
+        mustard.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/mustard_c.png"))); // NOI18N
         selectPanel.add(mustard);
 
         charSelect.add(white);
         white.setAlignmentX(0.5F);
         white.setBorderPainted(true);
         white.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        white.setDisabledIcon(null);
+        white.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/white_s.png"))); // NOI18N
         white.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         white.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/white.png"))); // NOI18N
         white.setNextFocusableComponent(green);
+        white.setOpaque(false);
+        white.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/white.png"))); // NOI18N
+        white.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/white_c.png"))); // NOI18N
+        white.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/white_c.png"))); // NOI18N
         white.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 whiteActionPerformed(evt);
@@ -139,52 +170,66 @@ public class GameSetupPanel extends javax.swing.JDialog {
         green.setAlignmentX(0.5F);
         green.setBorderPainted(true);
         green.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        green.setDisabledIcon(null);
+        green.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/green_s.png"))); // NOI18N
         green.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         green.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         green.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/green.png"))); // NOI18N
         green.setNextFocusableComponent(peacock);
+        green.setOpaque(false);
+        green.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/green.png"))); // NOI18N
+        green.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/green_c.png"))); // NOI18N
+        green.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/green_c.png"))); // NOI18N
         selectPanel.add(green);
 
         charSelect.add(peacock);
         peacock.setAlignmentX(0.5F);
         peacock.setBorderPainted(true);
         peacock.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        peacock.setDisabledIcon(null);
+        peacock.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/peacock_s.png"))); // NOI18N
         peacock.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         peacock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/peacock.png"))); // NOI18N
         peacock.setNextFocusableComponent(plum);
+        peacock.setOpaque(false);
+        peacock.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/peacock.png"))); // NOI18N
+        peacock.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/peacock_c.png"))); // NOI18N
+        peacock.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/peacock_c.png"))); // NOI18N
         selectPanel.add(peacock);
 
         charSelect.add(plum);
         plum.setAlignmentX(0.5F);
         plum.setBorderPainted(true);
         plum.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        plum.setDisabledIcon(null);
+        plum.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/plum_s.png"))); // NOI18N
         plum.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         plum.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/plum.png"))); // NOI18N
         plum.setNextFocusableComponent(okButton);
+        plum.setOpaque(false);
+        plum.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/plum.png"))); // NOI18N
+        plum.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/plum_c.png"))); // NOI18N
+        plum.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/plum_c.png"))); // NOI18N
         selectPanel.add(plum);
 
         okButton.setText("OK");
-        okButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                okButtonActionPerformed(evt);
+        okButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        okButton.setNextFocusableComponent(((futurePlayers.size() < 3)) ? (nameTextInput) : (startButton)
+        );
+        okButton.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                submitCharacter(evt);
             }
         });
 
         startButton.setText("Start Game");
+        startButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         javax.swing.GroupLayout submitPanelLayout = new javax.swing.GroupLayout(submitPanel);
         submitPanel.setLayout(submitPanelLayout);
         submitPanelLayout.setHorizontalGroup(
             submitPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(submitPanelLayout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(okButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 542, Short.MAX_VALUE)
-                .addComponent(startButton)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(startButton))
         );
         submitPanelLayout.setVerticalGroup(
             submitPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -196,16 +241,32 @@ public class GameSetupPanel extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
+        textPanel.setToolTipText("This will be the character you play as during the game.");
+        textPanel.setMinimumSize(new java.awt.Dimension(0, 0));
+        textPanel.setOpaque(false);
+
+        javax.swing.GroupLayout textPanelLayout = new javax.swing.GroupLayout(textPanel);
+        textPanel.setLayout(textPanelLayout);
+        textPanelLayout.setHorizontalGroup(
+            textPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        textPanelLayout.setVerticalGroup(
+            textPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(NameSelection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(submitPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(selectPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(NameSelection, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(submitPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(selectPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
+                    .addComponent(textPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -214,32 +275,63 @@ public class GameSetupPanel extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(NameSelection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(textPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(selectPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 229, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(submitPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
         getAccessibleContext().setAccessibleName("GameSetup");
+        getAccessibleContext().setAccessibleDescription("Select your player name and character.");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void nameTextInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameTextInputActionPerformed
+    private void submitCharacter(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_submitCharacter
         // TODO add your handling code here:
-    }//GEN-LAST:event_nameTextInputActionPerformed
+        System.out.print("hi ");
+        if (true) { // if the button has been pressed...
+            String player = nameTextInput.getText();
+            for (char c : player.toCharArray()) {
+                if (!Character.isLetterOrDigit(c) || !Character.isWhitespace(c)) {
+                    JOptionPane optionPane = new JOptionPane("message",JOptionPane.QUESTION_MESSAGE,JOptionPane.YES_NO_OPTION);
+                    JDialog dialog = new JDialog(new JFrame(), "Click a button", true);
+                    dialog.setContentPane(optionPane);
+                    dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+                    optionPane.addPropertyChangeListener(
+                        new PropertyChangeListener() {
+                            public void propertyChange(PropertyChangeEvent e) {
+                                String prop = e.getPropertyName();
 
-    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+                                if (dialog.isVisible() 
+                                 && (e.getSource() == optionPane)
+                                 && (prop.equals(JOptionPane.VALUE_PROPERTY))) {
+                                    // do something
+                                    dialog.setVisible(false);
+                                }
+                            };
+                    });
+                    dialog.pack();
+                    dialog.setVisible(true);
+                    dialog.setAlwaysOnTop(true);
+                }
+            }
+        }
+    }//GEN-LAST:event_submitCharacter
+
+    private void whiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_whiteActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_okButtonActionPerformed
+    }//GEN-LAST:event_whiteActionPerformed
 
     private void scarletActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_scarletActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_scarletActionPerformed
 
-    private void whiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_whiteActionPerformed
+    private void nameTextInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameTextInputActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_whiteActionPerformed
+    }//GEN-LAST:event_nameTextInputActionPerformed
 
     /**
      * @param args the command line arguments
@@ -267,7 +359,6 @@ public class GameSetupPanel extends javax.swing.JDialog {
             java.util.logging.Logger.getLogger(GameSetupPanel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -285,12 +376,8 @@ public class GameSetupPanel extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel NameSelection;
-    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup charSelect;
-    private javax.swing.Box.Filler filler7;
     private javax.swing.JRadioButton green;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
     private javax.swing.JRadioButton mustard;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField nameTextInput;
@@ -298,10 +385,10 @@ public class GameSetupPanel extends javax.swing.JDialog {
     private javax.swing.JRadioButton peacock;
     private javax.swing.JRadioButton plum;
     private javax.swing.JRadioButton scarlet;
-    private javax.swing.JLabel selectLabel;
     private javax.swing.JPanel selectPanel;
     private javax.swing.JButton startButton;
     private javax.swing.JPanel submitPanel;
+    private javax.swing.JPanel textPanel;
     private javax.swing.JRadioButton white;
     // End of variables declaration//GEN-END:variables
 }
