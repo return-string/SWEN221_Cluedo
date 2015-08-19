@@ -131,7 +131,7 @@ public class Game {
 	 * @throws ActingOutOfTurnException Passes on an exceptions thrown by moving/acting
 	 * 	out of turn from descendant methods.
 	 */
-	public void playerMoves(Coordinate clicked) throws ActingOutOfTurnException {
+	public void movePlayer(Coordinate clicked) throws ActingOutOfTurnException {
 		if (gameState != STATUS_PLAYER_MOVING || roll == 0) { return; }
 
 		Player p = players.get(activePlayer);
