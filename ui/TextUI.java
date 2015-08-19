@@ -224,7 +224,7 @@ public class TextUI {
 		if (numPlayers == Card.CHARACTERS.length) {
 			printText("Starting a game with all 6 characters.");
 			for (int i = 0; i < Card.CHARACTERS.length;i++){
-				players.add(new Player(Card.CHARACTERS[i]));
+				players.add(new Player(Card.CHARACTERS[i],Card.CHARACTERS[i]));
 			}
 			return players;
 		}
@@ -235,7 +235,7 @@ public class TextUI {
 			int select = askIntBetween("Please add a character. "+
 					(options.get(0)==Card.SCARLET?("("+ Card.SCARLET +" always goes first)."):""),1,options.size())-1;
 			int realIndex = Card.indexOf(Card.Type.CHARACTER, options.get(select));
-			players.add(new Player(Card.CHARACTERS[realIndex]));
+			players.add(new Player(Card.CHARACTERS[i],Card.CHARACTERS[realIndex]));
 			options.remove(select);
 		}
 		return players;
@@ -490,10 +490,10 @@ public class TextUI {
 	 */
 	public void printPlayerStatus(int boardwidth, Player p, String roomName) throws ActingOutOfTurnException {
 		if (p.isPlaying()) {
-			printText(p.getName() +"'s turn begins in the "+
+			printText(p.getCharacter() +"'s turn begins in the "+
 					relativeBoardPosString(boardwidth, p.position()) + " "+ roomName);
 		} else { // if they're not playing, just print something interesting.
-			printText(p.getName() + " " + randomDeathMessage());
+			printText(p.getCharacter() + " " + randomDeathMessage());
 		}
 	}
 

@@ -53,7 +53,7 @@ public class DeckPanel extends CluedoPanel {
             l.add(new CardImpl(Card.Type.CHARACTER,Card.PLUM));
             l.add(new CardImpl(Card.Type.ROOM,Card.BALL));
             l.add(new CardImpl(Card.Type.WEAPON,Card.DAGGER));
-            Player p = new Player(Card.MUSTARD,l,Card.getPlayerStart(Card.MUSTARD));
+            Player p = new Player(Card.MUSTARD,Card.MUSTARD,l,Card.getPlayerStart(Card.MUSTARD));
             
             return p;
         }

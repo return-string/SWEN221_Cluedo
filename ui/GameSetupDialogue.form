@@ -46,7 +46,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="NameSelection" alignment="1" max="32767" attributes="0"/>
                   <Component id="submitPanel" alignment="0" max="32767" attributes="0"/>
-                  <Component id="selectPanel" alignment="1" pref="470" max="32767" attributes="0"/>
+                  <Component id="selectPanel" alignment="1" max="32767" attributes="0"/>
                   <Component id="textPanel" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -111,10 +111,6 @@
               <ComponentRef name="scarlet"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="nameTextInputFocusLost"/>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nameTextInputActionPerformed"/>
-          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -159,9 +155,6 @@
               <Image iconType="3" name="/assets/imgs/scarlet_c.png"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="scarletFocusGained"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JRadioButton" name="mustard">
           <Properties>
@@ -194,9 +187,6 @@
               <Image iconType="3" name="/assets/imgs/mustard_c.png"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="mustardFocusLost"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JRadioButton" name="white">
           <Properties>
@@ -229,9 +219,6 @@
               <Image iconType="3" name="/assets/imgs/white_c.png"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="whiteFocusLost"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JRadioButton" name="green">
           <Properties>
@@ -265,9 +252,6 @@
               <Image iconType="3" name="/assets/imgs/green_c.png"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="greenFocusLost"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JRadioButton" name="peacock">
           <Properties>
@@ -300,9 +284,6 @@
               <Image iconType="3" name="/assets/imgs/peacock_c.png"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="peacockFocusLost"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JRadioButton" name="plum">
           <Properties>
@@ -335,9 +316,6 @@
               <Image iconType="3" name="/assets/imgs/plum_c.png"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="plumFocusLost"/>
-          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -348,7 +326,9 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <Component id="okButton" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="progress" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Component id="startButton" min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -357,9 +337,12 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="32767" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="okButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="startButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="okButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="startButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Component id="progress" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -381,7 +364,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="okButtonActionPerformed"/>
           </Events>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="okButton.setActionCommand(GameSetupPanel.SUBMIT);"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="okButton.setActionCommand(GameSetupDialogue.SUBMIT);"/>
             <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="okButton.addActionListener(this);"/>
           </AuxValues>
         </Component>
@@ -392,9 +375,18 @@
               <Color id="Hand Cursor"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="startButtonActionPerformed"/>
+          </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_allCodePost" type="java.lang.String" value="if (futurePlayers.size() &gt;= 3) {     startButton.setVisible(true); } else {     startButton.setVisible(false); }"/>
           </AuxValues>
+        </Component>
+        <Component class="javax.swing.JProgressBar" name="progress">
+          <Properties>
+            <Property name="maximum" type="int" value="3"/>
+            <Property name="focusable" type="boolean" value="false"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>

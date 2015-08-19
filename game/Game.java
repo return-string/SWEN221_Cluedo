@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -62,17 +63,16 @@ public class Game {
 	 * @throws GameStateModificationException
 	 * @throws ActingOutOfTurnException
 	 */
-	public void startGame(Set<String> playerNames) throws GameStateModificationException, ActingOutOfTurnException {
+	public void startGame(Map<String,String> playerNames) throws GameStateModificationException, ActingOutOfTurnException {
 		if (gameState != 0 || players != null) {
 			throw new GameStateModificationException("Game is already in progress.");
 		} else if (playerNames == null ^ (playerNames.size() < 3 || playerNames.size() > 6)) {
 			throw new IllegalArgumentException("Cannot initialise a game with these players. (size of playerNames must be 3-6)");
 		}
 		players = new ArrayList<Player>();
-		for (String n : Card.CHARACTERS) {
-			if (playerNames.contains(n)) {
-				players.add(new Player(n));
-			}
+		for (Map.Entry entry : playerNames.entrySet()) {
+                    // TODO need some checking here, characters against Card.CHARACTERS. 
+                    players.add(new Player((String)entry.getKey(),(String)entry.getValue()));
 		}
 		initialiseDeck();
 		activePlayer = 0;
@@ -208,7 +208,7 @@ public class Game {
 	/** If the given Card matches a player in the game, return them. */
 	public Player getPlayer(Card card) {
 		for (Player p : players) {
-			if (p.getName().equals(card.getValue())) {
+			if (p.getCharacter().equals(card.getValue())) {
 				return p;
 			}
 		}
@@ -232,7 +232,7 @@ public class Game {
 			return false;
 		} else {
 //			textUI.printText("Success! "+ p.getName() +" has made a correct accusation and the guilty party will be brought to justice.");
-			if (p.getName().equals(h.getCharacter().getValue())) {
+			if (p.getCharacter().equals(h.getCharacter().getValue())) {
 //				textUI.printText("('Accusation' sounds kinder than 'loud, weeping confession into "+ players.get( (activePlayer + 1) % players.size()).getName() +"'s arms.)");
 			}
 			for (Player ps : players) {
@@ -248,7 +248,7 @@ public class Game {
 	public boolean isPlayer(Card character) {
             if (players == null) { return false; }
 		for (Player p : players) {
-			if (p.getName().equals(character.getValue())) {
+			if (p.getCharacter().equals(character.getValue())) {
 				return true;
 			}
 		}
@@ -382,7 +382,7 @@ public class Game {
 		for (int i = 0; i < characterNames.size(); i++) {
 			for (int j = 0; j < Card.CHARACTERS.length; j++) {
 				if (Card.CHARACTERS[j].equals(characterNames.get(i))) {
-					players.add(new Player(characterNames.get(i)));
+					players.add(new Player(characterNames.get(i),characterNames.get(i)));
 				}
 			}
 		}
@@ -481,7 +481,10 @@ public class Game {
 	}
 
 	public void repaintBoard(Graphics g) {
-		// TODO Auto-generated method stub
-		
+            BOARD.repaint(g);
+	}
+        
+	public void repaintBoard(Graphics g, Dimenson d) {
+            BOARD.repaint(g,d);
 	}
 }

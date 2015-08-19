@@ -330,10 +330,10 @@ public class TextOut implements ActionListener {
 	 */
 	public void printPlayerStatus(int boardwidth, Player p, String roomName) throws ActingOutOfTurnException {
 		if (p.isPlaying()) {
-			printText(p.getName() +"'s turn begins in the "+
+			printText(p.getCharacter() +"'s turn begins in the "+
 					relativeBoardPosString(boardwidth, p.position()) + " "+ roomName);
 		} else { // if they're not playing, just print something interesting.
-			printText(p.getName() + " " + randomDeathMessage());
+			printText(p.getCharacter() + " " + randomDeathMessage());
 		}
 	}
 

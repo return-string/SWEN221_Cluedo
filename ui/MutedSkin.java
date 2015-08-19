@@ -14,9 +14,9 @@ public class MutedSkin implements CluedoSkin {
 
     public MutedSkin() throws FontFormatException, IOException {
             primaryTitleFont =  Font.createFont(Font.PLAIN,
-                                    new File("/font/IMFell_Normal.ttf"));
+                                    new File("/bin/assets/fonts/IMFell_Normal.ttf"));
             secondaryTitleFont =  Font.createFont(Font.PLAIN,
-                            new File("/font/PermanentMarker.ttf"));
+                            new File("/bin/assets/fonts/PermanentMarker.ttf"));
             normalFont = Font.getFont("Arial");
     }
 

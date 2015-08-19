@@ -13,8 +13,11 @@ public class GameOverPanel extends CluedoPanel {
 
 	@Override
 	public void nextTurn() {
-		// TODO Auto-generated method stub
-		
+	    // some means of getting information from controller
+            
+            // paint this information on the window
+            
+            // show buttons for restarting the game/closing and exiting
 	}
 
 }

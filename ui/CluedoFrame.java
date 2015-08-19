@@ -13,7 +13,7 @@ public class CluedoFrame extends JFrame {
 	private GameOverPanel gameOver;
 	private RulesPanel rules;
 	private TurnPanel turnPanel;
-	private GameSetupPanel gameSetup;
+	private GameSetupDialogue gameSetup;
 
 	public CluedoFrame() {
 		super("Cluedo");
@@ -71,12 +71,11 @@ public class CluedoFrame extends JFrame {
 
 	public void showGameSetup(){
 		if(this.gameSetup == null){
-			this.gameSetup = new GameSetupPanel(controller);
+			this.gameSetup = new GameSetupDialogue(controller);
 		}
 		remove(this.currentPanel);
 		this.currentPanel = this.gameSetup;
 		add(this.currentPanel);
 	}
-
 
 }

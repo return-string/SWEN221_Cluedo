@@ -17,7 +17,8 @@ import java.util.List;
  *
  */
 public class Player implements Comparable<Player> {
-	public final String NAME;
+	public final String CHARACTER_NAME;
+        public final String PLAYER_NAME;
 
 	private List<Card> hand;
 	private boolean isPlaying = true;
@@ -27,18 +28,20 @@ public class Player implements Comparable<Player> {
 	private boolean wasForced = false;
 	private boolean hasMoved = false;
 
-	public Player(String characterName, Coordinate startPos) {
-		this.NAME = characterName;
+	public Player(String playerName, String characterName, Coordinate startPos) {
+		this.CHARACTER_NAME = characterName;
+                this.PLAYER_NAME = playerName;
 		this.hand = new ArrayList<Card>();
-		this.pos = startPos;
 		this.innocentCards = new HashSet<Card>();
+		this.pos = startPos;
 	}
 
-	public Player(String characterName) {
-		this.NAME = characterName;
+	public Player(String playerName, String characterName) {
+		this.CHARACTER_NAME = characterName;
+                this.PLAYER_NAME = playerName;
 		this.hand = new ArrayList<Card>();
-		this.pos = Card.getPlayerStart(characterName);
 		this.innocentCards = new HashSet<Card>();
+		this.pos = Card.getPlayerStart(characterName);
 	}
 
 	/** Construct a player with a given hand and mark all the cards as innocent.
@@ -46,8 +49,9 @@ public class Player implements Comparable<Player> {
 	 * @param c
 	 * @param h
 	 */
-	public Player(String characterName, List<Card> hand, Coordinate startPos) {
-		this.NAME = characterName;
+	public Player(String playerName, String characterName, List<Card> hand, Coordinate startPos) {
+		this.CHARACTER_NAME = characterName;
+                this.PLAYER_NAME = playerName;
 		this.hand = hand;
 		this.pos = startPos;
 		for (Card card : hand) {
@@ -95,7 +99,7 @@ public class Player implements Comparable<Player> {
 		if (stopGivingCards) { throw new GameStateModificationException("Cannot add cards to a player's hand once they have acted!"); }
 		if (c != null) {
 			if (hand.contains(c)) {
-				throw new IllegalArgumentException("Player "+ getName() +" hand cannot contain duplicate cards!");
+				throw new IllegalArgumentException("Player "+ getCharacter() +" hand cannot contain duplicate cards!");
 			}
 			if (hand.add(c)) {
 				vindicate(c);
@@ -158,19 +162,23 @@ public class Player implements Comparable<Player> {
 		return hasMoved;
 	}
 
-	public String getName() {
-		return NAME;
+	public String getCharacter() {
+		return CHARACTER_NAME;
 	}
+        
+        public String getName() {
+            return PLAYER_NAME;
+        }
 
 	@Override
 	public int compareTo(Player o) {
-		if (o.getName().equals(this.getName())) {
+		if (o.getCharacter().equals(this.getCharacter())) {
 			return 0;
 		}
 		for (int i = 0; i < Card.CHARACTERS.length; i++) {
-			if (Card.CHARACTERS[i] == o.getName()) {
+			if (Card.CHARACTERS[i] == o.getCharacter()) {
 				return 1;
-			} else if (Card.CHARACTERS[i] == this.getName()) {
+			} else if (Card.CHARACTERS[i] == this.getCharacter()) {
 				return -1;
 			}
 		}
@@ -184,7 +192,7 @@ public class Player implements Comparable<Player> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((NAME == null) ? 0 : NAME.hashCode());
+		result = prime * result + ((CHARACTER_NAME == null) ? 0 : CHARACTER_NAME.hashCode());
 		result = prime * result + ((hand == null) ? 0 : hand.hashCode());
 		result = prime * result + (isPlaying ? 1231 : 1237);
 		result = prime * result + ((pos == null) ? 0 : pos.hashCode());
@@ -206,11 +214,11 @@ public class Player implements Comparable<Player> {
 			return false;
 		}
 		Player other = (Player) obj;
-		if (NAME == null) {
-			if (other.NAME != null) {
+		if (CHARACTER_NAME == null) {
+			if (other.CHARACTER_NAME != null) {
 				return false;
 			}
-		} else if (!NAME.equals(other.NAME)) {
+		} else if (!CHARACTER_NAME.equals(other.CHARACTER_NAME)) {
 			return false;
 		}
 		if (hand == null) {
@@ -227,7 +235,7 @@ public class Player implements Comparable<Player> {
 	}
 
 	public boolean equalsName(String s) {
-		return NAME.equalsIgnoreCase(s);
+		return CHARACTER_NAME.equalsIgnoreCase(s);
 	}
 
 	/* (non-Javadoc)
@@ -235,6 +243,6 @@ public class Player implements Comparable<Player> {
 	 */
 	@Override
 	public String toString() {
-		return NAME + " ("+ (isPlaying?"1":"0") +")";
+		return CHARACTER_NAME + " ("+ (isPlaying?"1":"0") +")";
 	}
 }

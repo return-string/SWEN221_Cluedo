@@ -8,8 +8,12 @@ import java.util.Set;
 
 import game.ActingOutOfTurnException;
 import game.Game;
+import game.GameStateModificationException;
 
 import java.util.EventListener;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Controller implements ActionListener, EventListener {
 	
@@ -43,6 +47,16 @@ public class Controller implements ActionListener, EventListener {
 		}
 	}
 	
+        public void setupGame(Map<String,String> playersToCharacters) {
+            try { 
+                cluedoGame.startGame(playersToCharacters);
+            } catch (GameStateModificationException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, "Tried to add characters while a game was in progress.", ex);
+            } catch (ActingOutOfTurnException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, "Tried to add characters while a game was in progress.", ex);
+            }
+        }
+        
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("New Game")){
