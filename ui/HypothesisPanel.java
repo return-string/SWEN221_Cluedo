@@ -1,38 +1,55 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package ui;
 
 import java.awt.FontFormatException;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractButton;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import ui.CluedoSkin;
+import ui.MutedSkin;
 
-/**
+
+/** The HypothesisPanel consists of a header panel, which contains a JLabel 
+ * displaying the developing hypothesis, and a content JPanel, which at 
+ * any time contains one of three subpanels: AccuseCharacter, AccuseRoom or 
+ * AccuseWeapon. 
+ * 
+ * It has three fields to remember the user's selection of a guilty character,
+ * room and weapon, and will be able to return these as a Set or List. 
  *
  * @author mckayvick
  */
-public class HypothesisPanel extends javax.swing.JDialog {
-    private CluedoSkin sk;
+public class HypothesisPanel extends javax.swing.JFrame {
+    static final String ELLIPSIS = "...";
+    static final String THEORY = " theorise that it was ";
+    static final String ACCUSE = " accuse the villain ";
+    static final String IN_THE = " in the ";
+    static final String WITH_THE = " with the ";
+    private String guiltyChar = "";
+    private String guiltyRoom = "";
+    private String guiltyWeap = "";
+    private JPanel currentHypothesis;
 
     /**
      * Creates new form HypothesisPanel
+     * @param room If the player is making a guess, let 'room' be the room 
+     * in which they are making the accusation, as defined by Card.ROOMS. If they
+     * are making a final accusation, let it be null. 
      */
-    public HypothesisPanel(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    public HypothesisPanel(String room) {
         initComponents();
-        try {
-            sk = new MutedSkin();
-        } catch (FontFormatException ex) {
-            Logger.getLogger(HypothesisPanel.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(HypothesisPanel.class.getName()).log(Level.SEVERE, null, ex);
-        }
-;
+        doubleInit();
     }
     
+    private void doubleInit() {
+        /* will setup the currentHypothesis field with the required JPanel and
+         display it.  */
+        
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -42,120 +59,37 @@ public class HypothesisPanel extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
+        contents = new javax.swing.JPanel();
         header = new javax.swing.JPanel();
-        headertext = new javax.swing.JLabel();
-        character = new javax.swing.JPanel();
-        scarlet = new javax.swing.JRadioButton();
-        mustard = new javax.swing.JRadioButton();
-        white = new javax.swing.JRadioButton();
-        green = new javax.swing.JRadioButton();
-        peacock = new javax.swing.JRadioButton();
-        plum = new javax.swing.JRadioButton();
+        headerText = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        header.setFont(getFont());
+        javax.swing.GroupLayout contentsLayout = new javax.swing.GroupLayout(contents);
+        contents.setLayout(contentsLayout);
+        contentsLayout.setHorizontalGroup(
+            contentsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        contentsLayout.setVerticalGroup(
+            contentsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 411, Short.MAX_VALUE)
+        );
 
-        headertext.setText("IT WAS");
-
-        headertext.setFont(sk.subtitleFont());
+        headerText.setText("jLabel1");
 
         javax.swing.GroupLayout headerLayout = new javax.swing.GroupLayout(header);
         header.setLayout(headerLayout);
         headerLayout.setHorizontalGroup(
             headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(headerLayout.createSequentialGroup()
-                .addComponent(headertext)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(headerText)
+                .addGap(0, 468, Short.MAX_VALUE))
         );
         headerLayout.setVerticalGroup(
             headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(headertext)
+            .addComponent(headerText)
         );
-
-        character.setLayout(new java.awt.GridLayout(2, 3, 0, 3));
-
-        buttonGroup1.add(scarlet);
-        scarlet.setAlignmentX(0.5F);
-        scarlet.setBorderPainted(true);
-        scarlet.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/scarlet_s.png"))); // NOI18N
-        scarlet.setDisabledSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/scarlet_s.png"))); // NOI18N
-        scarlet.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        scarlet.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        scarlet.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/scarlet.png"))); // NOI18N
-        scarlet.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/scarlet.png"))); // NOI18N
-        scarlet.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/scarlet_c.png"))); // NOI18N
-        scarlet.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/scarlet_c.png"))); // NOI18N
-        character.add(scarlet);
-
-        buttonGroup1.add(mustard);
-        mustard.setAlignmentX(0.5F);
-        mustard.setBorderPainted(true);
-        mustard.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/mustard_s.png"))); // NOI18N
-        mustard.setDisabledSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/mustard_s.png"))); // NOI18N
-        mustard.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        mustard.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        mustard.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/mustard.png"))); // NOI18N
-        mustard.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/mustard_c.png"))); // NOI18N
-        mustard.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/mustard_c.png"))); // NOI18N
-        character.add(mustard);
-
-        buttonGroup1.add(white);
-        white.setAlignmentX(0.5F);
-        white.setBorderPainted(true);
-        white.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/white_s.png"))); // NOI18N
-        white.setDisabledSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/white_s.png"))); // NOI18N
-        white.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        white.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        white.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/white.png"))); // NOI18N
-        white.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/white.png"))); // NOI18N
-        white.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/white_c.png"))); // NOI18N
-        white.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/white_c.png"))); // NOI18N
-        character.add(white);
-
-        buttonGroup1.add(green);
-        green.setAlignmentX(0.5F);
-        green.setBorderPainted(true);
-        green.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/green_s.png"))); // NOI18N
-        green.setDisabledSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/green_s.png"))); // NOI18N
-        green.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        green.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        green.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/green.png"))); // NOI18N
-        green.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/green.png"))); // NOI18N
-        green.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/green_c.png"))); // NOI18N
-        green.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/green_c.png"))); // NOI18N
-        green.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                greenActionPerformed(evt);
-            }
-        });
-        character.add(green);
-
-        buttonGroup1.add(peacock);
-        peacock.setAlignmentX(0.5F);
-        peacock.setBorderPainted(true);
-        peacock.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/peacock_s.png"))); // NOI18N
-        peacock.setDisabledSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/peacock_s.png"))); // NOI18N
-        peacock.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        peacock.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        peacock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/peacock.png"))); // NOI18N
-        peacock.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/peacock.png"))); // NOI18N
-        peacock.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/peacock_c.png"))); // NOI18N
-        peacock.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/peacock_c.png"))); // NOI18N
-        character.add(peacock);
-
-        plum.setAlignmentX(0.5F);
-        plum.setBorderPainted(true);
-        plum.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/plum_s.png"))); // NOI18N
-        plum.setDisabledSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/plum_s.png"))); // NOI18N
-        plum.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        plum.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        plum.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/plum.png"))); // NOI18N
-        plum.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/plum.png"))); // NOI18N
-        plum.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/plum_c.png"))); // NOI18N
-        plum.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/plum_c.png"))); // NOI18N
-        character.add(plum);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -164,25 +98,22 @@ public class HypothesisPanel extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(character, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(contents, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(character, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(contents, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void greenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_greenActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_greenActionPerformed
 
     /**
      * @param args the command line arguments
@@ -211,31 +142,297 @@ public class HypothesisPanel extends javax.swing.JDialog {
         }
         //</editor-fold>
 
-        /* Create and display the dialog */
+        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                HypothesisPanel dialog = new HypothesisPanel(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
+                new HypothesisPanel(null).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JPanel character;
-    private javax.swing.JRadioButton green;
+    private javax.swing.JPanel contents;
     private javax.swing.JPanel header;
-    private javax.swing.JLabel headertext;
-    private javax.swing.JRadioButton mustard;
-    private javax.swing.JRadioButton peacock;
-    private javax.swing.JRadioButton plum;
-    private javax.swing.JRadioButton scarlet;
-    private javax.swing.JRadioButton white;
+    private javax.swing.JLabel headerText;
     // End of variables declaration//GEN-END:variables
+
+
+    /** ACCUSE CHARACTER FORM
+     *
+     *
+     */
+    public class AccuseCharacter extends javax.swing.JDialog {
+        public AccuseCharacter(java.awt.Frame parent, boolean modal) {
+            super(parent, modal);
+            initComponents();
+        }
+        
+        // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
+        private void initComponents() {
+                buttonGroup1 = new javax.swing.ButtonGroup();
+                scarlet = new javax.swing.JRadioButton();
+                mustard = new javax.swing.JRadioButton();
+                white = new javax.swing.JRadioButton();
+                green = new javax.swing.JRadioButton();
+                peacock = new javax.swing.JRadioButton();
+                plum = new javax.swing.JRadioButton();
+
+                setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+                buttonGroup1.add(scarlet);
+                characterSet.add(scarlet);
+                scarlet.setToolTipText(game.Card.SCARLET);
+
+                buttonGroup1.add(mustard);
+                characterSet.add(mustard);
+                scarlet.setToolTipText(game.Card.MUSTARD);
+                
+                buttonGroup1.add(white);
+                characterSet.add(white);
+                scarlet.setToolTipText(game.Card.WHITE);
+
+                buttonGroup1.add(green);
+                characterSet.add(green);
+                scarlet.setToolTipText(game.Card.GREEN);
+
+                buttonGroup1.add(peacock);
+                characterSet.add(peacock);
+                scarlet.setToolTipText(game.Card.PEACOCK);
+
+                buttonGroup1.add(plum);
+                characterSet.add(plum);
+                scarlet.setToolTipText(game.Card.PLUM);
+
+                javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+                getContentPane().setLayout(layout);
+                layout.setHorizontalGroup(
+                    layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(scarlet)
+                        .addGap(3, 3, 3)
+                        .addComponent(mustard)
+                        .addGap(3, 3, 3)
+                        .addComponent(white))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(green)
+                        .addGap(3, 3, 3)
+                        .addComponent(peacock)
+                        .addGap(3, 3, 3)
+                        .addComponent(plum))
+                );
+                layout.setVerticalGroup(
+                    layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(scarlet, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(mustard, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(white, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(3, 3, 3)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(green, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(peacock, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(plum, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                );
+
+                for (JRadioButton b : characterSet) {
+                    String nm = b.getToolTipText().toLowerCase();
+                    b.setAlignmentX(0.5F);
+                    b.setBorderPainted(true);
+                    b.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/"+nm+"_s.png"))); // NOI18N
+                    b.setDisabledSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/"+nm+".png"))); // NOI18N
+                    b.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+                    b.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+                    b.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/"+nm+".png"))); // NOI18N
+                    b.setRolloverEnabled(false);
+                    b.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/"+nm+".png"))); // NOI18N
+                    b.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/"+nm+"_c.png"))); // NOI18N
+                    b.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/imgs/"+nm+"t_c.png"))); // NOI18N
+                }
+                
+                pack();
+            }
+//            java.awt.EventQueue.invokeLater(new Runnable() {
+//                public void run() {
+//                    AccuseCharacter dialog = new AccuseCharacter(new javax.swing.JFrame(), true);
+//                    dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+//                        @Override
+//                        public void windowClosing(java.awt.event.WindowEvent e) {
+//                            System.exit(0);
+//                        }
+//                    });
+//                    dialog.setVisible(true);
+//                }
+//            });
+
+        private Set<JRadioButton> characterSet = new HashSet<>();
+        // Variables declaration - do not modify                     
+        private javax.swing.ButtonGroup buttonGroup1;
+        private javax.swing.JRadioButton green;
+        private javax.swing.JRadioButton mustard;
+        private javax.swing.JRadioButton peacock;
+        private javax.swing.JRadioButton plum;
+        private javax.swing.JRadioButton scarlet;
+        private javax.swing.JRadioButton white;
+        // End of variables declaration 
+        
+    }
+    
+    /** ACCUSE WEAPON FORM 
+     *
+     *
+     */
+    public class AccuseWeapon extends javax.swing.JDialog {
+        public AccuseWeapon(java.awt.Frame parent, boolean modal) {
+            super(parent, modal);
+            initComponents();
+        }
+        
+        @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
+        private void initComponents() {
+
+            weapons = new javax.swing.ButtonGroup();
+            candlestick = new javax.swing.JRadioButton();
+            dagger = new javax.swing.JRadioButton();
+            revolver = new javax.swing.JRadioButton();
+            rope = new javax.swing.JRadioButton();
+            pipe = new javax.swing.JRadioButton();
+            wrench = new javax.swing.JRadioButton();
+
+            setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+            getContentPane().setLayout(new java.awt.GridLayout(2, 3, 3, 3));
+
+            weapons.add(candlestick);
+            candlestick.setText(game.Card.CANDLESTICK);
+            weaponSet.add(candlestick);
+
+            weapons.add(dagger);
+            dagger.setText(game.Card.DAGGER);
+            weaponSet.add(dagger);
+
+            weapons.add(revolver);
+            revolver.setText(game.Card.REVOLVER);
+            weaponSet.add(revolver);
+
+            weapons.add(rope);
+            rope.setText(game.Card.ROPE);
+            weaponSet.add(rope);
+
+            weapons.add(pipe);
+            pipe.setText(game.Card.PIPE);
+            weaponSet.add(pipe);
+            
+            weapons.add(wrench);
+            wrench.setText(game.Card.WRENCH);
+            weaponSet.add(wrench);
+
+            for (JRadioButton b : weaponSet) {
+                b.setPreferredSize(null);
+                b.setRolloverEnabled(false);
+                getContentPane().add(b);
+            }
+            
+            pack();
+        }
+
+        private Set<JRadioButton> weaponSet = new HashSet<JRadioButton>();
+        // Variables declaration - do not modify                     
+        private javax.swing.JRadioButton candlestick;
+        private javax.swing.JRadioButton dagger;
+        private javax.swing.JRadioButton pipe;
+        private javax.swing.JRadioButton revolver;
+        private javax.swing.JRadioButton rope;
+        private javax.swing.ButtonGroup weapons;
+        private javax.swing.JRadioButton wrench;
+        // End of variables declaration                   
+    }
+
+    /** ACCUSE ROOM FORM 
+     *
+     *
+     */
+    public class AccuseRoom extends javax.swing.JDialog {
+        public AccuseRoom(java.awt.Frame parent, boolean modal) {
+            super(parent, modal);
+            initComponents();
+        }
+
+        @SuppressWarnings("unchecked")
+        // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
+        private void initComponents() {
+
+            rooms = new javax.swing.ButtonGroup();
+            ballroom = new javax.swing.JRadioButton();
+            billiard = new javax.swing.JRadioButton();
+            conservatory = new javax.swing.JRadioButton();
+            dining = new javax.swing.JRadioButton();
+            hall = new javax.swing.JRadioButton();
+            kitchen = new javax.swing.JRadioButton();
+            lounge = new javax.swing.JRadioButton();
+            study = new javax.swing.JRadioButton();
+            library = new javax.swing.JRadioButton();
+
+            setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+            getContentPane().setLayout(new java.awt.GridLayout(3, 3, 3, 3));
+
+            rooms.add(ballroom);
+            ballroom.setText(game.Card.BALL);
+            roomSet.add(ballroom);
+
+            rooms.add(billiard);
+            billiard.setText(game.Card.BILLIARD);
+            roomSet.add(billiard);
+
+            rooms.add(conservatory);
+            conservatory.setText(game.Card.CONSERVATORY);
+            roomSet.add(conservatory);
+
+            rooms.add(dining);
+            dining.setText(game.Card.DINING);
+            roomSet.add(dining);
+
+            rooms.add(hall);
+            hall.setText(game.Card.HALL);
+            roomSet.add(hall);
+
+            rooms.add(kitchen);
+            kitchen.setText(game.Card.KITCHEN);
+            roomSet.add(kitchen);
+
+            rooms.add(lounge);
+            lounge.setText(game.Card.LOUNGE);
+            roomSet.add(lounge);
+
+            rooms.add(study);
+            study.setText(game.Card.STUDY);
+            roomSet.add(study);
+
+            rooms.add(library);
+            library.setText(game.Card.LIBRARY);
+            roomSet.add(library);
+
+            for (JRadioButton b : roomSet) {
+                b.setMinimumSize(new java.awt.Dimension(16, 30));
+                b.setPreferredSize(null);
+                b.setRolloverEnabled(false);
+                getContentPane().add(b);
+            }
+
+            pack();
+        }
+
+        private Set<JRadioButton> roomSet = new HashSet<JRadioButton>();
+        // Variables declaration - do not modify                     
+        private javax.swing.JRadioButton ballroom;
+        private javax.swing.JRadioButton billiard;
+        private javax.swing.JRadioButton conservatory;
+        private javax.swing.JRadioButton dining;
+        private javax.swing.JRadioButton hall;
+        private javax.swing.JRadioButton kitchen;
+        private javax.swing.JRadioButton library;
+        private javax.swing.JRadioButton lounge;
+        private javax.swing.ButtonGroup rooms;
+        private javax.swing.JRadioButton study;
+        // End of variables declaration                   
+    }
 }

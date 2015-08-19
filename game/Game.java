@@ -29,13 +29,13 @@ import javax.management.InvalidAttributeValueException;
 @SuppressWarnings("unused")
 public class Game {
 	public static final Random RNG = new Random(System.currentTimeMillis());
-	public static final int WAITING = 0;
-	public static final int PLAYER_ROLLING = 1;
-	public static final int PLAYER_MOVING = 2;
-	public static final int PLAYER_GUESSING = 3;
-	public static final int PLAYER_ACCUSING = 4;
-	public static final int PLAYER_NOACTIONS = 5;
-	public static final int GAME_OVER = 10;
+	public static final int STATUS_WAITING = 0;
+	public static final int STATUS_PLAYER_ROLLING = 1;
+	public static final int STATUS_PLAYER_MOVING = 2;
+	public static final int STATUS_PLAYER_GUESSING = 3;
+	public static final int STATUS_PLAYER_ACCUSING = 4;
+	public static final int STATUS_PLAYER_NOACTIONS = 5;
+	public static final int STATUS_GAME_OVER = 10;
 
 	private final Board BOARD = new Board();
 
@@ -43,7 +43,7 @@ public class Game {
 
 	private List<Player> players;
 	private Theory guilty;
-	private int gameState = WAITING;
+	private int gameState = STATUS_WAITING;
 	private int activePlayer = -1; /* used to check when play has begun also, instead
 										of creating and setting an additional field.
 										if activePlayer < 0, game has not really started
@@ -74,7 +74,7 @@ public class Game {
 	public void startGame() throws GameStateModificationException, ActingOutOfTurnException {
 		initialiseDeck();
 		activePlayer = 0;
-		gameState = PLAYER_ROLLING;
+		gameState = STATUS_PLAYER_ROLLING;
 	}
 
 	/** This is how we play a game of Cluedo!
@@ -101,7 +101,7 @@ public class Game {
 			}
 		}
 		if (winner == null) { throw new IllegalStateException(); }
-		gameState = GAME_OVER;
+		gameState = STATUS_GAME_OVER;
 	}
 
 	/** If it is a player's turn, this method will roll the dice and
@@ -110,7 +110,7 @@ public class Game {
 	public void rollDice() {
 		Player p = players.get(activePlayer);
 
-		if (gameState != PLAYER_ROLLING || p.hasMoved()) { return; }
+		if (gameState != STATUS_PLAYER_ROLLING || p.hasMoved()) { return; }
 
 		roll = RNG.nextInt(5)+1;
 		BOARD.highlightMoves(p.position(),roll);
@@ -132,7 +132,7 @@ public class Game {
 	 * 	out of turn from descendant methods.
 	 */
 	public void playerMoves(Coordinate clicked) throws ActingOutOfTurnException {
-		if (gameState != PLAYER_MOVING || roll == 0) { return; }
+		if (gameState != STATUS_PLAYER_MOVING || roll == 0) { return; }
 
 		Player p = players.get(activePlayer);
 		if (p.hasMoved()) {
@@ -177,7 +177,7 @@ public class Game {
 		else if (BOARD.getRoom(p.position()) == Board.HALLWAYSTRING) {
 			throw new ActingOutOfTurnException(p.toString() +" cannot make a suggestion when not in a room!");
 		}
-		gameState = PLAYER_GUESSING;
+		gameState = STATUS_PLAYER_GUESSING;
 
 		Theory h = new Hypothesis(hypothesis);
 
@@ -398,6 +398,13 @@ public class Game {
 			}
 		}
 		return n > 1;
+	}
+
+	/** Returns the current state of the Game.
+	 * @return
+	 */
+	public int getGameState() {
+		return gameState;
 	}
 
 	/**
