@@ -47,22 +47,44 @@ public class BoardDrawer {
 	private void paintPlayers(Graphics g, Dimension d) {
 		List<Player> players = cluedoGame.getPlayers();
 		for(Player player : players){
-			if(player.getName().equals(Card.WHITE)){
-				g.setColor(Color.WHITE.darker());
-			} else if (player.getName().equals(Card.GREEN)){
-				g.setColor(Color.GREEN);
-			} else if (player.getName().equals(Card.SCARLET)){
-				g.setColor(Color.RED);
-			} else if (player.getName().equals(Card.PEACOCK)){
-				g.setColor(Color.BLUE);
-			} else if (player.getName().equals(Card.PLUM)){
-				g.setColor(Color.MAGENTA);
-			} else if (player.getName().equals(Card.MUSTARD)){
-				g.setColor(mustard);
-			}
-
+			setColorToPlayer(g, player);
+			Coordinate pos = getPlayerPosition(player);
+			g.fillOval(pos.getX()*squareSize, pos.getY()*squareSize, squareSize, squareSize);
+			g.setColor(Color.BLACK);
+			g.drawOval(pos.getX()*squareSize, pos.getY()*squareSize, squareSize, squareSize);
 		}
 
+	}
+
+	private Coordinate getPlayerPosition(Player player) {
+		Coordinate playerPos = player.position();
+		if(!cluedoBoard.isRoom(playerPos)){
+			return playerPos;
+		} else {
+			String room = cluedoBoard.getRoom(playerPos);
+			for(Coordinate center : cluedoBoard.getRoomCenters()){
+				if(cluedoBoard.getRoom(center).equals(room)){
+					return center;
+				}
+			}
+			return null;
+		}
+	}
+
+	private void setColorToPlayer(Graphics g, Player player) {
+		if(player.getName().equals(Card.WHITE)){
+			g.setColor(Color.WHITE.darker());
+		} else if (player.getName().equals(Card.GREEN)){
+			g.setColor(Color.GREEN);
+		} else if (player.getName().equals(Card.SCARLET)){
+			g.setColor(Color.RED);
+		} else if (player.getName().equals(Card.PEACOCK)){
+			g.setColor(Color.BLUE);
+		} else if (player.getName().equals(Card.PLUM)){
+			g.setColor(Color.MAGENTA);
+		} else if (player.getName().equals(Card.MUSTARD)){
+			g.setColor(mustard);
+		}
 	}
 
 	public void paintBoard(Graphics g, Dimension d) {

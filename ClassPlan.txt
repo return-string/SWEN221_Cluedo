@@ -20,7 +20,7 @@ public boolean checkGameState()
 Game:
 ---------------------------------
 
-public Game(Set<String> players)
+public Game(Map<String, String> players)
 
 /**@return True if game is still going. False if game over
  */
@@ -34,6 +34,8 @@ public void repaintBoard(Graphics g)
 public Player getCurrentPlayer()
 
 public void testHypothesis(Set<String> hypothesis)
+
+public void movePlayer()
 
 
 Player:

@@ -485,11 +485,4 @@ public class Game {
 		return Collections.unmodifiableList(p.getHand());
 	}
 
-	public void repaintBoard(Graphics g) {
-            BOARD.repaint(g);
-	}
-        
-	public void repaintBoard(Graphics g, Dimension d) {
-            BOARD.repaint(g,d);
-	}
 }

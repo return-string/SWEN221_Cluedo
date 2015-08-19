@@ -1,22 +1,30 @@
 package ui;
 
+import game.Coordinate;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
-public class BoardPanel extends CluedoPanel implements MouseListener {
+public class BoardPanel extends CluedoPanel implements MouseListener, MouseMotionListener {
 	private static final long serialVersionUID = 2501982205351713577L;
-	
-	// TODO Make more general solution for boardSquares for variable sized boards
-	public static final int SQUARE_SIZE = (400/25);
 
 	public BoardPanel(Controller c) {
 		super(c);
 		this.setPreferredSize(new Dimension(400, 400));
 		
 	}
-
+	
+	private Coordinate mousePosToCoordinate(MouseEvent e){
+		Coordinate rowsCols = super.controller().getBoardRowsCols();
+		int squareSize = Math.min(getWidth()/rowsCols.getX(), getHeight()/rowsCols.getY());
+		int x = e.getX()/squareSize;
+		int y = e.getY()/squareSize;
+		return new Coordinate(x, y);
+	}
+	
 	@Override
 	public void nextTurn() {
 		// TODO Auto-generated method stub
@@ -25,7 +33,8 @@ public class BoardPanel extends CluedoPanel implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
+		Coordinate boardCoord = mousePosToCoordinate(e);
+		super.controller().movePlayer(boardCoord);
 		
 	}
 
@@ -57,5 +66,17 @@ public class BoardPanel extends CluedoPanel implements MouseListener {
 	public void paint(Graphics g){
 		super.paint(g);
 		super.controller().repaintBoard(g, this.getSize());
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }

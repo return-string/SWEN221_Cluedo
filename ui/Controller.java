@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.util.Set;
 
 import game.ActingOutOfTurnException;
+import game.Coordinate;
 import game.Game;
 import game.GameStateModificationException;
 
@@ -15,17 +16,21 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import cluedoview.BoardDrawer;
+
 public class Controller implements ActionListener, EventListener {
 	
 	private Game cluedoGame;
 	private CluedoFrame gameFrame;
+	private BoardDrawer boardDrawer;
 	
 	public Controller(CluedoFrame gameFrame){
 		this.gameFrame = gameFrame;
 	}
 	
 	public void startGame(Map<String,String> players){
-            this.cluedoGame = new Game(players);
+        this.cluedoGame = new Game(players);
+        this.boardDrawer = new BoardDrawer(this.cluedoGame);
 	}
 	
 	public void nextTurn(){
@@ -34,7 +39,7 @@ public class Controller implements ActionListener, EventListener {
 	
 	public void repaintBoard(Graphics g, Dimension d){
 		if(cluedoGame != null){
-			cluedoGame.repaintBoard(g, d);
+			this.boardDrawer.paintBoardAndTokens(g, d);
 		}
 	}
 	
@@ -47,16 +52,16 @@ public class Controller implements ActionListener, EventListener {
 		}
 	}
 	
-        public void setupGame(Map<String,String> playersToCharacters) {
-            try { 
-                cluedoGame.startGame();
-            } catch (GameStateModificationException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, "Tried to start a game already in progress.", ex);
-            } catch (ActingOutOfTurnException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, "Tried to start a game already in progress.", ex);
-            }
-        }
-        
+	public void setupGame(Map<String,String> playersToCharacters) {
+		try { 
+			cluedoGame.startGame();
+		} catch (GameStateModificationException ex) {
+			Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, "Tried to start a game already in progress.", ex);
+		} catch (ActingOutOfTurnException ex) {
+			Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, "Tried to start a game already in progress.", ex);
+		}
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("New Game")){
@@ -81,5 +86,13 @@ public class Controller implements ActionListener, EventListener {
 		}
 		return true;
 	}
+	
+	public Coordinate getBoardRowsCols(){
+		return new Coordinate(cluedoGame.getBoard().width(), cluedoGame.getBoard().height());
+	}
 
+	public void movePlayer(Coordinate boardCoord) {
+		cluedoGame.movePlayer(boardCoord);
+		
+	}
 }
