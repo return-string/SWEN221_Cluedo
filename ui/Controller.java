@@ -24,8 +24,8 @@ public class Controller implements ActionListener, EventListener {
 		this.gameFrame = gameFrame;
 	}
 	
-	public void startGame(Set<String> players){
-		this.cluedoGame = new Game(players);
+	public void startGame(Map<String,String> players){
+            this.cluedoGame = new Game(players);
 	}
 	
 	public void nextTurn(){
@@ -49,11 +49,11 @@ public class Controller implements ActionListener, EventListener {
 	
         public void setupGame(Map<String,String> playersToCharacters) {
             try { 
-                cluedoGame.startGame(playersToCharacters);
+                cluedoGame.startGame();
             } catch (GameStateModificationException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, "Tried to add characters while a game was in progress.", ex);
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, "Tried to start a game already in progress.", ex);
             } catch (ActingOutOfTurnException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, "Tried to add characters while a game was in progress.", ex);
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, "Tried to start a game already in progress.", ex);
             }
         }
         

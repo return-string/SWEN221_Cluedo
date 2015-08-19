@@ -54,8 +54,15 @@ public class Game {
 		this.players = new ArrayList<Player>();
 	}
 
-	public Game(Set<String> players2) {
-		// TODO Auto-generated constructor stub
+	public Game(Map<String,String> players) {
+            if (players == null ^ (players.size() < 3 || players.size() > 6)) {
+                    throw new IllegalArgumentException("Cannot initialise a game with these players. (size of playerNames must be 3-6)");
+            }
+            this.players = new ArrayList<Player>();
+            for (Map.Entry entry : players.entrySet()) {
+                // TODO need some checking here, characters against Card.CHARACTERS. 
+                this.players.add(new Player((String)entry.getKey(),(String)entry.getValue()));
+            }
 	}
 
 	/** This is the normal method that should be called to start a game.
@@ -64,17 +71,7 @@ public class Game {
 	 * @throws GameStateModificationException
 	 * @throws ActingOutOfTurnException
 	 */
-	public void startGame(Map<String,String> playerNames) throws GameStateModificationException, ActingOutOfTurnException {
-		if (gameState != 0 || players != null) {
-			throw new GameStateModificationException("Game is already in progress.");
-		} else if (playerNames == null ^ (playerNames.size() < 3 || playerNames.size() > 6)) {
-			throw new IllegalArgumentException("Cannot initialise a game with these players. (size of playerNames must be 3-6)");
-		}
-		players = new ArrayList<Player>();
-		for (Map.Entry entry : playerNames.entrySet()) {
-                    // TODO need some checking here, characters against Card.CHARACTERS. 
-                    players.add(new Player((String)entry.getKey(),(String)entry.getValue()));
-		}
+	public void startGame() throws GameStateModificationException, ActingOutOfTurnException {
 		initialiseDeck();
 		activePlayer = 0;
 		gameState = PLAYER_ROLLING;
@@ -485,7 +482,7 @@ public class Game {
             BOARD.repaint(g);
 	}
         
-	public void repaintBoard(Graphics g, Dimenson d) {
+	public void repaintBoard(Graphics g, Dimension d) {
             BOARD.repaint(g,d);
 	}
 }
