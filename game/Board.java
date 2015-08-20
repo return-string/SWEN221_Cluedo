@@ -1,5 +1,6 @@
 package game;
 
+import java.awt.Graphics;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -33,12 +35,26 @@ public class Board {
 	 *@return Boolean representing legality of coordinate
 	 */
 	public boolean isLegal(Coordinate coord){
+		if(withinBounds(coord)){
+			return !isEmpty(coord);
+		} else {
+			return false;
+		}
+	}
+
+	public boolean isEmpty(Coordinate coord) {
+		return squares[coord.getX()][coord.getY()] == null;
+	}
+
+	public boolean withinBounds(Coordinate coord) {
 		if(coord.getX() < 0) {return false;}
 		if(coord.getY() < 0) {return false;}
 		if(coord.getX() >= squares.length) {return false;}
 		if(coord.getY() >= squares[0].length) {return false;}
-		return squares[coord.getX()][coord.getY()] != null;
+		return true;
 	}
+
+
 
 	/**Checks if the given coordinate is in a room. Returns
 	 * string name of room. ("Hallway" if player is not in a
@@ -50,7 +66,12 @@ public class Board {
 		if(!isLegal(coord)) {throw new IllegalArgumentException();}
 		return squares[coord.getX()][coord.getY()].getRoom();
 	}
-	
+
+	public boolean isRoom(Coordinate coord){
+		if(!isLegal(coord)) {throw new IllegalArgumentException();}
+		return squares[coord.getX()][coord.getY()].isRoom();
+	}
+
 	/**
 	 * Highlights all the board squares a player can reach with from a
 	 * given square with a given number of steps.
@@ -69,7 +90,7 @@ public class Board {
 			current.square.setVisited(true);
 			current.square.setHighlight(true);
 			//If the current square is not at the end of the player's reach, and is
-			// either the start square or not a room, puts the current square's 
+			// either the start square or not a room, puts the current square's
 			//neighbours on the fringe
 			if(current.distance < steps && (!current.square.isRoom() || current.distance == 0)){
 				for(BoardSquare neighbour : current.square.getNeighbours()){
@@ -82,7 +103,7 @@ public class Board {
 		} while(!pathFringe.isEmpty());
 		clearVisits();
 	}
-	
+
 	/**
 	 * Goes through all the board squares in squares, unhighlighting them
 	 */
@@ -96,16 +117,16 @@ public class Board {
 			}
 		}
 	}
-	
+
 	/**
-	 * Gets a coordinate that can be moved to from a start coordinate, determined by 
+	 * Gets a coordinate that can be moved to from a start coordinate, determined by
 	 * a coordinate that has been selected (i.e been clicked)
-	 * 
+	 *
 	 * Returns the selected coordinate if selected coordinate is highlighted.
 	 * If the selected coordinate is a room, returns the square closest to the room
 	 * that can be reached from the start square with the given number of steps
 	 * Otherwise returns null
-	 * 
+	 *
 	 * @param clicked Selected coordinate on board
 	 * @param start Coordinate to start movement from
 	 * @param steps Number of steps to move
@@ -122,11 +143,11 @@ public class Board {
 			return null;
 		}
 	}
-	
+
 	/**
-	 * Finds the square closest to the given room that can be reached from the 
+	 * Finds the square closest to the given room that can be reached from the
 	 * start square with the given number of steps
-	 * 
+	 *
 	 * @param rm Room to find closest reachable square to
 	 * @param start Coordinate of square to start movement from
 	 * @param steps Number of steps that can be moved
@@ -135,7 +156,7 @@ public class Board {
 	private Coordinate findClosestToRoom(String rm, Coordinate start, int steps){
 		if(!isLegal(start)) {throw new IllegalArgumentException();}
 		BoardSquare startSquare = squares[start.getX()][start.getY()];
-		
+
 		Coordinate moveCoord = null;
 		//does a breadth first search for squares of room rm
 		LinkedList<PathFringeEntry> pathFringe = new LinkedList<PathFringeEntry>();
@@ -147,7 +168,7 @@ public class Board {
 			if(current.square.getRoom().equals(rm)){
 				if(current.distance <= steps){//if can get to it this turn
 					moveCoord = current.square.getClosestCoordinate(start);
-				} else { //finds the square player can reach closest to room	
+				} else { //finds the square player can reach closest to room
 					PathFringeEntry roomEntry = current;
 					while(roomEntry.distance > steps){
 						roomEntry = roomEntry.from;
@@ -270,7 +291,6 @@ public class Board {
 		}
 	}
 
-
 	public int width() {
 		return squares.length;
 	}
@@ -278,4 +298,97 @@ public class Board {
 	public int height() {
 		return squares[0].length;
 	}
+
+	public boolean isHighlighted(Coordinate coord) {
+		if(!isLegal(coord)) {throw new IllegalArgumentException();}
+		return squares[coord.getX()][coord.getY()].isHighlighted();
+	}
+
+	public List<Coordinate> northFacingDoors(){
+		List<Coordinate> toReturn = new ArrayList<Coordinate>();
+		for(int i = 0; i < width(); i++){
+			for(int j = 1; j < height(); j++){
+				if(squares[i][j] != null && squares[i][j-1] != null){
+					if(squares[i][j].isRoom() && !squares[i][j-1].isRoom() &&
+							squares[i][j].getNeighbours().contains(squares[i][j-1])){
+						toReturn.add(new Coordinate(i,j));
+					}
+				}
+			}
+		}
+		return toReturn;
+	}
+
+	public List<Coordinate> southFacingDoors(){
+		List<Coordinate> toReturn = new ArrayList<Coordinate>();
+		for(int i = 0; i < width(); i++){
+			for(int j = 0; j < height()-1; j++){
+				if(squares[i][j] != null && squares[i][j+1] != null){
+					if(squares[i][j].isRoom() && !squares[i][j+1].isRoom() &&
+							squares[i][j].getNeighbours().contains(squares[i][j+1])){
+						toReturn.add(new Coordinate(i,j));
+					}
+				}
+			}
+		}
+		return toReturn;
+	}
+
+	public List<Coordinate> westFacingDoors(){
+		List<Coordinate> toReturn = new ArrayList<Coordinate>();
+		for(int i = 1; i < width(); i++){
+			for(int j = 0; j < height(); j++){
+				if(squares[i][j] != null && squares[i-1][j] != null){
+					if(squares[i][j].isRoom() && !squares[i-1][j].isRoom() &&
+							squares[i][j].getNeighbours().contains(squares[i-1][j])){
+						toReturn.add(new Coordinate(i,j));
+					}
+				}
+			}
+		}
+		return toReturn;
+	}
+
+	public List<Coordinate> eastFacingDoors(){
+		List<Coordinate> toReturn = new ArrayList<Coordinate>();
+		for(int i = 0; i < width()-1; i++){
+			for(int j = 0; j < height(); j++){
+				if(squares[i][j] != null && squares[i+1][j] != null){
+					if(squares[i][j].isRoom() && !squares[i+1][j].isRoom() &&
+							squares[i][j].getNeighbours().contains(squares[i+1][j])){
+						toReturn.add(new Coordinate(i,j));
+					}
+				}
+			}
+		}
+		return toReturn;
+	}
+
+	public Set<Coordinate> getRoomCenters(){
+		Set<Coordinate> toReturn = new HashSet<Coordinate>();
+		for(int i = 0; i < width(); i++){
+			for(int j = 0; j < height(); j++){
+				if(squares[i][j] != null && squares[i][j].isRoom()){
+					toReturn.add(squares[i][j].getCenter());
+				}
+			}
+		}
+		return toReturn;
+	}
+
+	public Set<Coordinate> getSecretPassages(){
+		Set<Coordinate> toReturn = new HashSet<Coordinate>();
+		for(int i = 0; i < width(); i++){
+			for(int j = 0; j < height(); j++){
+				if(squares[i][j] != null && squares[i][j].isRoom()){
+					Coordinate passage = squares[i][j].findSecretPassage();
+					if(passage != null){
+						toReturn.add(squares[i][j].findSecretPassage());
+					}
+				}
+			}
+		}
+		return toReturn;
+	}
+
 }

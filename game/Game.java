@@ -1,9 +1,11 @@
 package game;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -27,21 +29,21 @@ import javax.management.InvalidAttributeValueException;
 @SuppressWarnings("unused")
 public class Game {
 	public static final Random RNG = new Random(System.currentTimeMillis());
-	public static final int WAITING = 0;
-	public static final int PLAYER_ROLLING = 1;
-	public static final int PLAYER_MOVING = 2;
-	public static final int PLAYER_GUESSING = 3;
-	public static final int PLAYER_ACCUSING = 4;
-	public static final int PLAYER_NOACTIONS = 5;
-	public static final int GAME_OVER = 10;
+	public static final int STATUS_WAITING = 0;
+	public static final int STATUS_PLAYER_ROLLING = 1;
+	public static final int STATUS_PLAYER_MOVING = 2;
+	public static final int STATUS_PLAYER_GUESSING = 3;
+	public static final int STATUS_PLAYER_ACCUSING = 4;
+	public static final int STATUS_PLAYER_NOACTIONS = 5;
+	public static final int STATUS_GAME_OVER = 10;
 
 	private final Board BOARD = new Board();
-	
+
 	private List<Card> spareCards = null;
 
 	private List<Player> players;
 	private Theory guilty;
-	private int gameState = WAITING;
+	private int gameState = STATUS_WAITING;
 	private int activePlayer = -1; /* used to check when play has begun also, instead
 										of creating and setting an additional field.
 										if activePlayer < 0, game has not really started
@@ -52,8 +54,15 @@ public class Game {
 		this.players = new ArrayList<Player>();
 	}
 
-	public Game(Set<String> players2) {
-		// TODO Auto-generated constructor stub
+	public Game(Map<String,String> players) {
+            if (players == null ^ (players.size() < 3 || players.size() > 6)) {
+                    throw new IllegalArgumentException("Cannot initialise a game with these players. (size of playerNames must be 3-6)");
+            }
+            this.players = new ArrayList<Player>();
+            for (Map.Entry entry : players.entrySet()) {
+                // TODO need some checking here, characters against Card.CHARACTERS. 
+                this.players.add(new Player((String)entry.getKey(),(String)entry.getValue()));
+            }
 	}
 
 	/** This is the normal method that should be called to start a game.
@@ -62,21 +71,10 @@ public class Game {
 	 * @throws GameStateModificationException
 	 * @throws ActingOutOfTurnException
 	 */
-	public void startGame(Set<String> playerNames) throws GameStateModificationException, ActingOutOfTurnException {
-		if (gameState != 0 || players != null) {
-			throw new GameStateModificationException("Game is already in progress.");
-		} else if (playerNames == null ^ (playerNames.size() < 3 || playerNames.size() > 6)) {
-			throw new IllegalArgumentException("Cannot initialise a game with these players. (size of playerNames must be 3-6)");
-		}
-		players = new ArrayList<Player>();
-		for (String n : Card.CHARACTERS) {
-			if (playerNames.contains(n)) {
-				players.add(new Player(n));
-			}
-		}
+	public void startGame() throws GameStateModificationException, ActingOutOfTurnException {
 		initialiseDeck();
 		activePlayer = 0;
-		gameState = PLAYER_ROLLING;
+		gameState = STATUS_PLAYER_ROLLING;
 	}
 
 	/** This is how we play a game of Cluedo!
@@ -103,39 +101,39 @@ public class Game {
 			}
 		}
 		if (winner == null) { throw new IllegalStateException(); }
-		gameState = GAME_OVER;
+		gameState = STATUS_GAME_OVER;
 	}
 
-	/** If it is a player's turn, this method will roll the dice and 
-	 * instruct the Board to highlight the spaces that can be moved to. 
+	/** If it is a player's turn, this method will roll the dice and
+	 * instruct the Board to highlight the spaces that can be moved to.
 	 */
 	public void rollDice() {
 		Player p = players.get(activePlayer);
-		
-		if (gameState != PLAYER_ROLLING || p.hasMoved()) { return; }
-		
+
+		if (gameState != STATUS_PLAYER_ROLLING || p.hasMoved()) { return; }
+
 		roll = RNG.nextInt(5)+1;
 		BOARD.highlightMoves(p.position(),roll);
 	}
-	
-	/** Returns the last rolled dice value. 
+
+	/** Returns the last rolled dice value.
 	 * Note: if rollDice has not been called yet, rollDice may
-	 * still contain the previous player's roll! 
+	 * still contain the previous player's roll!
 	 * @return
 	 */
 	public int getRoll() {
 		return roll;
 	}
-	
-	/** Moves the active player, if they can move and the coordinate is valid. 
-	 * 
+
+	/** Moves the active player, if they can move and the coordinate is valid.
+	 *
 	 * @param Coordinate A Coordinate reflecting the square the player has clicked on.
 	 * @throws ActingOutOfTurnException Passes on an exceptions thrown by moving/acting
-	 * 	out of turn from descendant methods.  
+	 * 	out of turn from descendant methods.
 	 */
-	public void playerMoves(Coordinate clicked) throws ActingOutOfTurnException {
-		if (gameState != PLAYER_MOVING || roll == 0) { return; }
-		
+	public void movePlayer(Coordinate clicked) throws ActingOutOfTurnException {
+		if (gameState != STATUS_PLAYER_MOVING || roll == 0) { return; }
+
 		Player p = players.get(activePlayer);
 		if (p.hasMoved()) {
 			throw new ActingOutOfTurnException();
@@ -147,7 +145,7 @@ public class Game {
 		}
 	}
 
-	/** Returns the player currently taking a turn. 
+	/** Returns the player currently taking a turn.
 	 * @return Player the activePlayer
 	 */
 	public Player getCurrentPlayer() {
@@ -156,7 +154,7 @@ public class Game {
 		}
 		return players.get(activePlayer);
 	}
-	
+
 	/** This method is used when the controller reports that a suggestion is to be made.
 	 *
 	 * Game uses the player to the active player's left as the start of the round,
@@ -165,22 +163,22 @@ public class Game {
 	 * This method does not allow a player to select which of their cards is used
 	 * to refute the hypothesis, which means the asking player will be shown the same
 	 * card every time they make the same hypothesis.
-	 * @throws ActingOutOfTurnException 
+	 * @throws ActingOutOfTurnException
 	 *
 	 */
 	public void testHypothesis(Set<String> hypothesis) throws ActingOutOfTurnException {
 		Player p = players.get(activePlayer);
-		if (hypothesis.size() != 3) { 
-			throw new IllegalArgumentException("Hypothesis must have exactly 3 parameters.");  
+		if (hypothesis.size() != 3) {
+			throw new IllegalArgumentException("Hypothesis must have exactly 3 parameters.");
 		}
-		else if (!p.hasMoved()) { 
-			throw new ActingOutOfTurnException(p.toString() +" hasn't moved and cannot make a suggestion yet!"); 
+		else if (!p.hasMoved()) {
+			throw new ActingOutOfTurnException(p.toString() +" hasn't moved and cannot make a suggestion yet!");
 		}
-		else if (BOARD.getRoom(p.position()) == Board.HALLWAYSTRING) { 
-			throw new ActingOutOfTurnException(p.toString() +" cannot make a suggestion when not in a room!"); 
+		else if (BOARD.getRoom(p.position()) == Board.HALLWAYSTRING) {
+			throw new ActingOutOfTurnException(p.toString() +" cannot make a suggestion when not in a room!");
 		}
-		gameState = PLAYER_GUESSING;
-		
+		gameState = STATUS_PLAYER_GUESSING;
+
 		Theory h = new Hypothesis(hypothesis);
 
 		/* if the hypothesis requires a player, find and move them here. */
@@ -202,19 +200,19 @@ public class Game {
 			}
 			i = (i+1) % players.size();
 		} while (i!=activePlayer);
-		
+
 	}
 
 	/** If the given Card matches a player in the game, return them. */
 	public Player getPlayer(Card card) {
 		for (Player p : players) {
-			if (p.getName().equals(card.getValue())) {
+			if (p.getCharacter().equals(card.getValue())) {
 				return p;
 			}
 		}
 		throw new IllegalArgumentException("The given card does not represent a played character.");
 	}
-	
+
 	/** The player has chosen to make an accusation! Assemble their
 	 * hypothesis, see if it equals the guilty one. If not, end them.
 	 * Otherwise, they win. The player list is cleared and the game
@@ -232,7 +230,7 @@ public class Game {
 			return false;
 		} else {
 //			textUI.printText("Success! "+ p.getName() +" has made a correct accusation and the guilty party will be brought to justice.");
-			if (p.getName().equals(h.getCharacter().getValue())) {
+			if (p.getCharacter().equals(h.getCharacter().getValue())) {
 //				textUI.printText("('Accusation' sounds kinder than 'loud, weeping confession into "+ players.get( (activePlayer + 1) % players.size()).getName() +"'s arms.)");
 			}
 			for (Player ps : players) {
@@ -248,7 +246,7 @@ public class Game {
 	public boolean isPlayer(Card character) {
             if (players == null) { return false; }
 		for (Player p : players) {
-			if (p.getName().equals(character.getValue())) {
+			if (p.getCharacter().equals(character.getValue())) {
 				return true;
 			}
 		}
@@ -266,8 +264,8 @@ public class Game {
 	 * this information to create the guilty Hypothesis, then deals
 	 * the remaining cards to the players.
 	 * Leave any parameter(s) as null to select randomly.
-	 * 
-	 * This method exists only for testing purposes. 
+	 *
+	 * This method exists only for testing purposes.
 	 *
 	 * @param c Guilty character
 	 * @param w Guilty weapon
@@ -357,18 +355,18 @@ public class Game {
 		return deck;
 	}
 
-	/** If there are spare cards, return an unmodifiable list of them. 
+	/** If there are spare cards, return an unmodifiable list of them.
 	 * Returns null if all cards were dealt. */
 	private List<Card> showSpareCards() {
 		return Collections.unmodifiableList(spareCards);
 	}
 
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 	// ---------------------------------------------------
 	// HELPER METHODS
 	// ---------------------------------------------------
@@ -382,7 +380,7 @@ public class Game {
 		for (int i = 0; i < characterNames.size(); i++) {
 			for (int j = 0; j < Card.CHARACTERS.length; j++) {
 				if (Card.CHARACTERS[j].equals(characterNames.get(i))) {
-					players.add(new Player(characterNames.get(i)));
+					players.add(new Player(characterNames.get(i),characterNames.get(i)));
 				}
 			}
 		}
@@ -402,9 +400,16 @@ public class Game {
 		return n > 1;
 	}
 
+	/** Returns the current state of the Game.
+	 * @return
+	 */
+	public int getGameState() {
+		return gameState;
+	}
+
 	/**
-	 * @return the Board object used by this game to calculate valid moves, 
-	 * player location etc. 
+	 * @return the Board object used by this game to calculate valid moves,
+	 * player location etc.
 	 */
 	public Board getBoard() {
 		return BOARD;
@@ -480,8 +485,4 @@ public class Game {
 		return Collections.unmodifiableList(p.getHand());
 	}
 
-	public void repaintBoard(Graphics g) {
-		// TODO Auto-generated method stub
-		
-	}
 }

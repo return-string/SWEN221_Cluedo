@@ -1,34 +1,45 @@
 package ui;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Set;
 
 import game.ActingOutOfTurnException;
+import game.Coordinate;
 import game.Game;
+import game.GameStateModificationException;
+
 import java.util.EventListener;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import cluedoview.BoardDrawer;
 
 public class Controller implements ActionListener, EventListener {
 	
 	private Game cluedoGame;
 	private CluedoFrame gameFrame;
+	private BoardDrawer boardDrawer;
 	
 	public Controller(CluedoFrame gameFrame){
 		this.gameFrame = gameFrame;
 	}
 	
-	public void startGame(Set<String> players){
-		this.cluedoGame = new Game(players);
+	public void startGame(Map<String,String> players){
+        this.cluedoGame = new Game(players);
+        this.boardDrawer = new BoardDrawer(this.cluedoGame);
 	}
 	
 	public void nextTurn(){
 		gameFrame.nextTurn();
 	}
 	
-	public void repaintBoard(Graphics g){
+	public void repaintBoard(Graphics g, Dimension d){
 		if(cluedoGame != null){
-			cluedoGame.repaintBoard(g);
+			this.boardDrawer.paintBoardAndTokens(g, d);
 		}
 	}
 	
@@ -41,6 +52,16 @@ public class Controller implements ActionListener, EventListener {
 		}
 	}
 	
+	public void setupGame(Map<String,String> playersToCharacters) {
+		try { 
+			cluedoGame.startGame();
+		} catch (GameStateModificationException ex) {
+			Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, "Tried to start a game already in progress.", ex);
+		} catch (ActingOutOfTurnException ex) {
+			Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, "Tried to start a game already in progress.", ex);
+		}
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("New Game")){
@@ -58,9 +79,6 @@ public class Controller implements ActionListener, EventListener {
 			}
 		}
 	}
-        
-        @Override
-        public void 
 	
 	public boolean checkGameState(){
 		if(cluedoGame != null){
@@ -68,5 +86,13 @@ public class Controller implements ActionListener, EventListener {
 		}
 		return true;
 	}
+	
+	public Coordinate getBoardRowsCols(){
+		return new Coordinate(cluedoGame.getBoard().width(), cluedoGame.getBoard().height());
+	}
 
+	public void movePlayer(Coordinate boardCoord) {
+		cluedoGame.movePlayer(boardCoord);
+		
+	}
 }

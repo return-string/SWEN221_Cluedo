@@ -1,5 +1,6 @@
 package game;
 
+import java.io.InvalidClassException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -139,7 +140,7 @@ public class BoardSquare {
 		}
 		return toReturn;
 	}
-	
+
 	public boolean hasRoomInNeigbours(String roomName){
 		for(BoardSquare neighbour : this.neighbours){
 			if(neighbour.getRoom().equals(roomName)){
@@ -148,7 +149,7 @@ public class BoardSquare {
 		}
 		return false;
 	}
-	
+
 	public boolean hasRoomInNeigbours(BoardSquare room){
 		for(BoardSquare neighbour : this.neighbours){
 			if(neighbour.getRoom().equals(room.getRoom())){
@@ -157,7 +158,7 @@ public class BoardSquare {
 		}
 		return false;
 	}
-	
+
 	public boolean isVisited() {
 		return isVisited;
 	}
@@ -173,11 +174,11 @@ public class BoardSquare {
 	public void setOccupied(boolean occupied) {
 		this.occupied = occupied;
 	}
-	
+
 	public boolean isHighlighted(){
 		return highlight;
 	}
-	
+
 	public void setHighlight(boolean b){
 		this.highlight = b;
 	}
@@ -185,7 +186,7 @@ public class BoardSquare {
 	@Override
 	public String toString() {
 		String representation = "BoardSquare\n==================\n"
-				+ "Room Name: " + this.room 
+				+ "Room Name: " + this.room
 				+ "\nIs a room: " + this.isRoom
 				+ "\nIs occupied: " + this.occupied
 				+ "\nHas been visited in a current path search: " + this.isVisited
@@ -199,14 +200,63 @@ public class BoardSquare {
 		}
 		return representation + "]\n";
 	}
-	
+
 	private String toStringNeighbour(){
 		String representation = "\n-------------\n"
-				+ "Room Name: " + this.room 
+				+ "Room Name: " + this.room
 				+ "\nCoordinates: {";
 		for(Coordinate coord : this.coordinates){
 			representation += coord.toString();
 		}
 		return representation + "}\n";
+	}
+
+	public Coordinate getCenter(){
+		int minX = Integer.MAX_VALUE;
+		int minY = Integer.MAX_VALUE;
+		int maxX = Integer.MIN_VALUE;
+		int maxY = Integer.MIN_VALUE;
+		Set<Coordinate> withoutPassage = new HashSet<Coordinate>(coordinates);
+		withoutPassage.remove(findSecretPassage());
+		for(Coordinate c : withoutPassage){
+			if(c.getX() < minX){
+				minX = c.getX();
+			}
+			if(c.getY() < minY){
+				minY = c.getY();
+			}
+			if(c.getX() > maxX){
+				maxX = c.getX();
+			}
+			if(c.getY() > maxY){
+				maxY = c.getY();
+			}
+		}
+		int centerX = (minX + maxX)/2;
+		int centerY = (minY + maxY)/2;
+		return getClosestCoordinate(new Coordinate(centerX, centerY));
+	}
+
+	public Coordinate findSecretPassage(){
+		if(coordinates.size() > 1){
+			Set<Coordinate> copy = new HashSet<Coordinate>(coordinates);
+			for(Coordinate current : coordinates){
+				boolean passage = true;
+				for(Coordinate compareTo : copy){
+					if(!current.equals(compareTo) && current.getX() >= compareTo.getX()-1 && current.getX()
+							<= compareTo.getX()+1 && current.getY() >= compareTo.getY()-1 && current.getY()
+							<= compareTo.getY()+1){
+						passage = false;
+						break;
+					}
+				}
+				if(passage){
+					return current;
+				}
+			}
+			return null;
+		} else {
+			return null;
+		}
 	}
 }
