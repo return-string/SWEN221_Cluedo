@@ -2,3 +2,4 @@
 *.class
 *.psd
 *.nosync.*
+/ui/BoardFrame.java

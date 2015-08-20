@@ -3,6 +3,9 @@
  */
 package game;
 
+import java.awt.Graphics;
+import ui.CluedoSkin;
+
 /** The Card interface describes the basic methods required by all cards,
  * as well as the final Strings they all share. 
  * @author Vicki
@@ -40,8 +43,6 @@ public abstract class Card implements Comparable<Card> {
 
 	public abstract Card.Type getType();
 	public abstract String getValue();
-
-
 
 	/** It's useful to know which index belongs to which value.
 	 * For a given CardImpl.Type and value, returns the index of

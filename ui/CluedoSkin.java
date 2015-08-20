@@ -1,6 +1,7 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Font;
 
 public interface CluedoSkin {
 	public Color cardBack();
@@ -13,5 +14,9 @@ public interface CluedoSkin {
 	public Color primaryText();
 	public Color secondaryText();
 	
-	//public static Color
+	public Font titleFont();
+        public Font subtitleFont();
+        public Font emphasisFont();
+        public Font normalFont();
+        public Font subtextFont();
 }

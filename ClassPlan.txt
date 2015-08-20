@@ -14,16 +14,20 @@ public void nextTurn()
 
 public void testHypothesis(Set<String> hypothesis)
 
+public boolean checkGameState()
+
 
 Game:
 ---------------------------------
+
+public Game(Set<String> players)
 
 /**@return True if game is still going. False if game over
  */
 public boolean isPlaying(){
 }
 
-public Game(Set<String> players)
+public void rollDice()
 
 public void repaintBoard(Graphics g)
 
@@ -142,6 +146,8 @@ public void showGameOver()
 
 public void nextTurn()
 
+public void showGameSetup()
+
 
 interface CluedoPanel extends JPanel
 -------------------------------------
@@ -172,7 +178,7 @@ Buttons:
 PlayerPanel
 -----------------
 
-public DeckPanel(Set<Player> players)
+public PlayerPanel(Set<Player> players)
 
 
 BoardPanel implements MouseListener

@@ -5,9 +5,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Set;
 
+import game.ActingOutOfTurnException;
 import game.Game;
+import java.util.EventListener;
 
-public class Controller implements ActionListener {
+public class Controller implements ActionListener, EventListener {
 	
 	private Game cluedoGame;
 	private CluedoFrame gameFrame;
@@ -32,7 +34,10 @@ public class Controller implements ActionListener {
 	
 	public void testHypothesis(Set<String> hypothesis){
 		if(cluedoGame != null){
-			cluedoGame.testHypothesis(hypothesis);
+			try {
+				cluedoGame.testHypothesis(hypothesis);
+			} catch (ActingOutOfTurnException e) {
+			}
 		}
 	}
 	
@@ -45,7 +50,7 @@ public class Controller implements ActionListener {
 			gameFrame.showRules();
 		}
 		if(e.getActionCommand().equals("Exit")){
-			gameFrame.exit();
+			gameFrame.dispose();
 		}
 		if(e.getActionCommand().equals("Roll Dice")){
 			if(cluedoGame != null){
@@ -53,6 +58,9 @@ public class Controller implements ActionListener {
 			}
 		}
 	}
+        
+        @Override
+        public void 
 	
 	public boolean checkGameState(){
 		if(cluedoGame != null){
