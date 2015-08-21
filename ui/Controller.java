@@ -19,30 +19,30 @@ import java.util.logging.Logger;
 import cluedoview.BoardDrawer;
 
 public class Controller implements ActionListener, EventListener {
-	
+
 	private Game cluedoGame;
 	private CluedoFrame gameFrame;
 	private BoardDrawer boardDrawer;
-	
+
 	public Controller(CluedoFrame gameFrame){
 		this.gameFrame = gameFrame;
 	}
-	
+
 	public void startGame(Map<String,String> players){
         this.cluedoGame = new Game(players);
         this.boardDrawer = new BoardDrawer(this.cluedoGame);
 	}
-	
+
 	public void nextTurn(){
 		gameFrame.nextTurn();
 	}
-	
+
 	public void repaintBoard(Graphics g, Dimension d){
 		if(cluedoGame != null){
 			this.boardDrawer.paintBoardAndTokens(g, d);
 		}
 	}
-	
+
 	public void testHypothesis(Set<String> hypothesis){
 		if(cluedoGame != null){
 			try {
@@ -51,9 +51,9 @@ public class Controller implements ActionListener, EventListener {
 			}
 		}
 	}
-	
+
 	public void setupGame(Map<String,String> playersToCharacters) {
-		try { 
+		try {
 			cluedoGame.startGame();
 		} catch (GameStateModificationException ex) {
 			Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, "Tried to start a game already in progress.", ex);
@@ -79,20 +79,24 @@ public class Controller implements ActionListener, EventListener {
 			}
 		}
 	}
-	
+
 	public boolean checkGameState(){
 		if(cluedoGame != null){
 			return cluedoGame.isPlaying();
 		}
 		return true;
 	}
-	
+
 	public Coordinate getBoardRowsCols(){
 		return new Coordinate(cluedoGame.getBoard().width(), cluedoGame.getBoard().height());
 	}
 
 	public void movePlayer(Coordinate boardCoord) {
-		cluedoGame.movePlayer(boardCoord);
-		
+		try {
+			cluedoGame.movePlayer(boardCoord);
+		} catch (ActingOutOfTurnException e) {
+
+		}
+
 	}
 }

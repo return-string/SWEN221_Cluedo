@@ -60,7 +60,7 @@ public class Game {
             }
             this.players = new ArrayList<Player>();
             for (Map.Entry entry : players.entrySet()) {
-                // TODO need some checking here, characters against Card.CHARACTERS. 
+                // TODO need some checking here, characters against Card.CHARACTERS.
                 this.players.add(new Player((String)entry.getKey(),(String)entry.getValue()));
             }
 	}
@@ -113,7 +113,7 @@ public class Game {
 		if (gameState != STATUS_PLAYER_ROLLING || p.hasMoved()) { return; }
 
 		roll = RNG.nextInt(5)+1;
-		BOARD.highlightMoves(p.position(),roll);
+		BOARD.highlightMoves(p.getPosition(),roll);
 	}
 
 	/** Returns the last rolled dice value.
@@ -138,7 +138,7 @@ public class Game {
 		if (p.hasMoved()) {
 			throw new ActingOutOfTurnException();
 		}
-		Coordinate coord = BOARD.findMove(clicked, p.position(), roll);
+		Coordinate coord = BOARD.findMove(clicked, p.getPosition(), roll);
 		if (coord != null) {
 			p.move(coord);
 			roll = 0;
@@ -174,7 +174,7 @@ public class Game {
 		else if (!p.hasMoved()) {
 			throw new ActingOutOfTurnException(p.toString() +" hasn't moved and cannot make a suggestion yet!");
 		}
-		else if (BOARD.getRoom(p.position()) == Board.HALLWAYSTRING) {
+		else if (BOARD.getRoom(p.getPosition()) == Board.HALLWAYSTRING) {
 			throw new ActingOutOfTurnException(p.toString() +" cannot make a suggestion when not in a room!");
 		}
 		gameState = STATUS_PLAYER_GUESSING;
@@ -184,7 +184,7 @@ public class Game {
 		/* if the hypothesis requires a player, find and move them here. */
 		Player accused = getPlayer(h.getCharacter());
 		if (accused != null && !(accused.equals(p))) {
-			accused.forciblyMove(p.position());
+			accused.forciblyMove(p.getPosition());
 		}
 
 		/* now, go through all the players and check their hands for cards to refute
@@ -226,7 +226,7 @@ public class Game {
 		if (!h.equals(guilty)) {
 //			textUI.printText(p.getName()+"'s accusation was proven false! "+ p.getName() +" has been barred from the investigation.");
 			p.kill();
-			BOARD.toggleOccupied(p.position());
+			BOARD.toggleOccupied(p.getPosition());
 			return false;
 		} else {
 //			textUI.printText("Success! "+ p.getName() +" has made a correct accusation and the guilty party will be brought to justice.");
@@ -483,6 +483,18 @@ public class Game {
 	private List<Card> viewHand(Player p) throws ActingOutOfTurnException {
 		if (!p.equals(players.get(activePlayer))) { throw new ActingOutOfTurnException(); }
 		return Collections.unmodifiableList(p.getHand());
+	}
+
+	public List<Weapon> getWeapons() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<Token> getTokens() {
+		ArrayList<Token> tokens = new ArrayList<Token>();
+		tokens.addAll(players);
+		// TODO Add Tokens once created
+		return Collections.unmodifiableList(tokens);
 	}
 
 }

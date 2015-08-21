@@ -16,7 +16,7 @@ import java.util.List;
  * @author Vicki
  *
  */
-public class Player implements Comparable<Player> {
+public class Player implements Comparable<Player>, Token {
 	public final String CHARACTER_NAME;
         public final String PLAYER_NAME;
 
@@ -131,7 +131,7 @@ public class Player implements Comparable<Player> {
 	}
 
 	/** Returns the player's current position on the board. */
-	public Coordinate position() {
+	public Coordinate getPosition() {
 		return pos;
 	}
 
@@ -165,10 +165,10 @@ public class Player implements Comparable<Player> {
 	public String getCharacter() {
 		return CHARACTER_NAME;
 	}
-        
-        public String getName() {
-            return PLAYER_NAME;
-        }
+
+	public String getName() {
+		return PLAYER_NAME;
+	}
 
 	@Override
 	public int compareTo(Player o) {
