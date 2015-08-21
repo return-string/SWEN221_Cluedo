@@ -249,7 +249,7 @@ public class TextUI {
 	public List<String> printPossibleMoves(Player p, Map<Coordinate, String> possibleMoves) {
 		List<String> moveDescs = new ArrayList<String>();
 		for (Entry<Coordinate,String> s : possibleMoves.entrySet()) {
-			moveDescs.add("Move "+ relativeMovementString(p.position(),s.getKey())
+			moveDescs.add("Move "+ relativeMovementString(p.getPosition(),s.getKey())
 					+".\n\t"+ s.getValue());
 		}
 		/* if the player was forcibly moved, they may not want to leave this room. */
@@ -491,7 +491,7 @@ public class TextUI {
 	public void printPlayerStatus(int boardwidth, Player p, String roomName) throws ActingOutOfTurnException {
 		if (p.isPlaying()) {
 			printText(p.getCharacter() +"'s turn begins in the "+
-					relativeBoardPosString(boardwidth, p.position()) + " "+ roomName);
+					relativeBoardPosString(boardwidth, p.getPosition()) + " "+ roomName);
 		} else { // if they're not playing, just print something interesting.
 			printText(p.getCharacter() + " " + randomDeathMessage());
 		}

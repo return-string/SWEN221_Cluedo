@@ -46,13 +46,13 @@ public class PlayerTests {
 	public void test2_playerMovement1() {
 		Coordinate c = new Coordinate(9,0);
 		Player white = new Player(Card.WHITE);
-		assertEquals(c,white.position());
+		assertEquals(c,white.getPosition());
 		try {
 			white.move(new Coordinate (16,23));
 		} catch (ActingOutOfTurnException e) {
 			fail();
 		} // player doesn't check its moves
-		assertNotEquals(c,white.position());
+		assertNotEquals(c,white.getPosition());
 	}
 
 	/** Tests invalid player moves */
