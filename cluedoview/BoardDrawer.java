@@ -4,11 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import game.Card;
@@ -17,7 +14,6 @@ import game.Game;
 import game.Board;
 import game.BoardSquare;
 import game.Player;
-import game.Token;
 import game.Weapon;
 
 public class BoardDrawer {
@@ -25,21 +21,23 @@ public class BoardDrawer {
 	private Game cluedoGame;
 	private Board cluedoBoard;
 	private int squareSize;
-	private HashSet<TokenDrawer> tokens;
+	private HashSet<WeaponDrawer> weapons;
 
 	private Color brown = new Color(250, 200, 120);
+
+	private Color mustard = new Color(100, 250, 0);
 
 	public BoardDrawer(Game game){
 		this.cluedoGame = game;
 		this.cluedoBoard = game.getBoard();
-		buildTokenDrawers();
+		buildWeaponDrawers();
 	}
 
-	private void buildTokenDrawers() {
-		List<Token> gameTokens = cluedoGame.getTokens();
-		this.tokens = new HashSet<TokenDrawer>();
-		for(Token tok : gameTokens){
-			tokens.add(new TokenDrawer(tok));
+	private void buildWeaponDrawers() {
+		Set<Weapon> gameWeapons = cluedoGame.getWeapons();
+		this.weapons = new HashSet<WeaponDrawer>();
+		for(Weapon wep : gameWeapons){
+			weapons.add(new WeaponDrawer(wep));
 		}
 	}
 
@@ -55,55 +53,63 @@ public class BoardDrawer {
 	public void paintBoardAndTokens(Graphics g, Dimension d){
 		calculateSquareSize(d);
 		paintBoard(g);
-		paintTokens(g);
-		labelRooms(g);
+		paintPlayers(g);
+		paintWeapons(g);
 	}
 
-	private void paintTokens(Graphics g) {
-		HashMap<String, ArrayList<TokenDrawer>> tokensInRooms =
-				new HashMap<String, ArrayList<TokenDrawer>>();
-		for(TokenDrawer wep : tokens){
-			if(!cluedoBoard.isRoom(wep.getPosition())){
-				wep.drawImage(g, squareSize);
-			} else {
-				String room = cluedoBoard.getRoom(wep.getPosition());
-				if(tokensInRooms.containsKey(room)){
-					tokensInRooms.get(room).add(wep);
-				} else {
-					ArrayList<TokenDrawer> tokenList = new ArrayList<TokenDrawer>();
-					tokenList.add(wep);
-					tokensInRooms.put(room, tokenList);
-				}
-			}
-		}
-		Map<String, Coordinate> roomCenters = cluedoBoard.getRoomCenters();
-		// TODO make it get not so nasty when rooms get really full. I.E check if still drawing in room,
-		// TODO change y values etc
-		for(String rm : tokensInRooms.keySet()){
-			Coordinate center = roomCenters.get(rm);
-			int x = center.getX();
-			int y = center.getY() - 1;
-			int xShift = -1;
-			Coordinate drawCoordinate = new Coordinate(x, y);
-			for(TokenDrawer td : tokensInRooms.get(rm)){
-				td.drawImage(g, squareSize, drawCoordinate);
-				drawCoordinate = new Coordinate(drawCoordinate.getX() + xShift, drawCoordinate.getY());
-				if(xShift < 0){
-					xShift*=-1;
-				} else {
-					xShift++;
-					xShift*=-1;
-				}
-			}
+	private void paintWeapons(Graphics g) {
+		for(WeaponDrawer wep : weapons){
+			wep.drawImage(g, squareSize);
 		}
 
 	}
 
+	private void paintPlayers(Graphics g) {
+		List<Player> players = cluedoGame.getPlayers();
+		for(Player player : players){
+			setColorToPlayer(g, player);
+			Coordinate pos = getPlayerPosition(player);
+			g.fillOval(pos.getX()*squareSize, pos.getY()*squareSize, squareSize, squareSize);
+			g.setColor(Color.BLACK);
+			g.drawOval(pos.getX()*squareSize, pos.getY()*squareSize, squareSize, squareSize);
+		}
+
+	}
+
+	private Coordinate getPlayerPosition(Player player) {
+		Coordinate playerPos = player.position();
+		if(!cluedoBoard.isRoom(playerPos)){
+			return playerPos;
+		} else {
+			String room = cluedoBoard.getRoom(playerPos);
+			for(Coordinate center : cluedoBoard.getRoomCenters()){
+				if(cluedoBoard.getRoom(center).equals(room)){
+					return center;
+				}
+			}
+			return null;
+		}
+	}
+
+	private void setColorToPlayer(Graphics g, Player player) {
+		if(player.getName().equals(Card.WHITE)){
+			g.setColor(Color.WHITE.darker());
+		} else if (player.getName().equals(Card.GREEN)){
+			g.setColor(Color.GREEN);
+		} else if (player.getName().equals(Card.SCARLET)){
+			g.setColor(Color.RED);
+		} else if (player.getName().equals(Card.PEACOCK)){
+			g.setColor(Color.BLUE);
+		} else if (player.getName().equals(Card.PLUM)){
+			g.setColor(Color.MAGENTA);
+		} else if (player.getName().equals(Card.MUSTARD)){
+			g.setColor(mustard);
+		}
+	}
 
 	public void drawBoard(Graphics g, Dimension d){
 		calculateSquareSize(d);
 		paintBoard(g);
-		labelRooms(g);
 	}
 
 	private void paintBoard(Graphics g) {
@@ -131,7 +137,7 @@ public class BoardDrawer {
 		}
 		paintDoors(g);
 		paintSecretPassages(g);
-
+		labelRooms(g);
 	}
 
 	private void paintSecretPassages(Graphics g) {
@@ -152,16 +158,16 @@ public class BoardDrawer {
 	}
 
 	private void labelRooms(Graphics g) {
-		Map<String, Coordinate> roomCenters = cluedoBoard.getRoomCenters();
+		Set<Coordinate> roomCenters = cluedoBoard.getRoomCenters();
 		g.setColor(Color.WHITE);
-		for(String room : roomCenters.keySet()){
-			int centerChar = room.length()/2;
+		for(Coordinate c : roomCenters){
+			String name = cluedoBoard.getRoom(c);
+			int centerChar = name.length()/2;
 			float fontSize = 0.8f * squareSize;
 			g.setFont(g.getFont().deriveFont(fontSize));
-			Coordinate center = roomCenters.get(room);
-			int nameXOffSet = (int) (center.getX()*squareSize + squareSize/2 - (centerChar * fontSize)/3);
-			int nameYOffSet = center.getY()*squareSize + squareSize;
-			g.drawString(room, nameXOffSet, nameYOffSet);
+			int nameXOffSet = (int) (c.getX()*squareSize + squareSize/2 - (centerChar * fontSize)/3);
+			int nameYOffSet = c.getY()*squareSize + squareSize;
+			g.drawString(name, nameXOffSet, nameYOffSet);
 		}
 
 	}
