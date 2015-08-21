@@ -13,7 +13,7 @@ import ui.CluedoFrame;
 import cluedoview.BoardDrawer;
 
 public class PaintTests {
-	
+
 	@Test
 	public void seeWhatHappens(){
 		final Board clueBoard = new Board();
@@ -25,13 +25,13 @@ public class PaintTests {
 			public void paint(Graphics g){
 				this.setSize(400, 400);
 				super.paint(g);
-				new BoardDrawer(clueBoard).paintBoard(g, this.getSize());
+				new BoardDrawer(clueBoard).drawBoard(g, this.getSize());
 			}
 		};
-		
+
 		window.add(canvas);
 		window.setVisible(true);
 		while(true){}
 	}
-	
+
 }

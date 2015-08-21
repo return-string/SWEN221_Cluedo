@@ -60,7 +60,7 @@ public class Game {
             }
             this.players = new ArrayList<Player>();
             for (Map.Entry entry : players.entrySet()) {
-                // TODO need some checking here, characters against Card.CHARACTERS. 
+                // TODO need some checking here, characters against Card.CHARACTERS.
                 this.players.add(new Player((String)entry.getKey(),(String)entry.getValue()));
             }
 	}
@@ -483,6 +483,11 @@ public class Game {
 	private List<Card> viewHand(Player p) throws ActingOutOfTurnException {
 		if (!p.equals(players.get(activePlayer))) { throw new ActingOutOfTurnException(); }
 		return Collections.unmodifiableList(p.getHand());
+	}
+
+	public Set<Weapon> getWeapons() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

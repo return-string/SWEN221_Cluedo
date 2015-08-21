@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -13,12 +14,14 @@ import game.Game;
 import game.Board;
 import game.BoardSquare;
 import game.Player;
+import game.Weapon;
 
 public class BoardDrawer {
 
 	private Game cluedoGame;
 	private Board cluedoBoard;
 	private int squareSize;
+	private HashSet<WeaponDrawer> weapons;
 
 	private Color brown = new Color(250, 200, 120);
 
@@ -27,6 +30,15 @@ public class BoardDrawer {
 	public BoardDrawer(Game game){
 		this.cluedoGame = game;
 		this.cluedoBoard = game.getBoard();
+		buildWeaponDrawers();
+	}
+
+	private void buildWeaponDrawers() {
+		Set<Weapon> gameWeapons = cluedoGame.getWeapons();
+		this.weapons = new HashSet<WeaponDrawer>();
+		for(Weapon wep : gameWeapons){
+			weapons.add(new WeaponDrawer(wep));
+		}
 	}
 
 	/**
@@ -40,11 +52,19 @@ public class BoardDrawer {
 
 	public void paintBoardAndTokens(Graphics g, Dimension d){
 		calculateSquareSize(d);
-		paintBoard(g, d);
-		paintPlayers(g, d);
+		paintBoard(g);
+		paintPlayers(g);
+		paintWeapons(g);
 	}
 
-	private void paintPlayers(Graphics g, Dimension d) {
+	private void paintWeapons(Graphics g) {
+		for(WeaponDrawer wep : weapons){
+			wep.drawImage(g, squareSize);
+		}
+
+	}
+
+	private void paintPlayers(Graphics g) {
 		List<Player> players = cluedoGame.getPlayers();
 		for(Player player : players){
 			setColorToPlayer(g, player);
@@ -87,8 +107,13 @@ public class BoardDrawer {
 		}
 	}
 
-	public void paintBoard(Graphics g, Dimension d) {
+	public void drawBoard(Graphics g, Dimension d){
 		calculateSquareSize(d);
+		paintBoard(g);
+	}
+
+	private void paintBoard(Graphics g) {
+
 		for(int i = 0; i < cluedoBoard.width(); i++){
 			for(int j = 0; j < cluedoBoard.height(); j++){
 				Coordinate spotToDraw = new Coordinate(i, j);
