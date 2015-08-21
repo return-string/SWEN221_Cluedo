@@ -165,10 +165,10 @@ public class Player implements Comparable<Player> {
 	public String getCharacter() {
 		return CHARACTER_NAME;
 	}
-        
-        public String getName() {
-            return PLAYER_NAME;
-        }
+
+	public String getName() {
+		return PLAYER_NAME;
+	}
 
 	@Override
 	public int compareTo(Player o) {
