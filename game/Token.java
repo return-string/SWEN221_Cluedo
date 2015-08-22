@@ -2,7 +2,7 @@ package game;
 
 public interface Token {
 
-	public String getName();
+	public String getTokenName();
 
 	public Coordinate getPosition();
 

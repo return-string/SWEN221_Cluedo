@@ -166,7 +166,11 @@ public class Player implements Comparable<Player>, Token {
 		return CHARACTER_NAME;
 	}
 
-	public String getName() {
+	public String getTokenName() {
+		return CHARACTER_NAME;
+	}
+	
+	public String getName(){
 		return PLAYER_NAME;
 	}
 

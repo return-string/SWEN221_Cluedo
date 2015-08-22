@@ -27,7 +27,9 @@ public class BoardDrawer {
 	private int squareSize;
 	private HashSet<TokenDrawer> tokens;
 
-	private Color brown = new Color(250, 200, 120);
+	private Color brown = new Color(200, 170, 100);
+	private Color hallwayTileColor = new Color(235, 235, 200);
+	private Color emptyTileColor = new Color(75, 75, 25);
 
 	public BoardDrawer(Game game){
 		this.cluedoGame = game;
@@ -112,13 +114,13 @@ public class BoardDrawer {
 			for(int j = 0; j < cluedoBoard.height(); j++){
 				Coordinate spotToDraw = new Coordinate(i, j);
 				if(cluedoBoard.isEmpty(spotToDraw)){
-					g.setColor(Color.BLUE.brighter());
+					g.setColor(emptyTileColor);
 					g.fillRect(i*squareSize, j*squareSize, squareSize, squareSize);
 				} else if(!cluedoBoard.isRoom(spotToDraw)){
 					if(cluedoBoard.isHighlighted(spotToDraw)){
 						g.setColor(Color.YELLOW);
 					} else {
-						g.setColor(Color.WHITE);
+						g.setColor(hallwayTileColor);
 					}
 					g.fillRect(i*squareSize, j*squareSize, squareSize, squareSize);
 					g.setColor(Color.BLACK);
@@ -145,6 +147,7 @@ public class BoardDrawer {
 			g.setColor(Color.GRAY);
 			g.fillOval(x+ovalSize*2, y+ovalSize, ovalSize, ovalSize);
 			g.setColor(Color.black);
+			g.drawRect(x, y, squareSize, squareSize);
 			for(int i = 0; i < 5; i++){
 				g.drawRect(x, y+(ovalSize*i), squareSize, ovalSize);
 			}

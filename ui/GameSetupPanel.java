@@ -33,7 +33,7 @@ public class GameSetupPanel extends CluedoPanel implements ActionListener {
             }
 
             private void processMap() {
-                c.setupGame(players);
+                GameSetupPanel.super.controller().setupGame(players);
             }
         });
         setup.setVisible(true);

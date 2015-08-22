@@ -26,14 +26,18 @@ public class TokenDrawer {
 
 	private void retrieveImage() {
 		java.net.URL imageURL = TokenDrawer.class.getResource(imgPath
-				+ token.getName() + imgType);
-
+				+ token.getTokenName() + imgType);
+		if(imageURL == null){
+			System.out.println(imgPath + token.getTokenName() + imgType + " does not exist!!");
+			return;
+		}
+		
 		try {
 			wepImg = ImageIO.read(imageURL);
 		} catch (IOException e) {
 			// we've encountered an error loading the image. There's not much we
 			// can actually do at this point, except to abort the game.
-			throw new RuntimeException("Unable to load image: " + token.getName() + imgType);
+			throw new RuntimeException("Unable to load image: " + token.getTokenName() + imgType);
 		}
 	}
 

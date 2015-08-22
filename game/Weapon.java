@@ -13,7 +13,7 @@ public class Weapon implements Token {
 	}
 
 
-	public String getName() {
+	public String getTokenName() {
 		return name;
 	}
 
