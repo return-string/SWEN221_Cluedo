@@ -39,13 +39,7 @@ public class PaintTests {
 	
 	@Test
 	public void seeWhatHappensWithGame(){
-		HashMap<String, String> players = new HashMap<String, String>();
-		players.put("Badi", Card.WHITE);
-		players.put("Vicki", Card.PEACOCK);
-		players.put("Sam", Card.GREEN);
-		players.put("Major Malfunction", Card.MUSTARD);
-		players.put("Leeroy Jenkins", Card.SCARLET);
-		players.put("Lester", Card.PLUM);
+		HashMap<String, String> players = buildPlayers();
 		final Game cluedoGame = new Game(players);
 		JFrame window = new JFrame();
 		window.setSize(700, 700);
@@ -64,6 +58,22 @@ public class PaintTests {
 		window.add(canvas);
 		window.setVisible(true);
 		while(true){}
+	}
+
+	public static HashMap<String, String> buildPlayers() {
+		HashMap<String, String> players = new HashMap<String, String>();
+		players.put("Badi", Card.WHITE);
+		players.put("Vicki", Card.PEACOCK);
+		players.put("Sam", Card.GREEN);
+		players.put("Major Malfunction", Card.MUSTARD);
+		players.put("Leeroy Jenkins", Card.SCARLET);
+		players.put("Lester", Card.PLUM);
+		return players;
+	}
+	
+	public static void showBoardPanel(){
+		CluedoFrame gameFrame = new CluedoFrame();
+		gameFrame.showBoardPanel(PaintTests.buildPlayers());
 	}
 
 }

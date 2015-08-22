@@ -92,7 +92,7 @@ public class GameSetupPanel extends CluedoPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals(GameSetupDialogue.START)) {
-            
+        	
         }
         System.out.println("GameSetup is listening");
     }
