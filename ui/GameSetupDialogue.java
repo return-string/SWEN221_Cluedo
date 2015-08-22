@@ -358,7 +358,7 @@ public class GameSetupDialogue extends javax.swing.JDialog {
         String gotName = nameTextInput.getText();
         String gotCharacter = null;
 
-        // go through some elaborate error-checking on the name. 
+        // now let's check what the player's selected 
         // 1. is it long enough?
         if (gotName.length() < 3 || gotName.length() >= 20) {
             JOptionPane.showMessageDialog(rootPane, 

@@ -25,21 +25,7 @@ public class GameSetupPanel extends CluedoPanel {
         super(c);
         this.players = new HashMap<String,String>();
         setup = new GameSetupDialogue(players);
-        setup.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent e) {
-                for (Map.Entry<String, String> p : players.entrySet()) {
-                	System.err.println(p.getValue()+", "+p.getKey());
-                }
-                cleanup();
-            }
-        });
         setup.setVisible(true);
-    }
-    
-    public void cleanup() {
-        System.out.println(players==null);                
-        controller().setPlayers(players);
     }
 /**
  * @param args the command line arguments
@@ -51,6 +37,12 @@ public class GameSetupPanel extends CluedoPanel {
         f.add(gp);
         f.setLocation(300, 300);
         f.setMinimumSize(new Dimension(300,300));
+    }
+    
+    /** Only called when the dialog is closing. Returns all player
+     * selections.  */
+    Map<String,String> getResult() {
+    	return players;
     }
 
     @Override

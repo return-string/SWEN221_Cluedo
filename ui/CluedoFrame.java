@@ -2,6 +2,7 @@ package ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.util.Map;
 
 import javax.swing.JFrame;
 
@@ -76,6 +77,15 @@ public class CluedoFrame extends JFrame {
 		remove(this.currentPanel);
 		this.currentPanel = this.gameSetup;
 		add(this.currentPanel);
+//        gameSetup.addWindowListener(new java.awt.event.WindowAdapter() {
+//            @Override
+//            public void windowClosing(java.awt.event.WindowEvent e) {
+//            	Map<String,String> players = gameSetup.getResult();
+//                for (Map.Entry<String, String> p : players.entrySet()) {
+//                	System.err.println(p.getValue()+", "+p.getKey());
+//                }
+//            }
+//        });
 	}
 
 }
