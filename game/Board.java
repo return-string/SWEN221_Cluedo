@@ -364,12 +364,12 @@ public class Board {
 		return toReturn;
 	}
 
-	public Map<String, Coordinate> getRoomCenters(){
-		Map<String, Coordinate> toReturn = new HashMap<String, Coordinate>();
+	public Set<Coordinate> getRoomCenters(){
+		Set<Coordinate> toReturn = new HashSet<Coordinate>();
 		for(int i = 0; i < width(); i++){
 			for(int j = 0; j < height(); j++){
 				if(squares[i][j] != null && squares[i][j].isRoom()){
-					toReturn.put(squares[i][j].getRoom(), squares[i][j].getCenter());
+					toReturn.add(squares[i][j].getCenter());
 				}
 			}
 		}

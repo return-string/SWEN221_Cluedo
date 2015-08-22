@@ -1,6 +1,6 @@
 package game;
 
-public class Weapon implements Token {
+public class Weapon {
 
 	private String name;
 	private Coordinate position;

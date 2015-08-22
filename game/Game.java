@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -59,10 +60,51 @@ public class Game {
                     throw new IllegalArgumentException("Cannot initialise a game with these players. (size of playerNames must be 3-6)");
             }
             this.players = new ArrayList<Player>();
-            for (Map.Entry entry : players.entrySet()) {
+            for (Map.Entry<String,String> entry : players.entrySet()) {
                 // TODO need some checking here, characters against Card.CHARACTERS.
                 this.players.add(new Player((String)entry.getKey(),(String)entry.getValue()));
             }
+	}
+	
+	/** Creates a default game with boring names and all characters. */ 
+	public static Game createDefaultGame() {
+		Map<String,String> players = new HashMap<String,String>();
+		for (int i = 0; i < Card.CHARACTERS.length; i++) {
+			players.put("Player "+i+1, Card.CHARACTERS[i]);
+		}
+		return new Game(players);
+	}
+	
+	/** Adds the requested players to the game, as long as the game has not already been
+	 * initialised with some players. 
+	 * 
+	 * @param players A Map where keys are the players' names and values are the character
+	 * they play, as defined in Card.CHARACTERS. The map must be at least three entries
+	 * long and no longer than 6, and each name must have at least one character. 
+	 *  
+	 * @throws IllegalArgumentException If the map doesn't meet the above specifications.
+	 * @throws GameStateModificationException if the game already has players.
+	 */
+	public void addPlayers(Map<String,String> players) throws IllegalArgumentException, GameStateModificationException {
+		if (this.players.size() != 0) {
+			throw new GameStateModificationException("This game cannot add players.");
+		}
+		if (players == null || players.size() < 3 || players.size() > 6) {
+			throw new IllegalArgumentException("Cannot create a game with this many players.");
+		}
+		for (Map.Entry<String,String> e : players.entrySet()) {
+			if (e.getValue().length() != 0 && e.getKey().length() != 0) {
+				for (int i = 0; i < Card.CHARACTERS.length; i++) {
+					if (Card.CHARACTERS[i].equals(e.getValue())) {
+						this.players.add(new Player(e.getKey(),e.getValue()));
+					} else if (i == Card.CHARACTERS.length - 1) {
+						throw new IllegalArgumentException(e.getValue() +" is not a valid character name!");
+					}
+				}
+			} else {
+				throw new IllegalArgumentException(e.getKey() +" is not a valid player name!");
+			}
+		}
 	}
 
 	/** This is the normal method that should be called to start a game.
@@ -113,7 +155,7 @@ public class Game {
 		if (gameState != STATUS_PLAYER_ROLLING || p.hasMoved()) { return; }
 
 		roll = RNG.nextInt(5)+1;
-		BOARD.highlightMoves(p.getPosition(),roll);
+		BOARD.highlightMoves(p.position(),roll);
 	}
 
 	/** Returns the last rolled dice value.
@@ -138,7 +180,7 @@ public class Game {
 		if (p.hasMoved()) {
 			throw new ActingOutOfTurnException();
 		}
-		Coordinate coord = BOARD.findMove(clicked, p.getPosition(), roll);
+		Coordinate coord = BOARD.findMove(clicked, p.position(), roll);
 		if (coord != null) {
 			p.move(coord);
 			roll = 0;
@@ -174,7 +216,7 @@ public class Game {
 		else if (!p.hasMoved()) {
 			throw new ActingOutOfTurnException(p.toString() +" hasn't moved and cannot make a suggestion yet!");
 		}
-		else if (BOARD.getRoom(p.getPosition()) == Board.HALLWAYSTRING) {
+		else if (BOARD.getRoom(p.position()) == Board.HALLWAYSTRING) {
 			throw new ActingOutOfTurnException(p.toString() +" cannot make a suggestion when not in a room!");
 		}
 		gameState = STATUS_PLAYER_GUESSING;
@@ -184,7 +226,7 @@ public class Game {
 		/* if the hypothesis requires a player, find and move them here. */
 		Player accused = getPlayer(h.getCharacter());
 		if (accused != null && !(accused.equals(p))) {
-			accused.forciblyMove(p.getPosition());
+			accused.forciblyMove(p.position());
 		}
 
 		/* now, go through all the players and check their hands for cards to refute
@@ -226,7 +268,7 @@ public class Game {
 		if (!h.equals(guilty)) {
 //			textUI.printText(p.getName()+"'s accusation was proven false! "+ p.getName() +" has been barred from the investigation.");
 			p.kill();
-			BOARD.toggleOccupied(p.getPosition());
+			BOARD.toggleOccupied(p.position());
 			return false;
 		} else {
 //			textUI.printText("Success! "+ p.getName() +" has made a correct accusation and the guilty party will be brought to justice.");
@@ -485,16 +527,9 @@ public class Game {
 		return Collections.unmodifiableList(p.getHand());
 	}
 
-	public List<Weapon> getWeapons() {
+	public Set<Weapon> getWeapons() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	public List<Token> getTokens() {
-		ArrayList<Token> tokens = new ArrayList<Token>();
-		tokens.addAll(players);
-		// TODO Add Tokens once created
-		return Collections.unmodifiableList(tokens);
 	}
 
 }

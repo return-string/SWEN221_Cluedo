@@ -18,6 +18,11 @@ import org.junit.Test;
  *
  */
 public class BoardTests {
-	
+
+	private void printMoves(Map<Coordinate, String> moves) {
+		for(Coordinate coord : moves.keySet()){
+			System.out.printf("%s : %s\n", coord.toString(), moves.get(coord));
+		}
+	}
 
 }
