@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -59,10 +60,51 @@ public class Game {
                     throw new IllegalArgumentException("Cannot initialise a game with these players. (size of playerNames must be 3-6)");
             }
             this.players = new ArrayList<Player>();
-            for (Map.Entry entry : players.entrySet()) {
+            for (Map.Entry<String,String> entry : players.entrySet()) {
                 // TODO need some checking here, characters against Card.CHARACTERS.
                 this.players.add(new Player((String)entry.getKey(),(String)entry.getValue()));
             }
+	}
+	
+	/** Creates a default game with boring names and all characters. */ 
+	public static Game createDefaultGame() {
+		Map<String,String> players = new HashMap<String,String>();
+		for (int i = 0; i < Card.CHARACTERS.length; i++) {
+			players.put("Player "+i+1, Card.CHARACTERS[i]);
+		}
+		return new Game(players);
+	}
+	
+	/** Adds the requested players to the game, as long as the game has not already been
+	 * initialised with some players. 
+	 * 
+	 * @param players A Map where keys are the players' names and values are the character
+	 * they play, as defined in Card.CHARACTERS. The map must be at least three entries
+	 * long and no longer than 6, and each name must have at least one character. 
+	 *  
+	 * @throws IllegalArgumentException If the map doesn't meet the above specifications.
+	 * @throws GameStateModificationException if the game already has players.
+	 */
+	public void addPlayers(Map<String,String> players) throws IllegalArgumentException, GameStateModificationException {
+		if (this.players.size() != 0) {
+			throw new GameStateModificationException("This game cannot add players.");
+		}
+		if (players == null || players.size() < 3 || players.size() > 6) {
+			throw new IllegalArgumentException("Cannot create a game with this many players.");
+		}
+		for (Map.Entry<String,String> e : players.entrySet()) {
+			if (e.getValue().length() != 0 && e.getKey().length() != 0) {
+				for (int i = 0; i < Card.CHARACTERS.length; i++) {
+					if (Card.CHARACTERS[i].equals(e.getValue())) {
+						this.players.add(new Player(e.getKey(),e.getValue()));
+					} else if (i == Card.CHARACTERS.length - 1) {
+						throw new IllegalArgumentException(e.getValue() +" is not a valid character name!");
+					}
+				}
+			} else {
+				throw new IllegalArgumentException(e.getKey() +" is not a valid player name!");
+			}
+		}
 	}
 
 	/** This is the normal method that should be called to start a game.
