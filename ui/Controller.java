@@ -9,13 +9,8 @@ import java.util.Set;
 import game.ActingOutOfTurnException;
 import game.Coordinate;
 import game.Game;
-import game.GameStateModificationException;
-
 import java.util.EventListener;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import cluedoview.BoardDrawer;
 
 public class Controller implements ActionListener, EventListener {
@@ -31,6 +26,7 @@ public class Controller implements ActionListener, EventListener {
 	public void startGame(Map<String,String> players){
         this.cluedoGame = new Game(players);
         this.boardDrawer = new BoardDrawer(this.cluedoGame);
+        gameFrame.showTurn();
 	}
 
 	public void nextTurn(){

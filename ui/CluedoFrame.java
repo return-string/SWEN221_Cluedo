@@ -1,5 +1,7 @@
 package ui;
 
+import game.Game;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.Map;
@@ -7,7 +9,7 @@ import java.util.Map;
 import javax.swing.JFrame;
 
 public class CluedoFrame extends JFrame {
-
+	private static final long serialVersionUID = 2171235413597916591L;
 	private final Controller controller;
 	private CluedoPanel currentPanel;
 	private MenuPanel menu;
@@ -71,21 +73,28 @@ public class CluedoFrame extends JFrame {
 	}
 
 	public void showGameSetup(){
+		// THE ACTUAL CODE IS COMMENTED OUT BELOW
+		// IT'S BEEN COMMENTED OUT SO WE DON'T HAVE TO SELECT CHARACTERS ALL THE TIME
+		// WHENEVER WE'RE TESTING THIS.
 		if(this.gameSetup == null){
-			this.gameSetup = new GameSetupPanel(controller);
+			//Keep: this.gameSetup = new GameSetupPanel(controller);
 		}
 		remove(this.currentPanel);
-		this.currentPanel = this.gameSetup;
-		add(this.currentPanel);
-//        gameSetup.addWindowListener(new java.awt.event.WindowAdapter() {
+//KEEP:	this.currentPanel = this.gameSetup;
+//		add(this.currentPanel);
+//      gameSetup.getDialog().addWindowListener(new java.awt.event.WindowAdapter() {
 //            @Override
 //            public void windowClosing(java.awt.event.WindowEvent e) {
 //            	Map<String,String> players = gameSetup.getResult();
 //                for (Map.Entry<String, String> p : players.entrySet()) {
 //                	System.err.println(p.getValue()+", "+p.getKey());
 //                }
+//                if (players != null && players.size() > 3) { // make sure the user finished entering info
+//                	controller.startGame(players);
+//                }
 //            }
 //        });
+		controller.startGame(Game.createDefaultMap()); // throw away
 	}
 
 }

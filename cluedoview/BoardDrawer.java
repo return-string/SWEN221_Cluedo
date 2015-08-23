@@ -77,7 +77,7 @@ public class BoardDrawer {
 	}
 
 	private Coordinate getPlayerPosition(Player player) {
-		Coordinate playerPos = player.position();
+		Coordinate playerPos = player.getPosition();
 		if(!cluedoBoard.isRoom(playerPos)){
 			return playerPos;
 		} else {

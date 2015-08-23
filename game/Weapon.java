@@ -1,6 +1,6 @@
 package game;
 
-public class Weapon {
+public class Weapon implements Token {
 
 	private String name;
 	private Coordinate position;
@@ -20,6 +20,10 @@ public class Weapon {
 
 	public Coordinate getPosition() {
 		return position;
+	}
+	
+	public void setPosition(Coordinate c) {
+		position = c;
 	}
 
 }

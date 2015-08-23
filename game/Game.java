@@ -43,6 +43,7 @@ public class Game {
 	private List<Card> spareCards = null;
 
 	private List<Player> players;
+	private List<Weapon> weapons;
 	private Theory guilty;
 	private int gameState = STATUS_WAITING;
 	private int activePlayer = -1; /* used to check when play has begun also, instead
@@ -68,11 +69,16 @@ public class Game {
 	
 	/** Creates a default game with boring names and all characters. */ 
 	public static Game createDefaultGame() {
+		return new Game(createDefaultMap());
+	}
+
+	/** Creates a default map of boring names and all characters. */ 
+	public static Map<String,String> createDefaultMap() {
 		Map<String,String> players = new HashMap<String,String>();
 		for (int i = 0; i < Card.CHARACTERS.length; i++) {
 			players.put("Player "+i+1, Card.CHARACTERS[i]);
 		}
-		return new Game(players);
+		return players;
 	}
 	
 	/** Adds the requested players to the game, as long as the game has not already been
@@ -155,7 +161,7 @@ public class Game {
 		if (gameState != STATUS_PLAYER_ROLLING || p.hasMoved()) { return; }
 
 		roll = RNG.nextInt(5)+1;
-		BOARD.highlightMoves(p.position(),roll);
+		BOARD.highlightMoves(p.getPosition(),roll);
 	}
 
 	/** Returns the last rolled dice value.
@@ -180,11 +186,16 @@ public class Game {
 		if (p.hasMoved()) {
 			throw new ActingOutOfTurnException();
 		}
-		Coordinate coord = BOARD.findMove(clicked, p.position(), roll);
+		Coordinate coord = BOARD.findMove(clicked, p.getPosition(), roll);
 		if (coord != null) {
 			p.move(coord);
 			roll = 0;
 		}
+	}
+	
+	/** Moves the requested weapon. */
+	public void moveWeapon(Weapon w, Coordinate to) {
+		w.setPosition(to);
 	}
 
 	/** Returns the player currently taking a turn.
@@ -216,7 +227,7 @@ public class Game {
 		else if (!p.hasMoved()) {
 			throw new ActingOutOfTurnException(p.toString() +" hasn't moved and cannot make a suggestion yet!");
 		}
-		else if (BOARD.getRoom(p.position()) == Board.HALLWAYSTRING) {
+		else if (BOARD.getRoom(p.getPosition()) == Board.HALLWAYSTRING) {
 			throw new ActingOutOfTurnException(p.toString() +" cannot make a suggestion when not in a room!");
 		}
 		gameState = STATUS_PLAYER_GUESSING;
@@ -226,7 +237,7 @@ public class Game {
 		/* if the hypothesis requires a player, find and move them here. */
 		Player accused = getPlayer(h.getCharacter());
 		if (accused != null && !(accused.equals(p))) {
-			accused.forciblyMove(p.position());
+			accused.forciblyMove(p.getPosition());
 		}
 
 		/* now, go through all the players and check their hands for cards to refute
@@ -243,6 +254,20 @@ public class Game {
 			i = (i+1) % players.size();
 		} while (i!=activePlayer);
 
+	}
+	
+	/** TODO Returns a list of all tokens in the game
+	 * as an unmodifiable collection.  */
+	public List<Token> getTokens() {
+		List<Token> l = new ArrayList<Token>();
+		for (Player p : players) {
+			l.add(p);
+		}
+		// later
+		for (Weapon w : weapons) {
+			l.add(w);
+		}
+		return Collections.unmodifiableList(l);
 	}
 
 	/** If the given Card matches a player in the game, return them. */
@@ -268,7 +293,7 @@ public class Game {
 		if (!h.equals(guilty)) {
 //			textUI.printText(p.getName()+"'s accusation was proven false! "+ p.getName() +" has been barred from the investigation.");
 			p.kill();
-			BOARD.toggleOccupied(p.position());
+			BOARD.toggleOccupied(p.getPosition());
 			return false;
 		} else {
 //			textUI.printText("Success! "+ p.getName() +" has made a correct accusation and the guilty party will be brought to justice.");

@@ -37,6 +37,8 @@ public void testHypothesis(Set<String> hypothesis)
 
 public void movePlayer()
 
+public List<Token> getTokens()
+
 
 Player:
 ----------------------------------
@@ -56,7 +58,7 @@ public void addCardToHand(Card card){}
  * Assumes legality of move has already been checked
  *@param move Coordinates to move to
  */
-public void setPosition(Coordinate move){}
+public void move(Coordinate move){}
 
 /**Checks if a given card is in the player's hand
  *@param card Card to check is in player's hand
@@ -211,3 +213,18 @@ Buttons:
 "Exit"
 
 
+/** Creates a GameSetupDialog and returns the result
+of the player setup when requested. */
+GameSetupPanel(Controller c) 
+----------------
+public Map<String,String> getResult()
+
+
+
+Token (interface)
+----------------
+public String getName()
+
+public void setPosition(Coordinate c)
+
+public Coordinate getPosition()
