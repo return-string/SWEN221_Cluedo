@@ -19,24 +19,24 @@ public class PlayerTests {
 
 	@Test
 	public void test1_playerSort() {
-		Player[] ps = { new Player(Card.MUSTARD),
-				new Player(Card.SCARLET),
-				new Player(Card.PLUM),
-				new Player(Card.WHITE),
-				new Player (Card.PEACOCK),
-				new Player (Card.GREEN)
+		Player[] ps = { new Player("p1",Card.MUSTARD),
+				new Player("p2",Card.SCARLET),
+				new Player("p3",Card.PLUM),
+				new Player("p4",Card.WHITE),
+				new Player ("p5",Card.PEACOCK),
+				new Player ("p6",Card.GREEN)
 			};
 		List<Player> players = new ArrayList<Player>();
 		for (int i = 0; i < ps.length; i++) {
 			players.add(ps[i]);
 		}
 		List<Player> ps2 = new ArrayList<Player>();
-		ps2.add(new Player(Card.SCARLET));
-		ps2.add(new Player(Card.MUSTARD));
-		ps2.add(new Player(Card.WHITE));
-		ps2.add(new Player(Card.GREEN));
-		ps2.add(new Player(Card.PEACOCK));
-		ps2.add(new Player(Card.PLUM));
+		ps2.add(new Player("p1",Card.SCARLET));
+		ps2.add(new Player("p2",Card.MUSTARD));
+		ps2.add(new Player("p3",Card.WHITE));
+		ps2.add(new Player("p4",Card.GREEN));
+		ps2.add(new Player("p5",Card.PEACOCK));
+		ps2.add(new Player("p6",Card.PLUM));
 		Collections.sort(players);
 		assertEquals(players.toString() +" \n=/=\n "+ ps2.toString()+"\n",ps2,players);
 	}
@@ -45,7 +45,7 @@ public class PlayerTests {
 	@Test
 	public void test2_playerMovement1() {
 		Coordinate c = new Coordinate(9,0);
-		Player white = new Player(Card.WHITE);
+		Player white = new Player("p1",Card.WHITE);
 		assertEquals(c,white.getPosition());
 		try {
 			white.move(new Coordinate (16,23));
@@ -58,7 +58,7 @@ public class PlayerTests {
 	/** Tests invalid player moves */
 	@Test
 	public void test3_playerMovement2() {
-		Player white = new Player(Card.WHITE);
+		Player white = new Player("p1",Card.WHITE);
 		try {
 			white.move(new Coordinate(9,0));
 		} catch (ActingOutOfTurnException e1) {
@@ -75,7 +75,7 @@ public class PlayerTests {
 	/** Tests that adding cards to hand also marks them innocent */
 	@Test
 	public void test4_vindication1() {
-		Player white = new Player(Card.WHITE);
+		Player white = new Player("p1",Card.WHITE);
 		List<Card> hand = white.getHand();
 		for(Card c : hand) {
 			assertTrue(white.isInnocent(c));

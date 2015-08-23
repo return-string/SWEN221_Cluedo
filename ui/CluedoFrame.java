@@ -4,9 +4,15 @@ import game.Game;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 public class CluedoFrame extends JFrame {
@@ -24,7 +30,7 @@ public class CluedoFrame extends JFrame {
 	private RulesPanel rules;
 	private TurnPanel turnPanel;
 	private GameSetupPanel gameSetup;
-	private CluedoPanel[] panels = {menu, gameSetup, turnPanel, gameOver, rules}; 
+	private CluedoPanel[] panels; 
 
 	public CluedoFrame() {
 		super("Cluedo");
@@ -36,18 +42,26 @@ public class CluedoFrame extends JFrame {
 		this.rules = new RulesPanel(controller);
 		this.turnPanel = new TurnPanel(controller);
 		this.gameOver = new GameOverPanel(controller);
-		// TODO Uncomment when fixed
-		//this.gameSetup = new GameSetupPanel(controller);
+		this.gameSetup = new GameSetupPanel(controller);
 		this.currentPanel = this.menu;
+		panels = new CluedoPanel[] { menu, gameSetup, turnPanel, gameOver, rules};
+		
+		setIconImage(icon());
 		add(this.currentPanel, BorderLayout.CENTER);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setPreferredSize(new Dimension(800,600)); // V: just added this for sizing!
 		pack(); // pack components tightly together
 		setResizable(false); // prevent us from being resizeable
 		setVisible(true); // make sure we are visible!
-
 	}
 
+	private Image icon() {
+		Image icon;
+		java.net.URL url = ClassLoader.getSystemResource("assets/imgs/icon/clue_ico.png");
+		Toolkit kit = Toolkit.getDefaultToolkit();
+		icon = kit.createImage(url);
+		return icon;
+	}
 
 	public void repaint(){
 		super.repaint();
@@ -73,29 +87,37 @@ public class CluedoFrame extends JFrame {
 		this.currentPanel.nextTurn();
 	}
 
+	/** actual method */
 	public void showGameSetup(){
-		// THE ACTUAL CODE IS COMMENTED OUT BELOW
-		// IT'S BEEN COMMENTED OUT SO WE DON'T HAVE TO SELECT CHARACTERS ALL THE TIME
-		// WHENEVER WE'RE TESTING THIS.
 		if(this.gameSetup == null){
-			//Keep: this.gameSetup = new GameSetupPanel(controller);
+			this.gameSetup = new GameSetupPanel(controller);
 		}
-		remove(this.currentPanel);
-//KEEP:	this.currentPanel = this.gameSetup;
-//		add(this.currentPanel);
-//      gameSetup.getDialog().addWindowListener(new java.awt.event.WindowAdapter() {
-//            @Override
-//            public void windowClosing(java.awt.event.WindowEvent e) {
-//            	Map<String,String> players = gameSetup.getResult();
-//                for (Map.Entry<String, String> p : players.entrySet()) {
-//                	System.err.println(p.getValue()+", "+p.getKey());
-//                }
-//                if (players != null && players.size() > 3) { // make sure the user finished entering info
-//                	controller.startGame(players);
-//                }
-//            }
-//        });
-		controller.startGame(Game.createDefaultMap()); // throw away
+		this.currentPanel = this.gameSetup;
+		add(this.currentPanel);
+		gameSetup.showDialog();
+		try {
+			gameSetup.getDialog().addWindowListener(new java.awt.event.WindowAdapter() {
+			    @Override
+			    public void windowClosing(java.awt.event.WindowEvent e) {
+			    	Map<String,String> players = gameSetup.getResult();
+//			        for (Map.Entry<String, String> p : players.entrySet()) {
+//			        	System.err.println(p.getValue()+", "+p.getKey());
+//			        }
+			        if (players != null && players.size() > 3) { // make sure the user finished entering info
+			        	controller.startGame(players);
+			        }
+			    }
+			});
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/** dummy method; replaces need for GameSetupPanel 
+	 * (Default: 6 players, named "Player "+ 1-6 */
+	public void testingGameSetup(){
+		controller.startGame(Game.createDefaultMap());
 	}
 
 	/**

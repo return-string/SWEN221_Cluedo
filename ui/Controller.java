@@ -9,8 +9,12 @@ import java.util.Set;
 import game.ActingOutOfTurnException;
 import game.Coordinate;
 import game.Game;
+import game.Player;
+
 import java.util.EventListener;
+import java.util.List;
 import java.util.Map;
+
 import cluedoview.BoardDrawer;
 
 public class Controller implements ActionListener, EventListener {
@@ -26,7 +30,9 @@ public class Controller implements ActionListener, EventListener {
 	public void startGame(Map<String,String> players){
         this.cluedoGame = new Game(players);
         this.boardDrawer = new BoardDrawer(this.cluedoGame);
-        this.gameFrame.showPanel(CluedoFrame.TURN_PANEL);
+		System.err.println("got "+2);
+        gameFrame.showPanel(2);
+		System.err.println("done");
 	}
 	
 	public void startTestGame(Map<String,String> players){
@@ -57,6 +63,7 @@ public class Controller implements ActionListener, EventListener {
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("New Game")){
 			gameFrame.showPanel(CluedoFrame.GAMESETUP_PANEL);
+			gameFrame.showGameSetup();
 		}
 		if(e.getActionCommand().equals("Rules")){
 			gameFrame.showPanel(CluedoFrame.RULES_PANEL);
@@ -89,5 +96,13 @@ public class Controller implements ActionListener, EventListener {
 
 		}
 
+	}
+	
+	public Player getCurrentPlayer() {
+		return cluedoGame.getCurrentPlayer();
+	}
+	
+	public List<Player> getPlayers() {
+		return cluedoGame.getPlayers();
 	}
 }

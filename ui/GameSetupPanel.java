@@ -5,17 +5,13 @@
  */
 package ui;
 
-import game.Game;
-
-import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
+
 import game.Card;
-import java.util.HashMap;
-import java.util.Map;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -32,12 +28,6 @@ public class GameSetupPanel extends CluedoPanel implements ActionListener {
     public GameSetupPanel(Controller c) {
         super(c);
         this.players = new HashMap<String,String>();
-        setup = new SetupDialog(players);
-        setup.setVisible(true);
-    }
-    
-    public SetupDialog getDialog() {
-    	return setup;
     }
 /**
  * @param args the command line arguments
@@ -68,6 +58,19 @@ public class GameSetupPanel extends CluedoPanel implements ActionListener {
 		return players;
 	}
 
+    
+    public SetupDialog getDialog() throws IllegalAccessException {
+    	if (setup==null) { throw new IllegalAccessException(); }
+    	return setup;
+    }
+
+
+	public void showDialog() {
+        setup = new SetupDialog(players);
+        setup.setVisible(true);		
+	}
+	
+	
 	/**
 	 * A GameSetupDialogue is created to ask the user which characters will be played
 	 * during a game and the names associated with these Player objects. 
@@ -83,8 +86,6 @@ public class GameSetupPanel extends CluedoPanel implements ActionListener {
 		private static final long serialVersionUID = -8204809907341739549L;
 		static final String SUBMIT = "submitChars";
 	    static final String START = "startGame";
-//	    private boolean isClosed = false;
-	    
 	    private final Map<String,String> futurePlayers;
 	    
 
@@ -390,7 +391,8 @@ public class GameSetupPanel extends CluedoPanel implements ActionListener {
 	        dispatchEvent(new java.awt.event.WindowEvent(this, java.awt.event.WindowEvent.WINDOW_CLOSING));
 	    }
 
-	    /** TODO comment */
+	    /** A simple method for updating the progress towards starting
+	     * a new game.  */
 	    private void progressUpdate() {
 	        if (futurePlayers.size() == 1) {
 	            progress.setValue(1);
@@ -446,6 +448,10 @@ public class GameSetupPanel extends CluedoPanel implements ActionListener {
 	        // and update the progress bar. 
 	        futurePlayers.put(gotName,gotCharacter);
 	        nameTextInput.setText("");
+	    }
+	    
+	    public SetupDialog getDialog() {
+	    	return setup;
 	    }
 	    
 	    private final Map<String,JRadioButton> characters = new HashMap<String,JRadioButton>();
