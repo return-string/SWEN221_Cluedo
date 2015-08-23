@@ -70,7 +70,7 @@ public class Board {
 	}
 
 	public boolean isRoom(Coordinate coord){
-		if(!isLegal(coord)) {throw new IllegalArgumentException();}
+		if(!isLegal(coord)) {return false;}
 		return squares[coord.getX()][coord.getY()].isRoom();
 	}
 
@@ -374,6 +374,18 @@ public class Board {
 			}
 		}
 		return toReturn;
+	}
+
+	public void highlightSquare(Coordinate boardCoord) {
+		squares[boardCoord.getX()][boardCoord.getY()].setHighlight(true);
+		
+	}
+
+	public void unhighlightRooms() {
+		for(Coordinate center : getRoomCenters().values()){
+			squares[center.getX()][center.getY()].setHighlight(false);
+		}
+		
 	}
 
 }

@@ -15,6 +15,7 @@ public class BoardPanel extends CluedoPanel implements MouseListener, MouseMotio
 		super(c);
 		this.setPreferredSize(new Dimension(400, 400));
 		this.addMouseListener(this);
+		this.addMouseMotionListener(this);
 	}
 	
 	/**
@@ -88,7 +89,10 @@ public class BoardPanel extends CluedoPanel implements MouseListener, MouseMotio
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		Coordinate boardCoord = mousePosToCoordinate(e);
+		// TODO remove debugging output
+		System.out.printf("Mouse at %s\n", boardCoord.toString());
+		super.controller().highlightRoom(boardCoord);
+		repaint();
 	}
 }

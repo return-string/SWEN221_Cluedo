@@ -176,8 +176,13 @@ public class BoardDrawer {
 					g.drawRect(i*squareSize, j*squareSize, squareSize, squareSize);
 				} else {
 					//Room square:
-					//TODO change color for highlighted room?
-					g.setColor(Color.GRAY);
+					if(cluedoBoard.isHighlighted(spotToDraw)){
+						//Highlighted room
+						g.setColor(Color.YELLOW.brighter());
+					} else {
+						//Unhighlighted room
+						g.setColor(Color.GRAY);
+					}
 					g.fillRect(i*squareSize, j*squareSize, squareSize, squareSize);
 				}
 			}
@@ -221,7 +226,7 @@ public class BoardDrawer {
 	 */
 	private void labelRooms(Graphics g) {
 		Map<String, Coordinate> roomCenters = cluedoBoard.getRoomCenters();
-		g.setColor(Color.WHITE);
+		
 		for(String room : roomCenters.keySet()){
 			//index of middle character of room name, used to align name to center of room
 			int centerChar = room.length()/2;
@@ -230,6 +235,11 @@ public class BoardDrawer {
 			g.setFont(g.getFont().deriveFont(fontSize));
 			
 			Coordinate center = roomCenters.get(room);
+			if(cluedoBoard.isHighlighted(center)){
+				g.setColor(Color.BLACK);
+			} else {
+				g.setColor(Color.WHITE);
+			}
 			/* Calculate x, y coordinates for drawString, such that string is aligned to the center of the
 			 * room*/
 			int nameXOffSet = (int) (center.getX()*squareSize + squareSize/2 - (centerChar * fontSize)/3);

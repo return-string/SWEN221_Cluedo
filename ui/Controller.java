@@ -90,4 +90,16 @@ public class Controller implements ActionListener, EventListener {
 		}
 
 	}
+
+	public void highlightRoom(Coordinate boardCoord) {
+		//TODO remove debugging output
+		if(cluedoGame.getBoard().isRoom(boardCoord)){
+			System.out.printf("%s is on a room!\n", boardCoord.toString());
+			cluedoGame.getBoard().highlightSquare(boardCoord);
+		} else {
+			System.out.printf("%s is Not on a room\n", boardCoord.toString());
+			cluedoGame.getBoard().unhighlightRooms();
+		}
+		
+	}
 }
