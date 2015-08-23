@@ -6,6 +6,7 @@ package ui;
  *
  */
 public class GameOverPanel extends CluedoPanel {
+	private static final long serialVersionUID = 8982074883978347937L;
 
 	public GameOverPanel(Controller c) {
 		super(c);
@@ -19,5 +20,4 @@ public class GameOverPanel extends CluedoPanel {
             
             // show buttons for restarting the game/closing and exiting
 	}
-
 }

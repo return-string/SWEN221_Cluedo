@@ -6,4 +6,5 @@ public interface Token {
 
 	public Coordinate getPosition();
 
+	public void setPosition(Coordinate c);
 }

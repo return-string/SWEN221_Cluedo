@@ -196,7 +196,7 @@ public class BoardParser {
 		} else if(square == this.study){
 			return Card.STUDY;
 		} else if(square == this.hall){
-			return  Card.HALL;
+			return Card.HALL;
 		} else {
 			return Board.HALLWAYSTRING;
 		}

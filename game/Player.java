@@ -16,7 +16,7 @@ import java.util.List;
  * @author Vicki
  *
  */
-public class Player implements Comparable<Player> {
+public class Player implements Comparable<Player>, Token {
 	public final String CHARACTER_NAME;
         public final String PLAYER_NAME;
 
@@ -77,6 +77,12 @@ public class Player implements Comparable<Player> {
 		wasForced = false;
 		hasMoved = true;
 	}
+	
+	/** Moves the player. Not safe. Does not change the player state
+	 * etc.)*/
+	public void setPosition(Coordinate c) {
+		pos = c;
+	}
 
 	/** When a player is moved out of turn, call this method. */
 	public void forciblyMove(Coordinate pos) {
@@ -131,7 +137,7 @@ public class Player implements Comparable<Player> {
 	}
 
 	/** Returns the player's current position on the board. */
-	public Coordinate position() {
+	public Coordinate getPosition() {
 		return pos;
 	}
 

@@ -9,13 +9,8 @@ import java.util.Set;
 import game.ActingOutOfTurnException;
 import game.Coordinate;
 import game.Game;
-import game.GameStateModificationException;
-
 import java.util.EventListener;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import cluedoview.BoardDrawer;
 
 public class Controller implements ActionListener, EventListener {
@@ -23,8 +18,6 @@ public class Controller implements ActionListener, EventListener {
 	private Game cluedoGame;
 	private CluedoFrame gameFrame;
 	private BoardDrawer boardDrawer;
-	
-	private Map<String,String> players; // added this to fix a threading issue, + its setter method
 
 	public Controller(CluedoFrame gameFrame){
 		this.gameFrame = gameFrame;
@@ -60,14 +53,6 @@ public class Controller implements ActionListener, EventListener {
 		}
 	}
 
-	public void startGame() {
-		try {
-			cluedoGame.addPlayers(players);
-		} catch (GameStateModificationException ex) {
-			Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, "Tried to start a game already in progress.", ex);
-		}
-	}
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("New Game")){
@@ -95,15 +80,6 @@ public class Controller implements ActionListener, EventListener {
 
 	public Coordinate getBoardRowsCols(){
 		return new Coordinate(cluedoGame.getBoard().width(), cluedoGame.getBoard().height());
-	}
-	
-	/** So with the current setup (GameSetupPanel creates Map, sends to Controller, Controller
-	 * sends to Game) we get NullPointerExceptions in the AWT package. Hopefully, 
-	 * this will introduce an intermediate step and 
-	 * @param players
-	 */
-	public void setPlayers(Map<String,String> players) {
-		this.players = players;
 	}
 
 	public void movePlayer(Coordinate boardCoord) {
