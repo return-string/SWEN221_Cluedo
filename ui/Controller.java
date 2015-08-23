@@ -26,7 +26,12 @@ public class Controller implements ActionListener, EventListener {
 	public void startGame(Map<String,String> players){
         this.cluedoGame = new Game(players);
         this.boardDrawer = new BoardDrawer(this.cluedoGame);
-        gameFrame.showTurn();
+        this.gameFrame.showPanel(CluedoFrame.TURN_PANEL);
+	}
+	
+	public void startTestGame(Map<String,String> players){
+        this.cluedoGame = new Game(players);
+        this.boardDrawer = new BoardDrawer(this.cluedoGame);
 	}
 
 	public void nextTurn(){
@@ -51,10 +56,10 @@ public class Controller implements ActionListener, EventListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("New Game")){
-			gameFrame.showGameSetup();
+			gameFrame.showPanel(CluedoFrame.GAMESETUP_PANEL);
 		}
 		if(e.getActionCommand().equals("Rules")){
-			gameFrame.showRules();
+			gameFrame.showPanel(CluedoFrame.RULES_PANEL);
 		}
 		if(e.getActionCommand().equals("Exit")){
 			gameFrame.dispose();

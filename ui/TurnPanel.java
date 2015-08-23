@@ -1,6 +1,8 @@
 package ui;
 
+import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Dimension;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -27,6 +29,7 @@ public class TurnPanel extends CluedoPanel {
         setAlignmentX(LEFT_ALIGNMENT);
         setAlignmentY(TOP_ALIGNMENT);
         setBackground(java.awt.Color.GREEN);
+        contents = new HashSet<CluedoPanel>();
         contents.add(new BoardPanel(c));
         contents.add(new PlayersPanel(c));
         contents.add(new DeckPanel(c));

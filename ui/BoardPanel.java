@@ -14,7 +14,7 @@ public class BoardPanel extends CluedoPanel implements MouseListener, MouseMotio
 	public BoardPanel(Controller c) {
 		super(c);
 		this.setPreferredSize(new Dimension(400, 400));
-		
+		this.addMouseListener(this);
 	}
 	
 	private Coordinate mousePosToCoordinate(MouseEvent e){
@@ -34,6 +34,8 @@ public class BoardPanel extends CluedoPanel implements MouseListener, MouseMotio
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		Coordinate boardCoord = mousePosToCoordinate(e);
+		// TODO Remove testing output
+		System.out.printf("Clicking at (%d, %d) gets cooridinate %s\n", e.getX(), e.getY(), boardCoord.toString());
 		super.controller().movePlayer(boardCoord);
 		
 	}

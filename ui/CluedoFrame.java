@@ -5,11 +5,18 @@ import game.Game;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.Map;
+import java.util.HashMap;
 
 import javax.swing.JFrame;
 
 public class CluedoFrame extends JFrame {
 	private static final long serialVersionUID = 2171235413597916591L;
+	public static final int MENU_PANEL = 0;
+	public static final int GAMESETUP_PANEL = 1;
+	public static final int TURN_PANEL = 2;
+	public static final int GAMEOVER_PANEL = 3;
+	public static final int RULES_PANEL = 4;
+	
 	private final Controller controller;
 	private CluedoPanel currentPanel;
 	private MenuPanel menu;
@@ -17,6 +24,7 @@ public class CluedoFrame extends JFrame {
 	private RulesPanel rules;
 	private TurnPanel turnPanel;
 	private GameSetupPanel gameSetup;
+	private CluedoPanel[] panels = {menu, gameSetup, turnPanel, gameOver, rules}; 
 
 	public CluedoFrame() {
 		super("Cluedo");
@@ -25,10 +33,15 @@ public class CluedoFrame extends JFrame {
 		// this.canvas = new CluedoCanvas(cluedoGame);
 		// add(canvas, BorderLayout.CENTER); // add canvas
 		this.menu = new MenuPanel(controller);
+		this.rules = new RulesPanel(controller);
+		this.turnPanel = new TurnPanel(controller);
+		this.gameOver = new GameOverPanel(controller);
+		// TODO Uncomment when fixed
+		//this.gameSetup = new GameSetupPanel(controller);
 		this.currentPanel = this.menu;
 		add(this.currentPanel, BorderLayout.CENTER);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                setPreferredSize(new Dimension(800,600)); // V: just added this for sizing!
+        setPreferredSize(new Dimension(800,600)); // V: just added this for sizing!
 		pack(); // pack components tightly together
 		setResizable(false); // prevent us from being resizeable
 		setVisible(true); // make sure we are visible!
@@ -38,34 +51,22 @@ public class CluedoFrame extends JFrame {
 
 	public void repaint(){
 		super.repaint();
-		this.currentPanel.repaint();
+		//this.currentPanel.repaint();
 	}
-
-	public void showRules(){
-		if(rules == null){
-			this.rules = new RulesPanel(controller);
+	
+	public void showPanel(int panelNo){
+		if(panelNo < 0 || panelNo >= panels.length){
+			throw new IllegalArgumentException("Not a valid panel number");
 		}
-		remove(this.currentPanel);
-		this.currentPanel = this.rules;
-		add(this.currentPanel);
+		CluedoPanel toDisplay = panels[panelNo];
+		displayPanel(toDisplay);
 	}
-
-	public void showTurn(){
-		if(turnPanel == null){
-			this.turnPanel = new TurnPanel(controller);
-		}
+	
+	private void displayPanel(CluedoPanel toDisplay) {
 		remove(this.currentPanel);
-		this.currentPanel = this.turnPanel;
-		add(this.currentPanel);
-	}
-
-	public void showGameOver(){
-		if(this.gameOver == null){
-			this.gameOver = new GameOverPanel(controller);
-		}
-		remove(this.currentPanel);
-		this.currentPanel = this.gameOver;
-		add(this.currentPanel);
+		this.currentPanel = toDisplay;
+		add(this.currentPanel, BorderLayout.CENTER);
+		pack();
 	}
 
 	public void nextTurn(){
@@ -95,6 +96,15 @@ public class CluedoFrame extends JFrame {
 //            }
 //        });
 		controller.startGame(Game.createDefaultMap()); // throw away
+	}
+
+	/**
+	 * FOR TESTING ONLY
+	 */
+	public void showBoardPanel(HashMap<String, String> players){
+		this.controller.startTestGame(players);
+		BoardPanel bp = new BoardPanel(this.controller);
+		displayPanel(bp);
 	}
 
 }
