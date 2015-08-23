@@ -17,8 +17,18 @@ public class BoardPanel extends CluedoPanel implements MouseListener, MouseMotio
 		this.addMouseListener(this);
 	}
 	
+	/**
+	 * Converts the coordinates of the mouse event to a coordinate object representing the
+	 * grid coordinate of the square that was clicked on.
+	 * @param e
+	 * @return
+	 */
 	private Coordinate mousePosToCoordinate(MouseEvent e){
+		//Gets dimension of board from controller
 		Coordinate rowsCols = super.controller().getBoardRowsCols();
+		/*Calculates square size. Idea is to find which of the numbers of rows or columns are 
+		 * limiting the size the board, then divide either width or height of boardpannel by
+		 * that number*/
 		int squareSize = Math.min(getWidth()/rowsCols.getX(), getHeight()/rowsCols.getY());
 		int x = e.getX()/squareSize;
 		int y = e.getY()/squareSize;
