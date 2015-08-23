@@ -1,6 +1,5 @@
 package game;
 
-import java.io.InvalidClassException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -210,14 +209,22 @@ public class BoardSquare {
 		}
 		return representation + "}\n";
 	}
-
+	
+	/**
+	 * Returns the center of the board square (method mainly for rooms but shouldn't 
+	 * be a problem if used on hallway squares?). Ignores secrete passage coordinates.
+	 * Center is calculated by averaging the max and min x and y coordinate values
+	 * @return the center of this board square 
+	 */
 	public Coordinate getCenter(){
 		int minX = Integer.MAX_VALUE;
 		int minY = Integer.MAX_VALUE;
 		int maxX = Integer.MIN_VALUE;
 		int maxY = Integer.MIN_VALUE;
+		//ignores the secret passage coordinate
 		Set<Coordinate> withoutPassage = new HashSet<Coordinate>(coordinates);
 		withoutPassage.remove(findSecretPassage());
+		//find the max and min x and y values
 		for(Coordinate c : withoutPassage){
 			if(c.getX() < minX){
 				minX = c.getX();
@@ -232,17 +239,23 @@ public class BoardSquare {
 				maxY = c.getY();
 			}
 		}
+		//build center coordinate
 		int centerX = (minX + maxX)/2;
 		int centerY = (minY + maxY)/2;
 		return getClosestCoordinate(new Coordinate(centerX, centerY));
 	}
-
+	
+	/**
+	 * Finds the secret passage coordinate, by finding the coordinate that is not
+	 * next to any other coordinate
+	 * @return secret passage coordinate
+	 */
 	public Coordinate findSecretPassage(){
-		if(coordinates.size() > 1){
+		if(coordinates.size() > 1){//to ignore hallway squares and small rooms
 			Set<Coordinate> copy = new HashSet<Coordinate>(coordinates);
-			for(Coordinate current : coordinates){
+			for(Coordinate current : coordinates){//goes through each coordinate
 				boolean passage = true;
-				for(Coordinate compareTo : copy){
+				for(Coordinate compareTo : copy){//checking every other coordinate if there is one next to it
 					if(!current.equals(compareTo) && current.getX() >= compareTo.getX()-1 && current.getX()
 							<= compareTo.getX()+1 && current.getY() >= compareTo.getY()-1 && current.getY()
 							<= compareTo.getY()+1){

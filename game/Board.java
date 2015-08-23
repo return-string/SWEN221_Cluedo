@@ -19,7 +19,9 @@ import java.util.Set;
 public class Board {
 
 	public static final String HALLWAYSTRING = "hallway";
-
+	
+	public enum Compass {NORTH, EAST, SOUTH, WEST}
+	
 	private BoardSquare[][] squares;
 	private File classic = new File("ClassicBoard.txt");
 
@@ -68,7 +70,7 @@ public class Board {
 	}
 
 	public boolean isRoom(Coordinate coord){
-		if(!isLegal(coord)) {throw new IllegalArgumentException();}
+		if(!isLegal(coord)) {return false;}
 		return squares[coord.getX()][coord.getY()].isRoom();
 	}
 
@@ -298,64 +300,47 @@ public class Board {
 	public int height() {
 		return squares[0].length;
 	}
-
+	
+	/**
+	 * @param coord Coordinate of square to check
+	 * @return True of square at coordinate is highlighted
+	 */
 	public boolean isHighlighted(Coordinate coord) {
 		if(!isLegal(coord)) {throw new IllegalArgumentException();}
 		return squares[coord.getX()][coord.getY()].isHighlighted();
 	}
-
-	public List<Coordinate> northFacingDoors(){
+	
+	/**
+	 * Methods for finding coordinates of hallway squares next to doors to rooms.
+	 * Compass direction refers to direction from hallway to door.  
+	 * @return List of coordinates of hallway squares next to doors in the relevant direction
+	 */
+	public List<Coordinate> getDoors(Compass dir){
+		
+		/* Determines the appropriate array access adjustments for looking at a square's
+		 * neighbour in the given direction.
+		 */
+		int xShift = dir.equals(Compass.WEST) ? -1 : 0;
+		xShift = dir.equals(Compass.EAST) ? 1 : xShift;
+		int yShift = dir.equals(Compass.NORTH) ? -1 : 0;
+		yShift = dir.equals(Compass.SOUTH) ? 1 : yShift;
+		int startX = dir.equals(Compass.WEST) ? 1 : 0;
+		int startY = dir.equals(Compass.NORTH) ? 1 : 0;
+		int endX = dir.equals(Compass.EAST) ? width() - 1 : width();
+		int endY = dir.equals(Compass.SOUTH) ? height() - 1 : height();
+		
 		List<Coordinate> toReturn = new ArrayList<Coordinate>();
-		for(int i = 0; i < width(); i++){
-			for(int j = 1; j < height(); j++){
-				if(squares[i][j] != null && squares[i][j-1] != null){
-					if(squares[i][j].isRoom() && !squares[i][j-1].isRoom() &&
-							squares[i][j].getNeighbours().contains(squares[i][j-1])){
-						toReturn.add(new Coordinate(i,j));
-					}
-				}
-			}
-		}
-		return toReturn;
-	}
-
-	public List<Coordinate> southFacingDoors(){
-		List<Coordinate> toReturn = new ArrayList<Coordinate>();
-		for(int i = 0; i < width(); i++){
-			for(int j = 0; j < height()-1; j++){
-				if(squares[i][j] != null && squares[i][j+1] != null){
-					if(squares[i][j].isRoom() && !squares[i][j+1].isRoom() &&
-							squares[i][j].getNeighbours().contains(squares[i][j+1])){
-						toReturn.add(new Coordinate(i,j));
-					}
-				}
-			}
-		}
-		return toReturn;
-	}
-
-	public List<Coordinate> westFacingDoors(){
-		List<Coordinate> toReturn = new ArrayList<Coordinate>();
-		for(int i = 1; i < width(); i++){
-			for(int j = 0; j < height(); j++){
-				if(squares[i][j] != null && squares[i-1][j] != null){
-					if(squares[i][j].isRoom() && !squares[i-1][j].isRoom() &&
-							squares[i][j].getNeighbours().contains(squares[i-1][j])){
-						toReturn.add(new Coordinate(i,j));
-					}
-				}
-			}
-		}
-		return toReturn;
-	}
-
-	public List<Coordinate> eastFacingDoors(){
-		List<Coordinate> toReturn = new ArrayList<Coordinate>();
-		for(int i = 0; i < width()-1; i++){
-			for(int j = 0; j < height(); j++){
-				if(squares[i][j] != null && squares[i+1][j] != null){
-					if(squares[i][j].isRoom() && !squares[i+1][j].isRoom() &&
-							squares[i][j].getNeighbours().contains(squares[i+1][j])){
+		//goes through the array of board squares
+		for(int i = startX; i < endX; i++){
+			for(int j = startY; j < endY; j++){
+				/* if the current square is a hallway square, and its neighbour in the 
+				 * given direction is a room square the current square is connected to,
+				 * adds the current square's coordinates to the list of coordinates to
+				 * return
+				 */
+				if(squares[i][j] != null && squares[i+xShift][j+yShift] != null){
+					if(squares[i][j].isRoom() && !squares[i+xShift][j+yShift].isRoom() &&
+							squares[i][j].getNeighbours().contains(squares[i+xShift][j+yShift])){
 						toReturn.add(new Coordinate(i,j));
 					}
 				}
@@ -389,6 +374,18 @@ public class Board {
 			}
 		}
 		return toReturn;
+	}
+
+	public void highlightSquare(Coordinate boardCoord) {
+		squares[boardCoord.getX()][boardCoord.getY()].setHighlight(true);
+		
+	}
+
+	public void unhighlightRooms() {
+		for(Coordinate center : getRoomCenters().values()){
+			squares[center.getX()][center.getY()].setHighlight(false);
+		}
+		
 	}
 
 }
