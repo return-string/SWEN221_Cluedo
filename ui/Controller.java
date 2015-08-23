@@ -104,6 +104,7 @@ public class Controller implements ActionListener, EventListener {
 	
 	public List<Player> getPlayers() {
 		return cluedoGame.getPlayers();
+	}
 
 	public void highlightRoom(Coordinate boardCoord) {
 		//TODO remove debugging output
