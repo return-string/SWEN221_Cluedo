@@ -58,12 +58,22 @@ public class Controller implements ActionListener, EventListener {
 			}
 		}
 	}
+	
+	public void testAccusation(Set<String> hypothesis){
+		if(cluedoGame != null){
+			try {
+				cluedoGame.testAccusation(hypothesis);
+			} catch (ActingOutOfTurnException e) {
+			}
+		}
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("New Game")){
-			gameFrame.showPanel(CluedoFrame.GAMESETUP_PANEL);
-			gameFrame.showGameSetup();
+//			gameFrame.showPanel(CluedoFrame.GAMESETUP_PANEL);
+			// REAL gameFrame.showGameSetup();
+			gameFrame.testingGameSetup(); // TODO fake demo method!
 		}
 		if(e.getActionCommand().equals("Rules")){
 			gameFrame.showPanel(CluedoFrame.RULES_PANEL);
