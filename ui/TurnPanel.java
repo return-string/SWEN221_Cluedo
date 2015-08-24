@@ -1,23 +1,37 @@
 package ui;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
  public class TurnPanel extends CluedoPanel {
 	private static final long serialVersionUID = -8751878244555503503L;
 	int i = 0;
+	private JPanel playersPanel1;
+	private DeckPanel deckPanel1;
+	private PlayersPanel playersPanel;
+	private DeckPanel deckPanel;
+	private BoardPanel boardPanel;
+	private JPanel containerPanel;
 
      /**
       * Creates new form ApplicationWindow
       */
      public TurnPanel(Controller c) {
     	 super(c);
+		System.err.println("it's working");
          initComponents();
-         System.err.println("AAAAAAAAAAAAAAAAA");
      }
 
 	 public void resize() {
 	 	setPreferredSize(new java.awt.Dimension(getParent().getWidth(), getParent().getHeight()));
 	 }
+
+	@Override
+	public void nextTurn() {
+		boardPanel.nextTurn();
+		playersPanel.nextTurn();
+		deckPanel.nextTurn();
+	}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -27,25 +41,14 @@ import javax.swing.JFrame;
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        playersPanel = new ui.PlayersPanel(controller());
-        deckPanel1 = new ui.DeckPanel(controller());
-        boardPanel = new ui.BoardPanel(controller());
-        menuBar = new javax.swing.JMenuBar();
-        fileMenu = new javax.swing.JMenu();
-        openMenuItem = new javax.swing.JMenuItem();
-        saveMenuItem = new javax.swing.JMenuItem();
-        saveAsMenuItem = new javax.swing.JMenuItem();
-        exitMenuItem = new javax.swing.JMenuItem();
-        editMenu = new javax.swing.JMenu();
-        cutMenuItem = new javax.swing.JMenuItem();
-        copyMenuItem = new javax.swing.JMenuItem();
-        pasteMenuItem = new javax.swing.JMenuItem();
-        deleteMenuItem = new javax.swing.JMenuItem();
-        helpMenu = new javax.swing.JMenu();
-        contentsMenuItem = new javax.swing.JMenuItem();
-        aboutMenuItem = new javax.swing.JMenuItem();
-        
-        setPreferredSize(new java.awt.Dimension(CluedoFrame.DEFAULT_HEIGHT, CluedoFrame.DEFAULT_WIDTH));
+    	Controller c = controller();
+        containerPanel = new JPanel();
+        playersPanel = new ui.PlayersPanel(c);
+        playersPanel1 = new JPanel();
+        deckPanel1 = new ui.DeckPanel(c);
+        boardPanel = new ui.BoardPanel(c);
+
+        setPreferredSize(new java.awt.Dimension(800, 600));
 
         playersPanel.setBackground(new java.awt.Color(255, 204, 0));
 
@@ -53,11 +56,13 @@ import javax.swing.JFrame;
         playersPanel.setLayout(playersPanelLayout);
         playersPanelLayout.setHorizontalGroup(
             playersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 190, Short.MAX_VALUE)
+            .addComponent(playersPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         playersPanelLayout.setVerticalGroup(
             playersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 480, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, playersPanelLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(playersPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         deckPanel1.setBackground(new java.awt.Color(153, 204, 0));
@@ -87,13 +92,13 @@ import javax.swing.JFrame;
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout turnPanel1Layout = new javax.swing.GroupLayout(this); // null??
-        this.setLayout(turnPanel1Layout);
+        javax.swing.GroupLayout turnPanel1Layout = new javax.swing.GroupLayout(containerPanel);
+        containerPanel.setLayout(turnPanel1Layout);
         turnPanel1Layout.setHorizontalGroup(
             turnPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, turnPanel1Layout.createSequentialGroup()
                 .addComponent(boardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED) 
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(playersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addComponent(deckPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 806, Short.MAX_VALUE)
         );
@@ -106,98 +111,5 @@ import javax.swing.JFrame;
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(deckPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
-
-        fileMenu.setMnemonic('f');
-        fileMenu.setText("File");
-
-        openMenuItem.setMnemonic('o');
-        openMenuItem.setText("Open");
-        fileMenu.add(openMenuItem);
-
-        saveMenuItem.setMnemonic('s');
-        saveMenuItem.setText("Save");
-        fileMenu.add(saveMenuItem);
-
-        saveAsMenuItem.setMnemonic('a');
-        saveAsMenuItem.setText("Save As ...");
-        saveAsMenuItem.setDisplayedMnemonicIndex(5);
-        fileMenu.add(saveAsMenuItem);
-
-        exitMenuItem.setMnemonic('x');
-        exitMenuItem.setText("Exit");
-        exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                exitMenuItemActionPerformed(evt);
-            }
-        });
-        fileMenu.add(exitMenuItem);
-
-        menuBar.add(fileMenu);
-
-        editMenu.setMnemonic('e');
-        editMenu.setText("Edit");
-
-        cutMenuItem.setMnemonic('t');
-        cutMenuItem.setText("Cut");
-        editMenu.add(cutMenuItem);
-
-        copyMenuItem.setMnemonic('y');
-        copyMenuItem.setText("Copy");
-        editMenu.add(copyMenuItem);
-
-        pasteMenuItem.setMnemonic('p');
-        pasteMenuItem.setText("Paste");
-        editMenu.add(pasteMenuItem);
-
-        deleteMenuItem.setMnemonic('d');
-        deleteMenuItem.setText("Delete");
-        editMenu.add(deleteMenuItem);
-
-        menuBar.add(editMenu);
-
-        helpMenu.setMnemonic('h');
-        helpMenu.setText("Help");
-
-        contentsMenuItem.setMnemonic('c');
-        contentsMenuItem.setText("Contents");
-        helpMenu.add(contentsMenuItem);
-
-        aboutMenuItem.setMnemonic('a');
-        aboutMenuItem.setText("About");
-        helpMenu.add(aboutMenuItem);
-
-        menuBar.add(helpMenu);
-
-        // TODO setJMenuBar(menuBar);
     }
-
-    private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
-        System.exit(0);
-    }
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem aboutMenuItem;
-    private ui.BoardPanel boardPanel;
-    private javax.swing.JMenuItem contentsMenuItem;
-    private javax.swing.JMenuItem copyMenuItem;
-    private javax.swing.JMenuItem cutMenuItem;
-    private ui.DeckPanel deckPanel1;
-    private javax.swing.JMenuItem deleteMenuItem;
-    private javax.swing.JMenu editMenu;
-    private javax.swing.JMenuItem exitMenuItem;
-    private javax.swing.JMenu fileMenu;
-    private javax.swing.JMenu helpMenu;
-    private javax.swing.JMenuBar menuBar;
-    private javax.swing.JMenuItem openMenuItem;
-    private javax.swing.JMenuItem pasteMenuItem;
-    private ui.PlayersPanel playersPanel;
-    private javax.swing.JMenuItem saveAsMenuItem;
-    private javax.swing.JMenuItem saveMenuItem;
-    // End of variables declaration//GEN-END:variables
-
-	@Override
-	public void nextTurn() {
-		// TODO Auto-generated method stub
-		
-	}
 }

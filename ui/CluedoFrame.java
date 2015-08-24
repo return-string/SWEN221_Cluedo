@@ -42,17 +42,13 @@ public class CluedoFrame extends JFrame {
 		// this.canvas = new CluedoCanvas(cluedoGame);
 		// add(canvas, BorderLayout.CENTER); // add canvas
 		this.menu = new MenuPanel(controller);
-		this.rules = new RulesPanel(controller);
-		this.turnPanel = new TurnPanel(controller);
-		this.gameOver = new GameOverPanel(controller);
-		this.gameSetup = new GameSetupPanel(controller);
 		this.currentPanel = this.menu;
 		panels = new CluedoPanel[] { menu, gameSetup, turnPanel, gameOver, rules};
 		
 		setIconImage(icon());
 		add(this.currentPanel, BorderLayout.CENTER);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setPreferredSize(new Dimension(800,600)); // V: just added this for sizing!
+        setPreferredSize(new Dimension(DEFAULT_WIDTH,DEFAULT_HEIGHT)); // V: just added this for sizing!
 		pack(); // pack components tightly together
 		setResizable(false); // prevent us from being resizeable
 		setVisible(true); // make sure we are visible!
@@ -80,14 +76,42 @@ public class CluedoFrame extends JFrame {
 		if(panelNo < 0 || panelNo >= panels.length){
 			throw new IllegalArgumentException("Not a valid panel number");
 		}
+		if (panels[panelNo] == null) {
+			switch (panelNo) {
+				case MENU_PANEL:
+					this.menu = new MenuPanel(controller);
+					panels[panelNo] = menu;
+					break;
+				case RULES_PANEL:
+					this.rules = new RulesPanel(controller);
+					panels[panelNo] = rules;
+					break;
+				case TURN_PANEL:
+					this.turnPanel = new TurnPanel(controller);
+					panels[panelNo] = turnPanel;
+					System.err.println("it's worked");
+					break;
+				case GAMEOVER_PANEL:
+					this.gameOver = new GameOverPanel(controller);
+					panels[panelNo] = gameOver;
+					break;
+				case GAMESETUP_PANEL:
+					this.gameSetup = new GameSetupPanel(controller);
+					panels[panelNo] = gameSetup;
+					break;
+				default:
+					System.err.println("no acceptable thing!");
+			};
+		}
 		CluedoPanel toDisplay = panels[panelNo];
 		displayPanel(toDisplay);
 	}
 	
 	private void displayPanel(CluedoPanel toDisplay) {
-		remove(this.currentPanel);
+		//System.err.println(toDisplay == null);
+        this.getContentPane().removeAll();
 		this.currentPanel = toDisplay;
-		add(this.currentPanel, BorderLayout.CENTER);
+		this.getContentPane().add(this.currentPanel, BorderLayout.CENTER);
 		pack();
 		repaint();
 	}
@@ -121,7 +145,7 @@ public class CluedoFrame extends JFrame {
 			    }
 			});
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
+			// this isn't going to happen-- but if it does, someone should be told!
 			e.printStackTrace();
 		}
 	}

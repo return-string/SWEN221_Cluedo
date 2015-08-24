@@ -511,6 +511,7 @@ public class Game {
 	 * @return The list of players in the game
 	 */
 	public List<Player> getPlayers() {
+		if (players == null) { return null; }
 		return Collections.unmodifiableList(players);
 	}
 

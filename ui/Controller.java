@@ -9,6 +9,7 @@ import java.util.Set;
 import game.ActingOutOfTurnException;
 import game.Coordinate;
 import game.Game;
+import game.GameStateModificationException;
 import game.Player;
 
 import java.util.EventListener;
@@ -27,11 +28,22 @@ public class Controller implements ActionListener, EventListener {
 		this.gameFrame = gameFrame;
 	}
 
+	/** Given a map from GameSetup of player names to player characters,
+	 * this method creates a new Game object and BoardDrawer and uses
+	 * these to show and start the game. 
+	 * @param players
+	 */
 	public void startGame(Map<String,String> players){
         this.cluedoGame = new Game(players);
         this.boardDrawer = new BoardDrawer(this.cluedoGame);
-		System.err.println("got "+2);
-        gameFrame.showPanel(2);
+		System.err.println("got "+players);
+		try {
+			this.cluedoGame.startGame();
+		} catch (GameStateModificationException | ActingOutOfTurnException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        gameFrame.showPanel(CluedoFrame.TURN_PANEL);
 		System.err.println("done");
 	}
 	
@@ -64,6 +76,7 @@ public class Controller implements ActionListener, EventListener {
 			try {
 				cluedoGame.testAccusation(hypothesis);
 			} catch (ActingOutOfTurnException e) {
+				// we don't care! no-one needs to know!
 			}
 		}
 	}
@@ -71,7 +84,7 @@ public class Controller implements ActionListener, EventListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("New Game")){
-//			gameFrame.showPanel(CluedoFrame.GAMESETUP_PANEL);
+			// gameFrame.showPanel(CluedoFrame.GAMESETUP_PANEL);
 			// REAL gameFrame.showGameSetup();
 			gameFrame.testingGameSetup(); // TODO fake demo method!
 		}
@@ -89,10 +102,10 @@ public class Controller implements ActionListener, EventListener {
 	}
 
 	public boolean checkGameState(){
-		if(cluedoGame != null){
+		if (cluedoGame != null){
 			return cluedoGame.isPlaying();
 		}
-		return true;
+		return false;
 	}
 
 	public Coordinate getBoardRowsCols(){
@@ -103,17 +116,21 @@ public class Controller implements ActionListener, EventListener {
 		try {
 			cluedoGame.movePlayer(boardCoord);
 		} catch (ActingOutOfTurnException e) {
-
+			// we don't care! not our responsibility! 
 		}
-
 	}
 	
 	public Player getCurrentPlayer() {
 		return cluedoGame.getCurrentPlayer();
 	}
 	
+	
 	public List<Player> getPlayers() {
-		return cluedoGame.getPlayers();
+		try {
+			return cluedoGame.getPlayers();
+		} catch (NullPointerException e) {
+			return new java.util.ArrayList<Player>();
+		}
 	}
 
 	public void highlightRoom(Coordinate boardCoord) {
