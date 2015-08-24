@@ -1,5 +1,6 @@
 package ui;
 
+import game.Card;
 import game.Game;
 
 import java.awt.BorderLayout;
@@ -43,7 +44,7 @@ public class CluedoFrame extends JFrame {
 		// add(canvas, BorderLayout.CENTER); // add canvas
 		this.menu = new MenuPanel(controller);
 		this.rules = new RulesPanel(controller);
-		this.turnPanel = new TurnPanel(controller);
+		//this.turnPanel = new TurnPanel(controller);
 		this.gameOver = new GameOverPanel(controller);
 		this.gameSetup = new GameSetupPanel(controller);
 		this.currentPanel = this.menu;
@@ -155,6 +156,12 @@ public class CluedoFrame extends JFrame {
 		this.controller.startTestGame(players);
 		BoardPanel bp = new BoardPanel(this.controller);
 		displayPanel(bp);
+	}
+	
+	public void showHypothesisPanel(){
+		this.controller.startTestGame(Game.createDefaultMap());
+		SuperSpecialAwesomeHypothesisPanel hp = new SuperSpecialAwesomeHypothesisPanel(this.controller);
+		displayPanel(hp);
 	}
 
 }

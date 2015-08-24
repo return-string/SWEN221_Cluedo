@@ -4,11 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashSet;
 
 import game.Card;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
@@ -21,6 +23,8 @@ public class SuperSpecialAwesomeHypothesisPanel extends CluedoPanel implements A
 	private RadioListener characterMonitor = new RadioListener(Card.Type.CHARACTER);
 	private RadioListener weaponMonitor = new RadioListener(Card.Type.WEAPON);
 	private RadioListener roomMonitor = new RadioListener(Card.Type.ROOM);
+	
+	private String buttonString = "Make Hypothesis";
 
 	public SuperSpecialAwesomeHypothesisPanel(Controller c) {
 		super(c);
@@ -30,7 +34,43 @@ public class SuperSpecialAwesomeHypothesisPanel extends CluedoPanel implements A
 		selectionPanel.setLayout(new GridLayout(1,3));
 		addCharacterSelection(selectionPanel);
 		addWeaponSelection(selectionPanel);
+		addRoomSelection(selectionPanel);
+		add(selectionPanel, BorderLayout.CENTER);
+		JButton makeHypothesis = new JButton(buttonString);
+		makeHypothesis.addActionListener(this);
+		add(makeHypothesis, BorderLayout.SOUTH);
+	}
+	
+	public SuperSpecialAwesomeHypothesisPanel(Controller c, String room) {
+		super(c);
 
+		this.chosenRoom = room;
+		this.setLayout(new BorderLayout());
+		JPanel selectionPanel = new JPanel();
+		selectionPanel.setLayout(new GridLayout(1,2));
+		addCharacterSelection(selectionPanel);
+		addWeaponSelection(selectionPanel);
+		add(selectionPanel, BorderLayout.CENTER);
+		JButton makeHypothesis = new JButton(buttonString);
+		makeHypothesis.addActionListener(this);
+		add(makeHypothesis, BorderLayout.SOUTH);
+	}
+
+
+	private void addRoomSelection(JPanel selectionPanel) {
+		JPanel roomSelection = new JPanel();
+		roomSelection.setLayout(new GridLayout(0,1));
+		ButtonGroup roomGroup = new ButtonGroup();
+		roomGroup.add(addRadioButton(Card.BALL, roomSelection, roomMonitor));
+		roomGroup.add(addRadioButton(Card.BILLIARD, roomSelection, roomMonitor));
+		roomGroup.add(addRadioButton(Card.CONSERVATORY, roomSelection, roomMonitor));
+		roomGroup.add(addRadioButton(Card.DINING, roomSelection, roomMonitor));
+		roomGroup.add(addRadioButton(Card.HALL, roomSelection, roomMonitor));
+		roomGroup.add(addRadioButton(Card.KITCHEN, roomSelection, roomMonitor));
+		roomGroup.add(addRadioButton(Card.LIBRARY, roomSelection, roomMonitor));
+		roomGroup.add(addRadioButton(Card.LOUNGE, roomSelection, roomMonitor));
+		roomGroup.add(addRadioButton(Card.STUDY, roomSelection, roomMonitor));
+		selectionPanel.add(roomSelection);
 	}
 
 
@@ -38,12 +78,12 @@ public class SuperSpecialAwesomeHypothesisPanel extends CluedoPanel implements A
 		JPanel weaponSelection = new JPanel();
 		weaponSelection.setLayout(new GridLayout(0,1));
 		ButtonGroup weaponGroup = new ButtonGroup();
-		weaponGroup.add(addRadioButton(Card.WHITE, weaponSelection, weaponMonitor));
-		weaponGroup.add(addRadioButton(Card.PEACOCK, weaponSelection, weaponMonitor));
-		weaponGroup.add(addRadioButton(Card.PLUM, weaponSelection, weaponMonitor));
-		weaponGroup.add(addRadioButton(Card.MUSTARD, weaponSelection, weaponMonitor));
-		weaponGroup.add(addRadioButton(Card.SCARLET, weaponSelection, weaponMonitor));
-		weaponGroup.add(addRadioButton(Card.GREEN, weaponSelection, weaponMonitor));
+		weaponGroup.add(addRadioButton(Card.PIPE, weaponSelection, weaponMonitor));
+		weaponGroup.add(addRadioButton(Card.REVOLVER, weaponSelection, weaponMonitor));
+		weaponGroup.add(addRadioButton(Card.CANDLESTICK, weaponSelection, weaponMonitor));
+		weaponGroup.add(addRadioButton(Card.DAGGER, weaponSelection, weaponMonitor));
+		weaponGroup.add(addRadioButton(Card.ROPE, weaponSelection, weaponMonitor));
+		weaponGroup.add(addRadioButton(Card.WRENCH, weaponSelection, weaponMonitor));
 		selectionPanel.add(weaponSelection);
 
 	}
@@ -74,14 +114,18 @@ public class SuperSpecialAwesomeHypothesisPanel extends CluedoPanel implements A
 
 	@Override
 	public void nextTurn() {
-		// TODO Auto-generated method stub
-
 	}
 
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+		if(e.getActionCommand().equals(buttonString)){
+			HashSet<String> hypothesis = new HashSet<String>();
+			hypothesis.add(chosenCharacter);
+			hypothesis.add(chosenWeapon);
+			hypothesis.add(chosenRoom);
+			super.controller().testHypothesis(hypothesis);
+		}
 
 	}
 

@@ -56,10 +56,12 @@ public class Controller implements ActionListener, EventListener {
 
 	public void testHypothesis(Set<String> hypothesis){
 		if(cluedoGame != null){
-			try {
-				cluedoGame.testHypothesis(hypothesis);
-			} catch (ActingOutOfTurnException e) {
-			}
+			//try {
+				//TODO Uncomment and remove debugging output when fixed
+				//cluedoGame.testHypothesis(hypothesis);
+				System.out.println(hypothesis.toString());
+//			} catch (ActingOutOfTurnException e) {
+//			}
 		}
 	}
 
