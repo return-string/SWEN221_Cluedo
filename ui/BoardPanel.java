@@ -17,7 +17,7 @@ public class BoardPanel extends CluedoPanel implements MouseListener, MouseMotio
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 	}
-	
+
 	/**
 	 * Converts the coordinates of the mouse event to a coordinate object representing the
 	 * grid coordinate of the square that was clicked on.
@@ -27,7 +27,7 @@ public class BoardPanel extends CluedoPanel implements MouseListener, MouseMotio
 	private Coordinate mousePosToCoordinate(MouseEvent e){
 		//Gets dimension of board from controller
 		Coordinate rowsCols = super.controller().getBoardRowsCols();
-		/*Calculates square size. Idea is to find which of the numbers of rows or columns are 
+		/*Calculates square size. Idea is to find which of the numbers of rows or columns are
 		 * limiting the size the board, then divide either width or height of boardpannel by
 		 * that number*/
 		int squareSize = Math.min(getWidth()/rowsCols.getX(), getHeight()/rowsCols.getY());
@@ -35,46 +35,44 @@ public class BoardPanel extends CluedoPanel implements MouseListener, MouseMotio
 		int y = e.getY()/squareSize;
 		return new Coordinate(x, y);
 	}
-	
+
 	@Override
 	public void nextTurn() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		Coordinate boardCoord = mousePosToCoordinate(e);
-		// TODO Remove testing output
-		System.out.printf("Clicking at (%d, %d) gets cooridinate %s\n", e.getX(), e.getY(), boardCoord.toString());
 		super.controller().movePlayer(boardCoord);
-		
+
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	@Override
 	public void paint(Graphics g){
 		super.paint(g);
@@ -84,14 +82,12 @@ public class BoardPanel extends CluedoPanel implements MouseListener, MouseMotio
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		Coordinate boardCoord = mousePosToCoordinate(e);
-		// TODO remove debugging output
-		System.out.printf("Mouse at %s\n", boardCoord.toString());
 		super.controller().highlightRoom(boardCoord);
 		repaint();
 	}

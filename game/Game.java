@@ -246,7 +246,7 @@ public class Game {
 		if (accused != null && !(accused.equals(p))) {
 			accused.forciblyMove(p.getPosition());
 		}
-		
+
 		// now move the weapon: (this method is for hypotheses so we know the player's in a room)
 		for (Weapon w : weapons) {
 			if (w.getTokenName().equals(h.getWeapon())) {
@@ -278,9 +278,9 @@ public class Game {
 			l.add(p);
 		}
 		// later  B: Commented it out so I can test drive the board panel
-//		for (Weapon w : weapons) {
-//			l.add(w);
-//		}
+		for (Weapon w : weapons) {
+			l.add(w);
+		}
 		return Collections.unmodifiableList(l);
 	}
 
