@@ -43,7 +43,14 @@ public class Game {
 	private List<Card> spareCards = null;
 
 	private List<Player> players;
-	private List<Weapon> weapons;
+	private static final Weapon[] weapons = {
+		new Weapon(Card.WEAPONS[0],new Coordinate(3,3)),
+		new Weapon(Card.WEAPONS[1],new Coordinate(13,5)),
+		new Weapon(Card.WEAPONS[2],new Coordinate(2,12)),
+		new Weapon(Card.WEAPONS[3],new Coordinate(22,11)),
+		new Weapon(Card.WEAPONS[4],new Coordinate(2,23)),
+		new Weapon(Card.WEAPONS[5],new Coordinate(22,23))
+	};
 	private Theory guilty;
 	private int gameState = STATUS_WAITING;
 	private int activePlayer = -1; /* used to check when play has begun also, instead
@@ -239,6 +246,13 @@ public class Game {
 		if (accused != null && !(accused.equals(p))) {
 			accused.forciblyMove(p.getPosition());
 		}
+		
+		// now move the weapon: (this method is for hypotheses so we know the player's in a room)
+		for (Weapon w : weapons) {
+			if (w.getTokenName().equals(h.getWeapon())) {
+				w.setPosition(p.getPosition());
+			}
+		}
 
 		/* now, go through all the players and check their hands for cards to refute
 		 * the active player's hypothesis. */
@@ -287,15 +301,18 @@ public class Game {
 	 *
 	 * @param p
 	 */
-	private boolean testAccusation(Set<String> hs) {
-            Player p = players.get(activePlayer);
+	public boolean testAccusation(Set<String> hs) throws ActingOutOfTurnException {
+        Player p = players.get(activePlayer);
+        if (!p.hasMoved() || !p.isPlaying()) {
+        	throw new ActingOutOfTurnException();
+        }
 		Theory h = new Hypothesis(hs);
-		if (!h.equals(guilty)) {
+		if (!h.equals(guilty)) { // player loses. kill them!
 //			textUI.printText(p.getName()+"'s accusation was proven false! "+ p.getName() +" has been barred from the investigation.");
 			p.kill();
 			BOARD.toggleOccupied(p.getPosition());
 			return false;
-		} else {
+		} else { // player wins! kill the losers!
 //			textUI.printText("Success! "+ p.getName() +" has made a correct accusation and the guilty party will be brought to justice.");
 			if (p.getCharacter().equals(h.getCharacter().getValue())) {
 //				textUI.printText("('Accusation' sounds kinder than 'loud, weeping confession into "+ players.get( (activePlayer + 1) % players.size()).getName() +"'s arms.)");

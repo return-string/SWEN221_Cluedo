@@ -23,6 +23,9 @@ public class CluedoFrame extends JFrame {
 	public static final int GAMEOVER_PANEL = 3;
 	public static final int RULES_PANEL = 4;
 	
+	public static final int DEFAULT_WIDTH = 800;
+	public static final int DEFAULT_HEIGHT = 600;
+	
 	private final Controller controller;
 	private CluedoPanel currentPanel;
 	private MenuPanel menu;
@@ -53,6 +56,11 @@ public class CluedoFrame extends JFrame {
 		pack(); // pack components tightly together
 		setResizable(false); // prevent us from being resizeable
 		setVisible(true); // make sure we are visible!
+		
+		// trying to center the window. will come back to this later. 
+		setLocation(getLocationOnScreen());
+		// do something to make it redisplay in new position. 
+		
 	}
 
 	private Image icon() {
@@ -81,21 +89,23 @@ public class CluedoFrame extends JFrame {
 		this.currentPanel = toDisplay;
 		add(this.currentPanel, BorderLayout.CENTER);
 		pack();
+		repaint();
 	}
 
 	public void nextTurn(){
 		this.currentPanel.nextTurn();
 	}
 
-	/** actual method */
+	/** Displays a popup dialog asking the user to input their information */
 	public void showGameSetup(){
-		if(this.gameSetup == null){
-			this.gameSetup = new GameSetupPanel(controller);
-		}
-		this.currentPanel = this.gameSetup;
-		add(this.currentPanel);
+//		if(this.gameSetup == null){
+//			this.gameSetup = new GameSetupPanel(controller);
+//		}
+//		this.currentPanel = this.gameSetup;
+//		add(this.currentPanel);
 		gameSetup.showDialog();
 		try {
+			gameSetup.getDialog().setLocation(getLocationToCenter(gameSetup.getDialog().getWidth(),gameSetup.getDialog().getHeight()));
 			gameSetup.getDialog().addWindowListener(new java.awt.event.WindowAdapter() {
 			    @Override
 			    public void windowClosing(java.awt.event.WindowEvent e) {
@@ -105,6 +115,8 @@ public class CluedoFrame extends JFrame {
 //			        }
 			        if (players != null && players.size() > 3) { // make sure the user finished entering info
 			        	controller.startGame(players);
+			        } else {
+			        	showPanel(MENU_PANEL);
 			        }
 			    }
 			});
@@ -113,6 +125,22 @@ public class CluedoFrame extends JFrame {
 			e.printStackTrace();
 		}
 	}
+	
+	/** Returns the Point a window should position its corner at, such that
+	 * it will appear in the center of the window.
+	 * 
+	 * @param windowWidth
+	 * @return
+	 */
+	public java.awt.Point getLocationToCenter(int windowWidth,int windowHeight) {
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		return new java.awt.Point(dim.width/2 - windowWidth/2, dim.height/2 - windowHeight/2);
+	}
+	
+	
+	// ==============================================================================================
+	// TESTING METHODS BELOW THIS POINT
+	// ==============================================================================================
 	
 	/** dummy method; replaces need for GameSetupPanel 
 	 * (Default: 6 players, named "Player "+ 1-6 */
