@@ -11,8 +11,8 @@ import java.awt.event.MouseMotionListener;
 public class BoardPanel extends CluedoPanel implements MouseListener, MouseMotionListener {
 	private static final long serialVersionUID = 2501982205351713577L;
 
-	private boolean mouseInRoom;
-	private String mouseRoom = "";
+	private boolean mouseInRoom; //to represent if mouse is hovering over a room on the board
+	private String mouseRoom = ""; //the name of the room the mouse is hovering over
 
 	public BoardPanel(Controller c) {
 		super(c);
@@ -88,18 +88,26 @@ public class BoardPanel extends CluedoPanel implements MouseListener, MouseMotio
 
 	}
 
+	/**
+	 * Tells controller to highlight or unhighlight rooms depending on if mouse has
+	 * left a room to a hallway or another room (or vice versa)
+	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		Coordinate boardCoord = mousePosToCoordinate(e);
+		//checks if mouse has moved out of or into a room
 		if(mouseInRoom != super.controller().coordinateInRoom(boardCoord)){
-			mouseInRoom = !mouseInRoom;
+			mouseInRoom = !mouseInRoom;//change to represent new mouse position
 			super.controller().highlightRoom(boardCoord, mouseInRoom);
 			repaint();
 		} else {
 			String newRoom = super.controller().getRoomName(boardCoord);
+			//if the mouse has changed rooms without entering hallway
 			if(newRoom != null && mouseInRoom && !mouseRoom.equals(newRoom)){
+				//unhighlight rooms
 				super.controller().highlightRoom(boardCoord, false);
 				mouseRoom = newRoom;
+				//highlight the room the mouse is now hovering over
 				super.controller().highlightRoom(boardCoord, true);
 				repaint();
 			}

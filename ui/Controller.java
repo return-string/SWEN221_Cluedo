@@ -124,6 +124,12 @@ public class Controller implements ActionListener, EventListener {
 		return cluedoBoard.isRoom(boardCoord);
 	}
 
+	/**
+	 * Get the name of the room argument coordinate is part of
+	 * Returns null if coordinate invalid for board
+	 * @param boardCoord Coordinate to get room name of
+	 * @return name of room. Null if coordinate invalid
+	 */
 	public String getRoomName(Coordinate boardCoord){
 		try{
 			return cluedoBoard.getRoom(boardCoord);
@@ -132,6 +138,13 @@ public class Controller implements ActionListener, EventListener {
 		}
 	}
 
+	/**
+	 * For use of BoardPanel to tell board to highlight rooms according to
+	 * a coordinate. If inRoom true, highlights the room the boardCoord is part of
+	 * Otherwise tells board to clear highlighted rooms
+	 * @param boardCoord
+	 * @param inRoom
+	 */
 	public void highlightRoom(Coordinate boardCoord, boolean inRoom) {
 		if(inRoom){
 			cluedoBoard.highlightSquare(boardCoord);

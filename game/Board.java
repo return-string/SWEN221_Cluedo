@@ -24,7 +24,11 @@ public class Board {
 
 	private BoardSquare[][] squares;
 	private File classic = new File("ClassicBoard.txt");
+	//BoardSquares representing rooms that are highlighted for any reason
 	private Set<BoardSquare> highlightedRooms = new HashSet<BoardSquare>();
+	//BoardSquares representing rooms that are highlighted because they can be reached in a move
+	private Set<BoardSquare> highlightedReachableRooms = new HashSet<BoardSquare>();
+
 
 	public Board() {
 		BoardParser bp = new BoardParser();
@@ -91,7 +95,7 @@ public class Board {
 		do{//polls square off fringe and highlights it
 			PathFringeEntry current = pathFringe.poll();
 			current.square.setVisited(true);
-			highlightBoardSquare(current.square);
+			highlightBoardSquare(current.square, true);
 			//If the current square is not at the end of the player's reach, and is
 			// either the start square or not a room, puts the current square's
 			//neighbours on the fringe
@@ -107,9 +111,19 @@ public class Board {
 		clearVisits();
 	}
 
-	private void highlightBoardSquare(BoardSquare toHighlight){
+	/**
+	 * Highlights the given board square. If board square is a room, adds to the list of
+	 * highlighted rooms. If reachable is true, as in was highlighted as part of finding
+	 * available moves, adds it to the list of highlighted reachable rooms
+	 * @param toHighlight
+	 * @param reachable
+	 */
+	private void highlightBoardSquare(BoardSquare toHighlight, boolean reachable){
 		if(toHighlight.isRoom()){
 			this.highlightedRooms.add(toHighlight);
+			if(reachable){
+				this.highlightedReachableRooms.add(toHighlight);
+			}
 		}
 		toHighlight.setHighlight(true);
 	}
@@ -127,6 +141,7 @@ public class Board {
 			}
 		}
 		this.highlightedRooms = new HashSet<BoardSquare>();
+		this.highlightedReachableRooms = new HashSet<BoardSquare>();
 	}
 
 	/**
@@ -241,6 +256,10 @@ public class Board {
 		return newDescription;
 	}
 
+	/**
+	 * Sets all the board squares to unvisited. For clearing up for the next
+	 * board search
+	 */
 	private void clearVisits() {
 		for(int i = 0; i < this.squares.length; i++){
 			for(int j = 0; j < squares[0].length; j++){
@@ -359,6 +378,9 @@ public class Board {
 		return toReturn;
 	}
 
+	/**
+	 * @return A map of string names of rooms with the coordinate that is at the room's center
+	 */
 	public Map<String, Coordinate> getRoomCenters(){
 		Map<String, Coordinate> toReturn = new HashMap<String, Coordinate>();
 		for(int i = 0; i < width(); i++){
@@ -371,6 +393,10 @@ public class Board {
 		return toReturn;
 	}
 
+	/**
+	 *
+	 * @return Sets of the coordinates of the secret passages between rooms
+	 */
 	public Set<Coordinate> getSecretPassages(){
 		Set<Coordinate> toReturn = new HashSet<Coordinate>();
 		for(int i = 0; i < width(); i++){
@@ -386,16 +412,25 @@ public class Board {
 		return toReturn;
 	}
 
+	/**
+	 * Highlight the board square at the given coordinate
+	 * @param boardCoord coordinate of square to highlight
+	 */
 	public void highlightSquare(Coordinate boardCoord) {
-		highlightBoardSquare(squares[boardCoord.getX()][boardCoord.getY()]);
+		highlightBoardSquare(squares[boardCoord.getX()][boardCoord.getY()], false);
 
 	}
 
+	/**
+	 * unhighlight all rooms except reachable rooms.
+	 */
 	public void unhighlightRooms() {
 		for(BoardSquare room : this.highlightedRooms){
-			room.setHighlight(false);
+			if(!this.highlightedReachableRooms.contains(room)) {
+				room.setHighlight(false);
+				this.highlightedRooms.remove(room);
+			}
 		}
-		this.highlightedRooms = new HashSet<BoardSquare>();
 	}
 
 }
