@@ -173,7 +173,7 @@ public class BoardTests {
 
 	@Test
 	public void testFindMoveTrue6(){
-		//test returns null when clikcing outside of board
+		//test returns null when clicking outside of board
 		assertEquals(null, testBoard.findMove(new Coordinate(33, 33), new Coordinate(9, 12), 900));
 	}
 

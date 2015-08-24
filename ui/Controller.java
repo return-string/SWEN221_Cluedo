@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.util.Set;
 
 import game.ActingOutOfTurnException;
+import game.Board;
 import game.Coordinate;
 import game.Game;
 import game.Player;
@@ -20,6 +21,7 @@ import cluedoview.BoardDrawer;
 public class Controller implements ActionListener, EventListener {
 
 	private Game cluedoGame;
+	private Board cluedoBoard;
 	private CluedoFrame gameFrame;
 	private BoardDrawer boardDrawer;
 
@@ -30,6 +32,7 @@ public class Controller implements ActionListener, EventListener {
 	public void startGame(Map<String,String> players){
         this.cluedoGame = new Game(players);
         this.boardDrawer = new BoardDrawer(this.cluedoGame);
+        this.cluedoBoard = cluedoGame.getBoard();
 		System.err.println("got "+2);
         gameFrame.showPanel(2);
 		System.err.println("done");
@@ -38,6 +41,7 @@ public class Controller implements ActionListener, EventListener {
 	public void startTestGame(Map<String,String> players){
         this.cluedoGame = new Game(players);
         this.boardDrawer = new BoardDrawer(this.cluedoGame);
+        this.cluedoBoard = cluedoGame.getBoard();
 	}
 
 	public void nextTurn(){
@@ -116,11 +120,23 @@ public class Controller implements ActionListener, EventListener {
 		return cluedoGame.getPlayers();
 	}
 
-	public void highlightRoom(Coordinate boardCoord) {
-		if(cluedoGame.getBoard().isRoom(boardCoord)){
-			cluedoGame.getBoard().highlightSquare(boardCoord);
+	public boolean coordinateInRoom(Coordinate boardCoord){
+		return cluedoBoard.isRoom(boardCoord);
+	}
+
+	public String getRoomName(Coordinate boardCoord){
+		try{
+			return cluedoBoard.getRoom(boardCoord);
+		} catch (IllegalArgumentException e){
+			return null;
+		}
+	}
+
+	public void highlightRoom(Coordinate boardCoord, boolean inRoom) {
+		if(inRoom){
+			cluedoBoard.highlightSquare(boardCoord);
 		} else {
-			cluedoGame.getBoard().unhighlightRooms();
+			cluedoBoard.unhighlightRooms();
 		}
 	}
 }

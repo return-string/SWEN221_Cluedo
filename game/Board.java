@@ -24,6 +24,7 @@ public class Board {
 
 	private BoardSquare[][] squares;
 	private File classic = new File("ClassicBoard.txt");
+	private Set<BoardSquare> highlightedRooms = new HashSet<BoardSquare>();
 
 	public Board() {
 		BoardParser bp = new BoardParser();
@@ -90,7 +91,7 @@ public class Board {
 		do{//polls square off fringe and highlights it
 			PathFringeEntry current = pathFringe.poll();
 			current.square.setVisited(true);
-			current.square.setHighlight(true);
+			highlightBoardSquare(current.square);
 			//If the current square is not at the end of the player's reach, and is
 			// either the start square or not a room, puts the current square's
 			//neighbours on the fringe
@@ -106,6 +107,13 @@ public class Board {
 		clearVisits();
 	}
 
+	private void highlightBoardSquare(BoardSquare toHighlight){
+		if(toHighlight.isRoom()){
+			this.highlightedRooms.add(toHighlight);
+		}
+		toHighlight.setHighlight(true);
+	}
+
 	/**
 	 * Goes through all the board squares in squares, unhighlighting them
 	 */
@@ -118,6 +126,7 @@ public class Board {
 				}
 			}
 		}
+		this.highlightedRooms = new HashSet<BoardSquare>();
 	}
 
 	/**
@@ -378,15 +387,15 @@ public class Board {
 	}
 
 	public void highlightSquare(Coordinate boardCoord) {
-		squares[boardCoord.getX()][boardCoord.getY()].setHighlight(true);
+		highlightBoardSquare(squares[boardCoord.getX()][boardCoord.getY()]);
 
 	}
 
 	public void unhighlightRooms() {
-		for(Coordinate center : getRoomCenters().values()){
-			squares[center.getX()][center.getY()].setHighlight(false);
+		for(BoardSquare room : this.highlightedRooms){
+			room.setHighlight(false);
 		}
-
+		this.highlightedRooms = new HashSet<BoardSquare>();
 	}
 
 }

@@ -11,6 +11,9 @@ import java.awt.event.MouseMotionListener;
 public class BoardPanel extends CluedoPanel implements MouseListener, MouseMotionListener {
 	private static final long serialVersionUID = 2501982205351713577L;
 
+	private boolean mouseInRoom;
+	private String mouseRoom = "";
+
 	public BoardPanel(Controller c) {
 		super(c);
 		this.setPreferredSize(new Dimension(400, 400));
@@ -88,7 +91,19 @@ public class BoardPanel extends CluedoPanel implements MouseListener, MouseMotio
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		Coordinate boardCoord = mousePosToCoordinate(e);
-		super.controller().highlightRoom(boardCoord);
-		repaint();
+		if(mouseInRoom != super.controller().coordinateInRoom(boardCoord)){
+			mouseInRoom = !mouseInRoom;
+			super.controller().highlightRoom(boardCoord, mouseInRoom);
+			repaint();
+		} else {
+			String newRoom = super.controller().getRoomName(boardCoord);
+			if(newRoom != null && mouseInRoom && !mouseRoom.equals(newRoom)){
+				super.controller().highlightRoom(boardCoord, false);
+				mouseRoom = newRoom;
+				super.controller().highlightRoom(boardCoord, true);
+				repaint();
+			}
+		}
+
 	}
 }
