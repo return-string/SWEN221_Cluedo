@@ -66,13 +66,13 @@ public class Game {
                 this.players.add(new Player((String)entry.getKey(),(String)entry.getValue()));
             }
 	}
-	
-	/** Creates a default game with boring names and all characters. */ 
+
+	/** Creates a default game with boring names and all characters. */
 	public static Game createDefaultGame() {
 		return new Game(createDefaultMap());
 	}
 
-	/** Creates a default map of boring names and all characters. */ 
+	/** Creates a default map of boring names and all characters. */
 	public static Map<String,String> createDefaultMap() {
 		Map<String,String> players = new HashMap<String,String>();
 		for (int i = 0; i < Card.CHARACTERS.length; i++) {
@@ -80,14 +80,14 @@ public class Game {
 		}
 		return players;
 	}
-	
+
 	/** Adds the requested players to the game, as long as the game has not already been
-	 * initialised with some players. 
-	 * 
+	 * initialised with some players.
+	 *
 	 * @param players A Map where keys are the players' names and values are the character
 	 * they play, as defined in Card.CHARACTERS. The map must be at least three entries
-	 * long and no longer than 6, and each name must have at least one character. 
-	 *  
+	 * long and no longer than 6, and each name must have at least one character.
+	 *
 	 * @throws IllegalArgumentException If the map doesn't meet the above specifications.
 	 * @throws GameStateModificationException if the game already has players.
 	 */
@@ -192,7 +192,7 @@ public class Game {
 			roll = 0;
 		}
 	}
-	
+
 	/** Moves the requested weapon. */
 	public void moveWeapon(Weapon w, Coordinate to) {
 		w.setPosition(to);
@@ -255,7 +255,7 @@ public class Game {
 		} while (i!=activePlayer);
 
 	}
-	
+
 	/** TODO Returns a list of all tokens in the game
 	 * as an unmodifiable collection.  */
 	public List<Token> getTokens() {
@@ -263,10 +263,10 @@ public class Game {
 		for (Player p : players) {
 			l.add(p);
 		}
-		// later
-		for (Weapon w : weapons) {
-			l.add(w);
-		}
+		// later  B: Commented it out so I can test drive the board panel
+//		for (Weapon w : weapons) {
+//			l.add(w);
+//		}
 		return Collections.unmodifiableList(l);
 	}
 

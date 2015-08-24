@@ -34,7 +34,7 @@ public class Controller implements ActionListener, EventListener {
         gameFrame.showPanel(2);
 		System.err.println("done");
 	}
-	
+
 	public void startTestGame(Map<String,String> players){
         this.cluedoGame = new Game(players);
         this.boardDrawer = new BoardDrawer(this.cluedoGame);
@@ -97,13 +97,14 @@ public class Controller implements ActionListener, EventListener {
 		}
 
 	}
-	
+
 	public Player getCurrentPlayer() {
 		return cluedoGame.getCurrentPlayer();
 	}
-	
+
 	public List<Player> getPlayers() {
 		return cluedoGame.getPlayers();
+	}
 
 	public void highlightRoom(Coordinate boardCoord) {
 		//TODO remove debugging output

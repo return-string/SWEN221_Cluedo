@@ -19,9 +19,9 @@ import java.util.Set;
 public class Board {
 
 	public static final String HALLWAYSTRING = "hallway";
-	
+
 	public enum Compass {NORTH, EAST, SOUTH, WEST}
-	
+
 	private BoardSquare[][] squares;
 	private File classic = new File("ClassicBoard.txt");
 
@@ -169,6 +169,7 @@ public class Board {
 			//if it finds the room it's currently looking for
 			if(current.square.getRoom().equals(rm)){
 				if(current.distance <= steps){//if can get to it this turn
+					//Shouldn't usually get here as room would have been highlighted anyway
 					moveCoord = current.square.getClosestCoordinate(start);
 				} else { //finds the square player can reach closest to room
 					PathFringeEntry roomEntry = current;
@@ -300,7 +301,7 @@ public class Board {
 	public int height() {
 		return squares[0].length;
 	}
-	
+
 	/**
 	 * @param coord Coordinate of square to check
 	 * @return True of square at coordinate is highlighted
@@ -309,14 +310,14 @@ public class Board {
 		if(!isLegal(coord)) {throw new IllegalArgumentException();}
 		return squares[coord.getX()][coord.getY()].isHighlighted();
 	}
-	
+
 	/**
 	 * Methods for finding coordinates of hallway squares next to doors to rooms.
-	 * Compass direction refers to direction from hallway to door.  
+	 * Compass direction refers to direction from hallway to door.
 	 * @return List of coordinates of hallway squares next to doors in the relevant direction
 	 */
 	public List<Coordinate> getDoors(Compass dir){
-		
+
 		/* Determines the appropriate array access adjustments for looking at a square's
 		 * neighbour in the given direction.
 		 */
@@ -328,12 +329,12 @@ public class Board {
 		int startY = dir.equals(Compass.NORTH) ? 1 : 0;
 		int endX = dir.equals(Compass.EAST) ? width() - 1 : width();
 		int endY = dir.equals(Compass.SOUTH) ? height() - 1 : height();
-		
+
 		List<Coordinate> toReturn = new ArrayList<Coordinate>();
 		//goes through the array of board squares
 		for(int i = startX; i < endX; i++){
 			for(int j = startY; j < endY; j++){
-				/* if the current square is a hallway square, and its neighbour in the 
+				/* if the current square is a hallway square, and its neighbour in the
 				 * given direction is a room square the current square is connected to,
 				 * adds the current square's coordinates to the list of coordinates to
 				 * return
@@ -378,14 +379,14 @@ public class Board {
 
 	public void highlightSquare(Coordinate boardCoord) {
 		squares[boardCoord.getX()][boardCoord.getY()].setHighlight(true);
-		
+
 	}
 
 	public void unhighlightRooms() {
 		for(Coordinate center : getRoomCenters().values()){
 			squares[center.getX()][center.getY()].setHighlight(false);
 		}
-		
+
 	}
 
 }
