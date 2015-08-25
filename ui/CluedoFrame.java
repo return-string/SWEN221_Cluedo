@@ -2,6 +2,7 @@ package ui;
 
 import game.Game;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -558,6 +559,14 @@ public class CluedoFrame extends JFrame {
 		this.controller.startTestGame(players);
 		BoardPanel bp = new BoardPanel(this.controller);
 		showPanel(CARD_TURNS);
+	}
+
+	public void showPanel(CluedoPanel p){
+		this.removeAll();
+		this.setLayout(new BorderLayout());
+		this.add(p, BorderLayout.CENTER);
+		pack();
+		System.out.println("Panel is visible: " + p.isVisible());
 	}
 
 
