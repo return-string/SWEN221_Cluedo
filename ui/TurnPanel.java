@@ -4,6 +4,7 @@ import game.Game;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -18,6 +19,10 @@ import javax.swing.JPanel;
 	private BoardPanel boardPanel;
 	private JPanel containerPanel;
 	private JButton rollDiceBut;
+	private JPanel buttonPanel;
+	private JButton makeHypoBut;
+	private JButton makeAccuBut;
+	private JButton endTurnBut;
 
      /**
       * Creates new form ApplicationWindow
@@ -51,13 +56,28 @@ import javax.swing.JPanel;
 
         deckPanel = new ui.DeckPanel(c);
         boardPanel = new ui.BoardPanel(c);
+
+        buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout(0,1));
+
         rollDiceBut = new JButton("Roll Dice");
         rollDiceBut.addActionListener(c);
+        makeHypoBut = new JButton("Suggest Hypothesis");
+        makeHypoBut.addActionListener(c);
+        makeAccuBut = new JButton("Make Accusation!");
+        makeAccuBut.addActionListener(c);
+        endTurnBut = new JButton("End Turn");
+        endTurnBut.addActionListener(c);
+
+        buttonPanel.add(rollDiceBut);
+        buttonPanel.add(makeHypoBut);
+        buttonPanel.add(makeAccuBut);
+        buttonPanel.add(endTurnBut);
 
         containerPanel.setLayout(new BorderLayout());
         containerPanel.add(deckPanel, BorderLayout.SOUTH);
         containerPanel.add(boardPanel, BorderLayout.CENTER);
-        containerPanel.add(rollDiceBut, BorderLayout.EAST);
+        containerPanel.add(buttonPanel, BorderLayout.EAST);
 
         add(containerPanel);
     }
