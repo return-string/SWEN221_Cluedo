@@ -5,8 +5,6 @@
  */
 package ui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Map;
 
 import game.Card;
@@ -19,14 +17,14 @@ import javax.swing.JRadioButton;
  *
  * @author mckayvick
  */
-public class GameSetupPanel extends CluedoPanel implements ActionListener {
+public class GameSetupPanel extends CluedoPanel {
 	private static final long serialVersionUID = -620972152778453236L;
-	private static final Map<String,String> players;
+	private static final Map<String,String> players =new java.util.concurrent.ConcurrentHashMap<>();
     private SetupDialog setup;
+    private volatile boolean hasSubmitted = false;
 
     public GameSetupPanel(Controller c) {
         super(c);
-        this.players = new java.util.concurrent.ConcurrentHashMap<>();
     }
 /**
  * @param args the command line arguments
@@ -40,20 +38,15 @@ public class GameSetupPanel extends CluedoPanel implements ActionListener {
         throw new UnsupportedOperationException("Not supported."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(SetupDialog.START)) {
-            
-        }
-        System.out.println("GameSetup is listening");
-    }
-
     
     /** makes no guarantees about whether this has been filled or not. 
      * 
      * @return
      */
 	public Map<String, String> getResult() {
+		if (players.size() >= 3) {
+			hasSubmitted = true;
+		}
 		return players;
 	}
 
@@ -85,7 +78,6 @@ public class GameSetupPanel extends CluedoPanel implements ActionListener {
 		private static final long serialVersionUID = -8204809907341739549L;
 		static final String SUBMIT = "submitChars";
 	    static final String START = "startGame";
-	    private final Map<String,String> futurePlayers;
 	    
 
 	    /** fix this */
@@ -93,8 +85,7 @@ public class GameSetupPanel extends CluedoPanel implements ActionListener {
 	        if (players == null || players.size() != 0) { 
 	            throw new IllegalArgumentException("Cannot use a non-empty map!");
 	        }
-	        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-	        futurePlayers = players;
+	        setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 	        initComponents();
 	        setupButtons();
 	    }    
@@ -108,7 +99,7 @@ public class GameSetupPanel extends CluedoPanel implements ActionListener {
 	            characters.put(Card.PEACOCK,peacock);
 	            characters.put(Card.PLUM,plum);
 	        }
-	        for (Map.Entry<String,String> player : futurePlayers.entrySet()) {
+	        for (Map.Entry<String,String> player : players.entrySet()) {
 	            for (Map.Entry<String,JRadioButton> button : characters.entrySet()) {
 	                ((JRadioButton)button.getValue()).setSelected(false);
 	                if (player.getValue().equals(button.getKey())) {
@@ -121,10 +112,10 @@ public class GameSetupPanel extends CluedoPanel implements ActionListener {
 	        progress.setString("3 characters needed to play.");
 	        progress.setStringPainted(true);
 	        
-	        if (futurePlayers.size() == 3) {
+	        if (players.size() == 3) {
 	            startButton.setVisible(true);
 	        }
-	        if (futurePlayers.size() == 6) {
+	        if (players.size() == 6) {
 	            okButton.setVisible(false);
 	            nameTextInput.setEnabled(false);
 	        }
@@ -308,7 +299,7 @@ public class GameSetupPanel extends CluedoPanel implements ActionListener {
 	                .addContainerGap())
 	        );
 
-	        if (futurePlayers.size() >= 3) {     startButton.setVisible(true); } else {     startButton.setVisible(false); }
+	        if (players.size() >= 3) {     startButton.setVisible(true); } else {     startButton.setVisible(false); }
 
 	        textPanel.setToolTipText("This will be the character you play as during the game.");
 	        textPanel.setMinimumSize(new java.awt.Dimension(0, 0));
@@ -379,7 +370,7 @@ public class GameSetupPanel extends CluedoPanel implements ActionListener {
 	    private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
 	        // in order for this button to even appear we know there must be at 
 	        // least 3 characters created already. 
-	        if (futurePlayers.size() < 6 && nameTextInput.getText().length() != 0) {
+	        if (players.size() < 6 && nameTextInput.getText().length() != 0) {
 	            int saveChar = JOptionPane.showConfirmDialog(rootPane, 
 	                "Would you like to include "+ nameTextInput.getText() +" in the game?","Wait!", JOptionPane.YES_NO_OPTION);
 	            
@@ -393,16 +384,22 @@ public class GameSetupPanel extends CluedoPanel implements ActionListener {
 	    /** A simple method for updating the progress towards starting
 	     * a new game.  */
 	    private void progressUpdate() {
-	        if (futurePlayers.size() == 1) {
+	        if (players.size() == 1) {
 	            progress.setValue(1);
 	            progress.setString("Two more players...");
-	        } else if (futurePlayers.size() == 2) {
+	        } else if (players.size() == 2) {
 	            progress.setValue(2);
 	            progress.setString("Just one more...");
-	        } else if (futurePlayers.size() >= 3) {
+	        } else if (players.size() >= 3) {
 	            progress.setValue(3);
 	            progress.setString("");
 	        }
+	    }
+	    
+	    public void kill() {
+	    	if (hasSubmitted) {
+	        	dispose();
+	    	}
 	    }
 
 	    /** TODO comment */
@@ -424,7 +421,7 @@ public class GameSetupPanel extends CluedoPanel implements ActionListener {
 	            }
 	        }
 	        // 3. does someone already have this name/character? 
-	        for (Map.Entry<String,String> player : futurePlayers.entrySet()) {
+	        for (Map.Entry<String,String> player : players.entrySet()) {
 	            if (player.getKey().equals(gotName)) {
 		            JOptionPane.showMessageDialog(rootPane, 
 		                    "Someone is already called "+gotName+"! Do be more original with your epithet, please.","Invalid name!", JOptionPane.OK_OPTION);
@@ -445,7 +442,7 @@ public class GameSetupPanel extends CluedoPanel implements ActionListener {
 	        // great! now we have a currentPlayer that describes what the
 	        // player wants. Let's add it to the list of futurePlayers
 	        // and update the progress bar. 
-	        futurePlayers.put(gotName,gotCharacter);
+	        players.put(gotName,gotCharacter);
 	        nameTextInput.setText("");
 	    }
 	    

@@ -6,6 +6,8 @@ import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Map;
@@ -63,11 +65,6 @@ public class CluedoFrame extends JFrame {
 		return icon;
 	}
 
-	public void repaint(){
-		super.repaint();
-		//this.currentPanel.repaint();
-	}
-
 	public void showPanel(int panelNo){
 		if (panelNo >= 0 && panelNo < panels.length) {
 			showPanel(panels[panelNo]);
@@ -84,17 +81,18 @@ public class CluedoFrame extends JFrame {
 		try {
 			_setuppanel.getDialog().setLocation(getLocationToCenter(_setuppanel.getDialog().getWidth(),_setuppanel.getDialog().getHeight()));
 			_setuppanel.getDialog().addWindowListener(new java.awt.event.WindowAdapter() {
+			
 			    @Override
 			    public void windowClosing(java.awt.event.WindowEvent e) {
 			    	Map<String,String> players = _setuppanel.getResult();
-			        for (Map.Entry<String, String> p : players.entrySet()) {
-			        	System.err.println(p.getValue()+", "+p.getKey());
-			        }
-			        if (players != null && players.size() > 3) { // make sure the user finished entering info
-			        	controller.startGame(players);
-			        } else {
-			        	showPanel(CARD_MENU);
-			        }
+			    	System.out.println("null?"+ players==null);
+			        try {
+						_setuppanel.getDialog().dispose();
+					} catch (IllegalAccessException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+			        controller.startGame(players);
 			    }
 			});
 		} catch (IllegalAccessException e) {
