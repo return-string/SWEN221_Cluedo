@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /** The Player class models each active player in a game of Cluedo.
  *
@@ -77,7 +78,7 @@ public class Player implements Comparable<Player>, Token {
 		wasForced = false;
 		hasMoved = true;
 	}
-	
+
 	/** Moves the player. Not safe. Does not change the player state
 	 * etc.)*/
 	public void setPosition(Coordinate c) {
@@ -175,7 +176,7 @@ public class Player implements Comparable<Player>, Token {
 	public String getTokenName() {
 		return CHARACTER_NAME;
 	}
-	
+
 	public String getName(){
 		return PLAYER_NAME;
 	}
@@ -254,5 +255,10 @@ public class Player implements Comparable<Player>, Token {
 	@Override
 	public String toString() {
 		return CHARACTER_NAME + " ("+ (isPlaying?"1":"0") +")";
+	}
+
+	public Set<Card> getInnocents() {
+		// TODO Auto-generated method stub
+		return Collections.unmodifiableSet(this.innocentCards);
 	}
 }

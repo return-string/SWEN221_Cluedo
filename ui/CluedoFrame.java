@@ -25,8 +25,8 @@ import javax.swing.JOptionPane;
 public class CluedoFrame extends JFrame {
 	private static final long serialVersionUID = 2171235413597916591L;
 
-	public static final int DEFAULT_WIDTH = 800;
-	public static final int DEFAULT_HEIGHT = 600;
+	public static final int DEFAULT_WIDTH = 1200;
+	public static final int DEFAULT_HEIGHT = 800;
 
 	private Controller controller;
 
@@ -81,7 +81,7 @@ public class CluedoFrame extends JFrame {
 		try {
 			_setuppanel.getDialog().setLocation(getLocationToCenter(_setuppanel.getDialog().getWidth(),_setuppanel.getDialog().getHeight()));
 			_setuppanel.getDialog().addWindowListener(new java.awt.event.WindowAdapter() {
-			
+
 			    @Override
 			    public void windowClosing(java.awt.event.WindowEvent e) {
 			    	Map<String,String> players = _setuppanel.getResult();
@@ -142,19 +142,6 @@ public class CluedoFrame extends JFrame {
         frameChild_boardPanel = new javax.swing.JPanel();
         frameChild_playersPanel = new javax.swing.JPanel();
         frameChild_deckPanel = new javax.swing.JPanel();
-        deckPanelChild_deckContents = new javax.swing.JSplitPane();
-        playerHand = new javax.swing.JScrollPane();
-        handContents = new javax.swing.JPanel();
-        playerNotebook = new javax.swing.JPanel();
-
-        notesCharacter = new javax.swing.JPanel();
-        char1 = new javax.swing.JCheckBox();
-
-        notesWeapons = new javax.swing.JPanel();
-        weapon1 = new javax.swing.JCheckBox();
-
-        notesRooms = new javax.swing.JPanel();
-        room1 = new javax.swing.JCheckBox();
 
         gameover = new javax.swing.JPanel();
         theEndPanel = new javax.swing.JPanel();
@@ -266,60 +253,17 @@ public class CluedoFrame extends JFrame {
 
         frameChild_deckPanel.setBackground(new java.awt.Color(80, 80, 10));
         frameChild_deckPanel.setMaximumSize(null);
-        deckPanelChild_deckContents.setDividerLocation(300);
-        deckPanelChild_deckContents.setDividerSize(10);
         frameChild_deckPanel.add(_deckpanel);
-
-        playerHand.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-
-        handContents.setLayout(new java.awt.GridLayout(1, 0));
-        playerHand.setViewportView(handContents);
-
-        deckPanelChild_deckContents.setLeftComponent(playerHand);
-
-        playerNotebook.setLayout(new javax.swing.BoxLayout(playerNotebook, javax.swing.BoxLayout.X_AXIS));
-
-        notesCharacter.setLayout(new java.awt.GridLayout(3, 2));
-
-        for (String chara : game.Card.CHARACTERS) {
-        	char1 = new JCheckBox();
-	        char1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-	        char1.setText(chara);
-	        notesCharacter.add(char1);
-        }
-        playerNotebook.add(notesCharacter);
-
-        notesWeapons.setLayout(new java.awt.GridLayout(3, 2));
-
-        for (String wep : game.Card.WEAPONS) {
-        	weapon1 = new JCheckBox();
-	        weapon1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-	        weapon1.setText(wep);
-	        notesWeapons.add(weapon1);
-        }
-        playerNotebook.add(notesWeapons);
-
-        notesRooms.setLayout(new java.awt.GridLayout(4, 3));
-
-        for (String room : game.Card.ROOMS) {
-        	room1 = new JCheckBox();
-        	room1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        	room1.setText(room);
-        	notesRooms.add(room1);
-        }
-        playerNotebook.add(notesRooms);
-
-        deckPanelChild_deckContents.setRightComponent(playerNotebook);
 
         javax.swing.GroupLayout deckPanelLayout = new javax.swing.GroupLayout(frameChild_deckPanel);
         frameChild_deckPanel.setLayout(deckPanelLayout);
         deckPanelLayout.setHorizontalGroup(
             deckPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(deckPanelChild_deckContents)
+            .addComponent(_deckpanel.getContentsPanel())
         );
         deckPanelLayout.setVerticalGroup(
             deckPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(deckPanelChild_deckContents, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
+            .addComponent(_deckpanel.getContentsPanel(), javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -569,13 +513,11 @@ public class CluedoFrame extends JFrame {
     // Variables declaration - do not modify
     private javax.swing.JPanel frameChild_boardPanel;
     private javax.swing.JPanel contents;
-    private javax.swing.JSplitPane deckPanelChild_deckContents;
     private javax.swing.JPanel frameChild_deckPanel;
     private javax.swing.JPanel gameover;
     private javax.swing.JLabel guiltyCharacter;
     private javax.swing.JLabel guiltyRoom;
     private javax.swing.JLabel guiltyWeapon;
-    private javax.swing.JPanel handContents;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel frameLevelMenu;
@@ -587,16 +529,8 @@ public class CluedoFrame extends JFrame {
     private javax.swing.JMenuItem menu_setup;
     private javax.swing.JMenuItem menu_turn;
     private javax.swing.JMenuBar menubar;
-    private javax.swing.JPanel notesCharacter;
-    private javax.swing.JPanel notesRooms;
-    private javax.swing.JPanel notesWeapons;
-    private javax.swing.JScrollPane playerHand;
     private javax.swing.JLabel playerHasSolvedTheMurder;
-    private javax.swing.JPanel playerNotebook;
     private javax.swing.JPanel frameChild_playersPanel;
-    private javax.swing.JCheckBox room1;
-    private javax.swing.JCheckBox char1;
-    private javax.swing.JCheckBox weapon1;
     private javax.swing.JPanel frameLevelSetup;
     private javax.swing.JPanel setupPanel;
     private javax.swing.JPanel theEndContents;
