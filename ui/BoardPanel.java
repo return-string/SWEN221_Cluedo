@@ -113,6 +113,5 @@ public class BoardPanel extends CluedoPanel implements MouseListener, MouseMotio
 				repaint();
 			}
 		}
-
 	}
 }

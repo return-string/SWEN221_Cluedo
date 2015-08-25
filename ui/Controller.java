@@ -119,13 +119,14 @@ public class Controller implements ActionListener, EventListener {
 			}
 		}
 		if (e.getActionCommand().equalsIgnoreCase("End turn")) {
-			nextTurn();
+			cluedoGame.endTurn();
 			try {
 				cluedoGame.playTurn();
 			} catch (ActingOutOfTurnException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+			nextTurn();
 		}
 		if (e.getActionCommand().equalsIgnoreCase("Make accusation") ||
 				e.getActionCommand().equalsIgnoreCase("Make hypothesis")) {
