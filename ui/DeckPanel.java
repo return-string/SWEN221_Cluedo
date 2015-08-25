@@ -41,7 +41,6 @@ public class DeckPanel extends CluedoPanel {
 
 	public DeckPanel(Controller c) {
 		super(c);
-		setPreferredSize(new Dimension(800, 120));
 		setAlignmentX(RIGHT_ALIGNMENT);
 		setAlignmentY(TOP_ALIGNMENT);
 		cd = new CardDrawer(200,20,20);
@@ -104,6 +103,7 @@ public class DeckPanel extends CluedoPanel {
 		playerNotebook.add(notesRooms);
 
 		deckPanelChild_deckContents.setRightComponent(playerNotebook);
+		this.add(deckPanelChild_deckContents);
 	}
 
 	@Override

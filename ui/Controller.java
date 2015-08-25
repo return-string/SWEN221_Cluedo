@@ -38,7 +38,7 @@ public class Controller implements ActionListener, EventListener {
 	 */
 	public void startGame(Map<String,String> players){
 		System.err.println("CONTROLLER: START GAME");
-		
+
         for (Map.Entry<String, String> p : players.entrySet()) {
         	System.err.println(p.getValue()+", "+p.getKey());
         }
@@ -115,6 +115,7 @@ public class Controller implements ActionListener, EventListener {
 		if(e.getActionCommand().equals("Roll Dice")){
 			if(cluedoGame != null){
 				cluedoGame.rollDice();
+				gameFrame.repaint();
 			}
 		}
 		if (e.getActionCommand().equalsIgnoreCase("End turn")) {
@@ -147,6 +148,7 @@ public class Controller implements ActionListener, EventListener {
 	public void movePlayer(Coordinate boardCoord) {
 		try {
 			cluedoGame.movePlayer(boardCoord);
+			gameFrame.repaint();
 		} catch (ActingOutOfTurnException e) {
 			// we don't care! not our responsibility!
 		}

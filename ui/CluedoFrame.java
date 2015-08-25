@@ -56,7 +56,6 @@ public class CluedoFrame extends JFrame {
 		// add(canvas, BorderLayout.CENTER); // add canvas
 		
 		panels = new CluedoPanel[] { menu, gameSetup, turnPanel, gameOver, rules, hypothesisPanel};
-		
 		setIconImage(icon());
         setPreferredSize(new Dimension(DEFAULT_WIDTH,DEFAULT_HEIGHT)); // V: just added this for sizing!
 		pack(); // pack components tightly together
@@ -190,33 +189,33 @@ public class CluedoFrame extends JFrame {
         java.awt.GridBagConstraints gridBagConstraints;
         _menupanel = new MenuPanel(controller);
         _setuppanel = new GameSetupPanel(controller);
-        _hypopanel = new SuperSpecialAwesomeHypothesisPanel(controller);
+        _hypopanel = new HypothesisPanel(controller);
         _turnpanel = new TurnPanel(controller);
         //_playerspanel = new PlayersPanel(controller);
         //_deckpanel = new DeckPanel(controller);
 
-        jMenuItem1 = new javax.swing.JMenuItem();
-        contents = new javax.swing.JPanel();
-        frameLevelMenu = new javax.swing.JPanel();
-        frameLevelSetup = new javax.swing.JPanel();
-        //setupPanel = new javax.swing.JPanel();
-        frameLevelTurn = new javax.swing.JPanel();
-        frameChild_boardPanel = new javax.swing.JPanel();
-        frameChild_playersPanel = new javax.swing.JPanel();
-        frameChild_deckPanel = new javax.swing.JPanel();
-        deckPanelChild_deckContents = new javax.swing.JSplitPane();
-        playerHand = new javax.swing.JScrollPane();
-        handContents = new javax.swing.JPanel();
-        playerNotebook = new javax.swing.JPanel();
-
-        notesCharacter = new javax.swing.JPanel();
-        char1 = new javax.swing.JCheckBox();
-
-        notesWeapons = new javax.swing.JPanel();
-        weapon1 = new javax.swing.JCheckBox();
-
-        notesRooms = new javax.swing.JPanel();
-        room1 = new javax.swing.JCheckBox();
+//        jMenuItem1 = new javax.swing.JMenuItem();
+//        contents = new javax.swing.JPanel();
+//        frameLevelMenu = new javax.swing.JPanel();
+//        frameLevelSetup = new javax.swing.JPanel();
+//        //setupPanel = new javax.swing.JPanel();
+//        frameLevelTurn = new javax.swing.JPanel();
+//        frameChild_boardPanel = new javax.swing.JPanel();
+//        frameChild_playersPanel = new javax.swing.JPanel();
+//        frameChild_deckPanel = new javax.swing.JPanel();
+//        deckPanelChild_deckContents = new javax.swing.JSplitPane();
+//        playerHand = new javax.swing.JScrollPane();
+//        handContents = new javax.swing.JPanel();
+//        playerNotebook = new javax.swing.JPanel();
+//
+//        notesCharacter = new javax.swing.JPanel();
+//        char1 = new javax.swing.JCheckBox();
+//
+//        notesWeapons = new javax.swing.JPanel();
+//        weapon1 = new javax.swing.JCheckBox();
+//
+//        notesRooms = new javax.swing.JPanel();
+//        room1 = new javax.swing.JCheckBox();
 
         gameover = new javax.swing.JPanel();
 //        theEndPanel = new javax.swing.JPanel();
@@ -269,133 +268,137 @@ public class CluedoFrame extends JFrame {
 
         contents.add(frameLevelSetup);
 
-        frameLevelTurn.setBackground(new java.awt.Color(200, 200, 100));
-        java.awt.GridBagLayout turnLayout = new java.awt.GridBagLayout();
-        turnLayout.columnWidths = new int[] {610, 190};
-        turnLayout.columnWeights = new double[] {0.8, 0.2};
-        frameLevelTurn.setLayout(turnLayout);
-
-        frameChild_boardPanel.setBackground(new java.awt.Color(230, 230, 90));
-        frameChild_boardPanel.setMaximumSize(null);
-        frameChild_boardPanel.setMinimumSize(new java.awt.Dimension(610, 430));
-        frameChild_boardPanel.setPreferredSize(new java.awt.Dimension(610, 430));
-
-        javax.swing.GroupLayout boardPanelLayout = new javax.swing.GroupLayout(frameChild_boardPanel);
-        frameChild_boardPanel.setLayout(boardPanelLayout);
-        boardPanelLayout.setHorizontalGroup(
-            boardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 610, Short.MAX_VALUE)
-        );
-        boardPanelLayout.setVerticalGroup(
-            boardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 480, Short.MAX_VALUE)
-        );
-//        frameChild_boardPanel.add(_boardpanel);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipady = 50;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        frameLevelTurn.add(frameChild_boardPanel, gridBagConstraints);
-
-        frameChild_playersPanel.setBackground(new java.awt.Color(180, 180, 40));
-        frameChild_playersPanel.setMaximumSize(null);
-        frameChild_playersPanel.setPreferredSize(new java.awt.Dimension(190, 480));
-
-        javax.swing.GroupLayout playersPanelLayout = new javax.swing.GroupLayout(frameChild_playersPanel);
-        frameChild_playersPanel.setLayout(playersPanelLayout);
-        playersPanelLayout.setHorizontalGroup(
-            playersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 184, Short.MAX_VALUE)
-        );
-        playersPanelLayout.setVerticalGroup(
-            playersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-//        frameChild_playersPanel.add(_playerspanel);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipadx = 184;
-        gridBagConstraints.ipady = 480;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 0, 0);
-        frameLevelTurn.add(frameChild_playersPanel, gridBagConstraints);
-
-        frameChild_deckPanel.setBackground(new java.awt.Color(80, 80, 10));
-        frameChild_deckPanel.setMaximumSize(null);
-        deckPanelChild_deckContents.setDividerLocation(300);
-        deckPanelChild_deckContents.setDividerSize(10);
-//        frameChild_deckPanel.add(_deckpanel);
-
-        playerHand.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-
-        handContents.setLayout(new java.awt.GridLayout(1, 0));
-        playerHand.setViewportView(handContents);
-
-        deckPanelChild_deckContents.setLeftComponent(playerHand);
-
-        playerNotebook.setLayout(new javax.swing.BoxLayout(playerNotebook, javax.swing.BoxLayout.X_AXIS));
-
-        notesCharacter.setLayout(new java.awt.GridLayout(3, 2));
-
-        for (String chara : game.Card.CHARACTERS) {
-        	char1 = new JCheckBox();
-	        char1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-	        char1.setText(chara);
-	        notesCharacter.add(char1);
-        }
-        playerNotebook.add(notesCharacter);
-
-        notesWeapons.setLayout(new java.awt.GridLayout(3, 2));
-
-        for (String wep : game.Card.WEAPONS) {
-        	weapon1 = new JCheckBox();
-	        weapon1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-	        weapon1.setText(wep);
-	        notesWeapons.add(weapon1);
-        }
-        playerNotebook.add(notesWeapons);
-
-        notesRooms.setLayout(new java.awt.GridLayout(4, 3));
-
-        for (String room : game.Card.ROOMS) {
-        	room1 = new JCheckBox();
-        	room1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        	room1.setText(room);
-        	notesRooms.add(room1);
-        }
-        playerNotebook.add(notesRooms);
-
-        deckPanelChild_deckContents.setRightComponent(playerNotebook);
-
-        javax.swing.GroupLayout deckPanelLayout = new javax.swing.GroupLayout(frameChild_deckPanel);
-        frameChild_deckPanel.setLayout(deckPanelLayout);
-        deckPanelLayout.setHorizontalGroup(
-            deckPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(deckPanelChild_deckContents)
-        );
-        deckPanelLayout.setVerticalGroup(
-            deckPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(deckPanelChild_deckContents, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
-        );
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipadx = 211;
-        gridBagConstraints.ipady = 28;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        frameLevelTurn.add(frameChild_deckPanel, gridBagConstraints);
-
-        contents.add(frameLevelTurn);
+//        frameLevelTurn.setBackground(new java.awt.Color(200, 200, 100));
+//
+//        java.awt.GridBagLayout turnLayout = new java.awt.GridBagLayout();
+//        turnLayout.columnWidths = new int[] {610, 190};
+//        turnLayout.columnWeights = new double[] {0.8, 0.2};
+//        frameLevelTurn.setLayout(turnLayout);
+//
+//        frameChild_boardPanel.setBackground(new java.awt.Color(230, 230, 90));
+//        frameChild_boardPanel.setMaximumSize(null);
+//        frameChild_boardPanel.setMinimumSize(new java.awt.Dimension(610, 430));
+//        frameChild_boardPanel.setPreferredSize(new java.awt.Dimension(610, 430));
+//
+//        javax.swing.GroupLayout boardPanelLayout = new javax.swing.GroupLayout(frameChild_boardPanel);
+//        frameChild_boardPanel.setLayout(boardPanelLayout);
+//        boardPanelLayout.setHorizontalGroup(
+//            boardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+//            .addGap(0, 610, Short.MAX_VALUE)
+//        );
+//        boardPanelLayout.setVerticalGroup(
+//            boardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+//            .addGap(0, 480, Short.MAX_VALUE)
+//        );
+////        frameChild_boardPanel.add(_boardpanel);
+//
+//        gridBagConstraints = new java.awt.GridBagConstraints();
+//        gridBagConstraints.gridx = 0;
+//        gridBagConstraints.gridy = 0;
+//        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+//        gridBagConstraints.ipady = 50;
+//        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+//        frameLevelTurn.add(frameChild_boardPanel, gridBagConstraints);
+//
+//        frameChild_playersPanel.setBackground(new java.awt.Color(180, 180, 40));
+//        frameChild_playersPanel.setMaximumSize(null);
+//        frameChild_playersPanel.setPreferredSize(new java.awt.Dimension(190, 480));
+//
+//        javax.swing.GroupLayout playersPanelLayout = new javax.swing.GroupLayout(frameChild_playersPanel);
+//        frameChild_playersPanel.setLayout(playersPanelLayout);
+//        playersPanelLayout.setHorizontalGroup(
+//            playersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+//            .addGap(0, 184, Short.MAX_VALUE)
+//        );
+//        playersPanelLayout.setVerticalGroup(
+//            playersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+//            .addGap(0, 0, Short.MAX_VALUE)
+//        );
+////        frameChild_playersPanel.add(_playerspanel);
+//
+//        gridBagConstraints = new java.awt.GridBagConstraints();
+//        gridBagConstraints.gridx = 1;
+//        gridBagConstraints.gridy = 0;
+//        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+//        gridBagConstraints.ipadx = 184;
+//        gridBagConstraints.ipady = 480;
+//        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+//        gridBagConstraints.insets = new java.awt.Insets(0, 6, 0, 0);
+//        frameLevelTurn.add(frameChild_playersPanel, gridBagConstraints);
+//
+//        frameChild_deckPanel.setBackground(new java.awt.Color(80, 80, 10));
+//        frameChild_deckPanel.setMaximumSize(null);
+//        deckPanelChild_deckContents.setDividerLocation(300);
+//        deckPanelChild_deckContents.setDividerSize(10);
+////        frameChild_deckPanel.add(_deckpanel);
+//
+//        playerHand.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+//
+//        handContents.setLayout(new java.awt.GridLayout(1, 0));
+//        playerHand.setViewportView(handContents);
+//
+//        deckPanelChild_deckContents.setLeftComponent(playerHand);
+//
+//        playerNotebook.setLayout(new javax.swing.BoxLayout(playerNotebook, javax.swing.BoxLayout.X_AXIS));
+//
+//        notesCharacter.setLayout(new java.awt.GridLayout(3, 2));
+//
+//        for (String chara : game.Card.CHARACTERS) {
+//        	char1 = new JCheckBox();
+//	        char1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+//	        char1.setText(chara);
+//	        notesCharacter.add(char1);
+//        }
+//        playerNotebook.add(notesCharacter);
+//
+//        notesWeapons.setLayout(new java.awt.GridLayout(3, 2));
+//
+//        for (String wep : game.Card.WEAPONS) {
+//        	weapon1 = new JCheckBox();
+//	        weapon1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+//	        weapon1.setText(wep);
+//	        notesWeapons.add(weapon1);
+//        }
+//        playerNotebook.add(notesWeapons);
+//
+//        notesRooms.setLayout(new java.awt.GridLayout(4, 3));
+//
+//        for (String room : game.Card.ROOMS) {
+//        	room1 = new JCheckBox();
+//        	room1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+//        	room1.setText(room);
+//        	notesRooms.add(room1);
+//        }
+//        playerNotebook.add(notesRooms);
+//
+//        deckPanelChild_deckContents.setRightComponent(playerNotebook);
+//
+//        javax.swing.GroupLayout deckPanelLayout = new javax.swing.GroupLayout(frameChild_deckPanel);
+//        frameChild_deckPanel.setLayout(deckPanelLayout);
+//        deckPanelLayout.setHorizontalGroup(
+//            deckPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+//            .addComponent(deckPanelChild_deckContents)
+//        );
+//        deckPanelLayout.setVerticalGroup(
+//            deckPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+//            .addComponent(deckPanelChild_deckContents, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
+//        );
+//
+//        gridBagConstraints = new java.awt.GridBagConstraints();
+//        gridBagConstraints.gridx = 0;
+//        gridBagConstraints.gridy = 1;
+//        gridBagConstraints.gridwidth = 2;
+//        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+//        gridBagConstraints.ipadx = 211;
+//        gridBagConstraints.ipady = 28;
+//        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+//        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+//        frameLevelTurn.add(frameChild_deckPanel, gridBagConstraints);
+//
+//        contents.add(frameLevelTurn);
+//
+//        frameLevelTurn.add(_turnpanel);
+//        contents.add(frameLevelTurn, CARD_TURNS);
 
         gameover.setBackground(new java.awt.Color(200, 30, 30));
 
@@ -514,17 +517,15 @@ public class CluedoFrame extends JFrame {
 
     private MenuPanel _menupanel;
     private GameSetupPanel _setuppanel;
-    private SuperSpecialAwesomeHypothesisPanel _hypopanel;
+    private HypothesisPanel _hypopanel;
     private TurnPanel _turnpanel;
     private BoardPanel _boardpanel;
 //    private PlayersPanel _playerspanel;
 //    private DeckPanel _deckpanel;
 
     // Variables declaration - do not modify
-    private javax.swing.JPanel frameChild_boardPanel;
     private javax.swing.JPanel contents;
-    private javax.swing.JSplitPane deckPanelChild_deckContents;
-    private javax.swing.JPanel frameChild_deckPanel;
+
     private javax.swing.JPanel gameover;
 //    private javax.swing.JLabel guiltyCharacter;
 //    private javax.swing.JLabel guiltyRoom;
@@ -541,16 +542,7 @@ public class CluedoFrame extends JFrame {
     private javax.swing.JMenuItem menu_setup;
     private javax.swing.JMenuItem menu_turn;
     private javax.swing.JMenuBar menubar;
-    private javax.swing.JPanel notesCharacter;
-    private javax.swing.JPanel notesRooms;
-    private javax.swing.JPanel notesWeapons;
-    private javax.swing.JScrollPane playerHand;
-//    private javax.swing.JLabel playerHasSolvedTheMurder;
-    private javax.swing.JPanel playerNotebook;
-    private javax.swing.JPanel frameChild_playersPanel;
-    private javax.swing.JCheckBox room1;
-    private javax.swing.JCheckBox char1;
-    private javax.swing.JCheckBox weapon1;
+    private javax.swing.JLabel playerHasSolvedTheMurder;
     private javax.swing.JPanel frameLevelSetup;
     private javax.swing.JPanel setupPanel;
 //    private javax.swing.JPanel theEndContents;
@@ -577,6 +569,15 @@ public class CluedoFrame extends JFrame {
 	public void showBoardPanel(HashMap<String, String> players){
 		this.controller.startTestGame(players);
 		displayTurnPanel();
+	}
+
+	public void showPanel(CluedoPanel p){
+		this.removeAll();
+		this.setLayout(new BorderLayout());
+		this.add(p, BorderLayout.CENTER);
+		pack();
+		System.out.println("Panel is visible: " + p.isVisible());
+		repaint();
 	}
 
 

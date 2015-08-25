@@ -1,20 +1,27 @@
 package ui;
+import game.Game;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
  public class TurnPanel extends CluedoPanel {
 	private static final long serialVersionUID = -8751878244555503503L;
 	int i = 0;
-	private JPanel parentPlayersPanel = new JPanel();
+	private JPanel parentPlayersPanel;
 	private PlayersPanel playersPanel;
 	private DeckPanel deckPanel;
 	private BoardPanel boardPanel;
 	private JPanel containerPanel;
+	private JButton rollDiceBut;
+	private JPanel buttonPanel;
+	private JButton makeHypoBut;
+	private JButton makeAccuBut;
+	private JButton endTurnBut;
 
      /**
       * Creates new form ApplicationWindow
@@ -45,73 +52,47 @@ import javax.swing.JPanel;
     private void initComponents() {
     	Controller c = controller();
         containerPanel = new JPanel();
-        playersPanel = new ui.PlayersPanel(c);
         deckPanel = new ui.DeckPanel(c);
         boardPanel = new ui.BoardPanel(c);
 		System.out.println("BOARDPANEL: I exist!" +boardPanel);
 
-        setPreferredSize(new java.awt.Dimension(800, 600));
+        buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout(0,1));
 
-        parentPlayersPanel.setBackground(new java.awt.Color(255, 204, 0));
+        rollDiceBut = new JButton("Roll Dice");
+        rollDiceBut.addActionListener(c);
+        makeHypoBut = new JButton("Suggest Hypothesis");
+        makeHypoBut.addActionListener(c);
+        makeAccuBut = new JButton("Make Accusation!");
+        makeAccuBut.addActionListener(c);
+        endTurnBut = new JButton("End Turn");
+        endTurnBut.addActionListener(c);
 
-        javax.swing.GroupLayout playersPanelLayout = new javax.swing.GroupLayout(parentPlayersPanel);
-        parentPlayersPanel.setLayout(playersPanelLayout);
-        playersPanelLayout.setHorizontalGroup(
-            playersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(playersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-        playersPanelLayout.setVerticalGroup(
-            playersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, playersPanelLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(playersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-        parentPlayersPanel.add(playersPanel);
+        buttonPanel.add(rollDiceBut);
+        buttonPanel.add(makeHypoBut);
+        buttonPanel.add(makeAccuBut);
+        buttonPanel.add(endTurnBut);
 
-        JPanel containBoard = new JPanel();
-		javax.swing.GroupLayout deckPanel1Layout = new javax.swing.GroupLayout(containBoard);
-        containBoard.setLayout(deckPanel1Layout);
-        deckPanel1Layout.setHorizontalGroup(
-            deckPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        deckPanel1Layout.setVerticalGroup(
-            deckPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 120, Short.MAX_VALUE)
-        );
-        containBoard.setBackground(new java.awt.Color(255, 51, 51));
-        containBoard.setForeground(new java.awt.Color(220, 220, 220));
+        containerPanel.setLayout(new BorderLayout());
+        containerPanel.add(deckPanel, BorderLayout.SOUTH);
+        containerPanel.add(boardPanel, BorderLayout.CENTER);
+        containerPanel.add(buttonPanel, BorderLayout.EAST);
 
-        javax.swing.GroupLayout boardPanelLayout = new javax.swing.GroupLayout(boardPanel);
-        boardPanel.setLayout(boardPanelLayout);
-        boardPanelLayout.setHorizontalGroup(
-            boardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 610, Short.MAX_VALUE)
-        );
-        boardPanelLayout.setVerticalGroup(
-            boardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout turnPanel1Layout = new javax.swing.GroupLayout(this);
-        this.setLayout(turnPanel1Layout);
-        turnPanel1Layout.setHorizontalGroup(
-            turnPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, turnPanel1Layout.createSequentialGroup()
-                .addComponent(boardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(playersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(deckPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 806, Short.MAX_VALUE)
-        );
-        turnPanel1Layout.setVerticalGroup(
-            turnPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, turnPanel1Layout.createSequentialGroup()
-                .addGroup(turnPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(playersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(boardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(deckPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-        setLayout(turnPanel1Layout);
+        add(containerPanel);
     }
+
+    public BoardPanel getBoardPanel() {
+    	return boardPanel;
+    }
+
+    public static void main(String[] args) {
+		CluedoFrame f = new CluedoFrame();
+		Controller c = new Controller(f);
+		c.startGame(Game.createDefaultMap());
+		TurnPanel toShow = new TurnPanel(c);
+		JFrame testFrame = new JFrame();
+		testFrame.add(toShow);
+		testFrame.pack();
+		testFrame.setVisible(true);
+	}
 }

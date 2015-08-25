@@ -53,7 +53,7 @@ public class PlayersPanel extends CluedoPanel {
 
 	private int panelHeight() {
 		return (panels.size() >= 1 ?
-				(int)((PP_HEIGHT / panels.size()+2) / 100)
+				(int)((PP_HEIGHT / panels.size()+2/ 100))
 				: 1); // TODO get frame height
 	}
 
@@ -79,7 +79,11 @@ public class PlayersPanel extends CluedoPanel {
 		CluedoFrame f = new CluedoFrame();
 		Controller c = new Controller(f);
 		c.startGame(Game.createDefaultMap());
-		f.showPanel(new PlayersPanel(c));
+		PlayersPanel toShow = new PlayersPanel(c);
+		JFrame testFrame = new JFrame();
+		testFrame.add(toShow);
+		testFrame.pack();
+		testFrame.setVisible(true);
 	}
 
 
@@ -87,6 +91,8 @@ public class PlayersPanel extends CluedoPanel {
 
 
     private class PlayerBox extends JPanel {
+
+
 
     	PlayerBox(Player p) {
     		init(p);
@@ -96,15 +102,8 @@ public class PlayersPanel extends CluedoPanel {
     		System.err.println("creating "+p.getName()+" as "+p.getCharacter());
 //    		// first, the dimensions of the box
 	        setMaximumSize(new java.awt.Dimension(PP_WIDTH, PP_HEIGHT));
-	        // if this is the active player, draw them wider
-			if (p.equals(controller().getCurrentPlayer())) {
-				setMinimumSize(new Dimension(PLAYER_ACTIVE,panelHeight()));
-				setPreferredSize(new Dimension(PLAYER_ACTIVE,panelHeight()));
-			} else {
-				setMinimumSize(new Dimension(PLAYER_REGULAR,panelHeight()));
-		        setPreferredSize(new java.awt.Dimension(PLAYER_REGULAR,panelHeight()));
-			}
-	        setBackground(java.awt.Color.black); // TODO remove this
+
+
     		JLabel playerName = new JLabel();
     		JLabel playerChar = new JLabel();
     		JPanel avatarPanel = new JPanel();
@@ -187,6 +186,7 @@ public class PlayersPanel extends CluedoPanel {
     		} else {
     			this.setBackground(Color.DARK_GRAY);
     		}
+    		this.repaint();
     	}
 
     }
