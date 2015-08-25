@@ -23,8 +23,9 @@ public class SuperSpecialAwesomeHypothesisPanel extends CluedoPanel implements A
 	private RadioListener characterMonitor = new RadioListener(Card.Type.CHARACTER);
 	private RadioListener weaponMonitor = new RadioListener(Card.Type.WEAPON);
 	private RadioListener roomMonitor = new RadioListener(Card.Type.ROOM);
-	
+
 	private String buttonString = "Make Hypothesis";
+	private JButton makeHypothesis;
 
 	public SuperSpecialAwesomeHypothesisPanel(Controller c) {
 		super(c);
@@ -36,11 +37,12 @@ public class SuperSpecialAwesomeHypothesisPanel extends CluedoPanel implements A
 		addWeaponSelection(selectionPanel);
 		addRoomSelection(selectionPanel);
 		add(selectionPanel, BorderLayout.CENTER);
-		JButton makeHypothesis = new JButton(buttonString);
+		this.makeHypothesis = new JButton(buttonString);
 		makeHypothesis.addActionListener(this);
+		makeHypothesis.setEnabled(false);
 		add(makeHypothesis, BorderLayout.SOUTH);
 	}
-	
+
 	public SuperSpecialAwesomeHypothesisPanel(Controller c, String room) {
 		super(c);
 
@@ -51,8 +53,9 @@ public class SuperSpecialAwesomeHypothesisPanel extends CluedoPanel implements A
 		addCharacterSelection(selectionPanel);
 		addWeaponSelection(selectionPanel);
 		add(selectionPanel, BorderLayout.CENTER);
-		JButton makeHypothesis = new JButton(buttonString);
+		makeHypothesis = new JButton(buttonString);
 		makeHypothesis.addActionListener(this);
+		makeHypothesis.setEnabled(false);
 		add(makeHypothesis, BorderLayout.SOUTH);
 	}
 
@@ -129,6 +132,13 @@ public class SuperSpecialAwesomeHypothesisPanel extends CluedoPanel implements A
 
 	}
 
+	private void tryEnableButton() {
+		if(makeHypothesis.isEnabled()) {return;}
+		if(chosenCharacter != null && chosenWeapon != null && chosenRoom != null){
+			makeHypothesis.setEnabled(true);
+		}
+	}
+
 	class RadioListener implements ActionListener{
 
 		private Card.Type toMonitor;
@@ -146,9 +156,12 @@ public class SuperSpecialAwesomeHypothesisPanel extends CluedoPanel implements A
 			} else {
 				SuperSpecialAwesomeHypothesisPanel.this.chosenRoom = e.getActionCommand();
 			}
+			SuperSpecialAwesomeHypothesisPanel.this.tryEnableButton();
 		}
 
 	}
+
+
 
 
 }

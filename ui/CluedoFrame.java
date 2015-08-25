@@ -23,10 +23,10 @@ public class CluedoFrame extends JFrame {
 	public static final int TURN_PANEL = 2;
 	public static final int GAMEOVER_PANEL = 3;
 	public static final int RULES_PANEL = 4;
-	
+
 	public static final int DEFAULT_WIDTH = 800;
 	public static final int DEFAULT_HEIGHT = 600;
-	
+
 	private final Controller controller;
 	private CluedoPanel currentPanel;
 	private MenuPanel menu;
@@ -34,7 +34,7 @@ public class CluedoFrame extends JFrame {
 	private RulesPanel rules;
 	private TurnPanel turnPanel;
 	private GameSetupPanel gameSetup;
-	private CluedoPanel[] panels; 
+	private CluedoPanel[] panels;
 
 	public CluedoFrame() {
 		super("Cluedo");
@@ -49,7 +49,7 @@ public class CluedoFrame extends JFrame {
 		this.gameSetup = new GameSetupPanel(controller);
 		this.currentPanel = this.menu;
 		panels = new CluedoPanel[] { menu, gameSetup, turnPanel, gameOver, rules};
-		
+
 		setIconImage(icon());
 		add(this.currentPanel, BorderLayout.CENTER);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -57,11 +57,11 @@ public class CluedoFrame extends JFrame {
 		pack(); // pack components tightly together
 		setResizable(false); // prevent us from being resizeable
 		setVisible(true); // make sure we are visible!
-		
-		// trying to center the window. will come back to this later. 
+
+		// trying to center the window. will come back to this later.
 		setLocation(getLocationOnScreen());
-		// do something to make it redisplay in new position. 
-		
+		// do something to make it redisplay in new position.
+
 	}
 
 	private Image icon() {
@@ -76,7 +76,7 @@ public class CluedoFrame extends JFrame {
 		super.repaint();
 		//this.currentPanel.repaint();
 	}
-	
+
 	public void showPanel(int panelNo){
 		if(panelNo < 0 || panelNo >= panels.length){
 			throw new IllegalArgumentException("Not a valid panel number");
@@ -84,7 +84,7 @@ public class CluedoFrame extends JFrame {
 		CluedoPanel toDisplay = panels[panelNo];
 		displayPanel(toDisplay);
 	}
-	
+
 	private void displayPanel(CluedoPanel toDisplay) {
 		remove(this.currentPanel);
 		this.currentPanel = toDisplay;
@@ -126,10 +126,10 @@ public class CluedoFrame extends JFrame {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/** Returns the Point a window should position its corner at, such that
 	 * it will appear in the center of the window.
-	 * 
+	 *
 	 * @param windowWidth
 	 * @return
 	 */
@@ -137,13 +137,13 @@ public class CluedoFrame extends JFrame {
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		return new java.awt.Point(dim.width/2 - windowWidth/2, dim.height/2 - windowHeight/2);
 	}
-	
-	
+
+
 	// ==============================================================================================
 	// TESTING METHODS BELOW THIS POINT
 	// ==============================================================================================
-	
-	/** dummy method; replaces need for GameSetupPanel 
+
+	/** dummy method; replaces need for GameSetupPanel
 	 * (Default: 6 players, named "Player "+ 1-6 */
 	public void testingGameSetup(){
 		controller.startGame(Game.createDefaultMap());
@@ -157,7 +157,7 @@ public class CluedoFrame extends JFrame {
 		BoardPanel bp = new BoardPanel(this.controller);
 		displayPanel(bp);
 	}
-	
+
 	public void showHypothesisPanel(){
 		this.controller.startTestGame(Game.createDefaultMap());
 		SuperSpecialAwesomeHypothesisPanel hp = new SuperSpecialAwesomeHypothesisPanel(this.controller);
