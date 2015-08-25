@@ -5,7 +5,7 @@ import ui.CluedoFrame;
 public class GameOverPanelTestDrive {
 
 	public static void main(String[] args) {
-		new CluedoFrame().showGameOverPanel();
+		new CluedoFrame().showPanel(CluedoFrame.CARD_ENDGAME);
 
 	}
 

@@ -19,7 +19,9 @@ import javax.swing.JRadioButton;
  */
 public class GameSetupPanel extends CluedoPanel {
 	private static final long serialVersionUID = -620972152778453236L;
-	private static final Map<String,String> players =new java.util.concurrent.ConcurrentHashMap<>();
+
+	private static final Map<String,String> players = new java.util.concurrent.ConcurrentHashMap<>();
+
     private SetupDialog setup;
     private volatile boolean hasSubmitted = false;
 
@@ -38,9 +40,9 @@ public class GameSetupPanel extends CluedoPanel {
         throw new UnsupportedOperationException("Not supported."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    
-    /** makes no guarantees about whether this has been filled or not. 
-     * 
+
+    /** makes no guarantees about whether this has been filled or not.
+     *
      * @return
      */
 	public Map<String, String> getResult() {
@@ -50,7 +52,7 @@ public class GameSetupPanel extends CluedoPanel {
 		return players;
 	}
 
-    
+
     public SetupDialog getDialog() throws IllegalAccessException {
     	if (setup==null) { throw new IllegalAccessException(); }
     	return setup;
@@ -59,17 +61,17 @@ public class GameSetupPanel extends CluedoPanel {
 
 	public void showDialog() {
         setup = new SetupDialog(players);
-        setup.setVisible(true);		
+        setup.setVisible(true);
 	}
-	
-	
+
+
 	/**
 	 * A GameSetupDialogue is created to ask the user which characters will be played
-	 * during a game and the names associated with these Player objects. 
+	 * during a game and the names associated with these Player objects.
 	 * It must be initialised with an empty map of Strings to Strings, which it will
-	 * fill with user-entered names as keys and character names (as defined by 
-	 * Card.CHARACTERS) as values. 
-	 * 
+	 * fill with user-entered names as keys and character names (as defined by
+	 * Card.CHARACTERS) as values.
+	 *
 	 * It opens in a new window (on account of, you know, being a dialog.)
 	 *
 	 * @author mckayvick
@@ -78,18 +80,18 @@ public class GameSetupPanel extends CluedoPanel {
 		private static final long serialVersionUID = -8204809907341739549L;
 		static final String SUBMIT = "submitChars";
 	    static final String START = "startGame";
-	    
+
 
 	    /** fix this */
-	    SetupDialog(Map<String,String> players) {   
-	        if (players == null || players.size() != 0) { 
+	    SetupDialog(Map<String,String> players) {
+	        if (players == null || players.size() != 0) {
 	            throw new IllegalArgumentException("Cannot use a non-empty map!");
 	        }
 	        setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 	        initComponents();
 	        setupButtons();
-	    }    
-	    
+	    }
+
 	    public void setupButtons() {
 	        if (characters.size() <= 0) {
 	            characters.put(Card.SCARLET,scarlet);
@@ -108,10 +110,10 @@ public class GameSetupPanel extends CluedoPanel {
 	                }
 	            }
 	        }
-	        
+
 	        progress.setString("3 characters needed to play.");
 	        progress.setStringPainted(true);
-	        
+
 	        if (players.size() == 3) {
 	            startButton.setVisible(true);
 	        }
@@ -348,15 +350,15 @@ public class GameSetupPanel extends CluedoPanel {
 
 	        pack();
 	    }
-	    
+
 	    /** This action is thrown when a user asks to submit their profile (their
 	     * name and the character they want to play). Using the currentPlayer field,
-	     * which gets progressively filled out as each character/field loses focus, 
+	     * which gets progressively filled out as each character/field loses focus,
 	     * this method checks that the player has entered a name of more than three
-	     * characters, containing no special characters, and is not a duplicate of 
-	     * any existing name. 
-	     * 
-	     * @param evt Event triggered by submitting the form. 
+	     * characters, containing no special characters, and is not a duplicate of
+	     * any existing name.
+	     *
+	     * @param evt Event triggered by submitting the form.
 	     */
 	    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {
 	        if (((JButton) evt.getSource()).getActionCommand().equalsIgnoreCase(SUBMIT)) { // if the button has been pressed...
@@ -368,12 +370,12 @@ public class GameSetupPanel extends CluedoPanel {
 
 	    /** TODO comment */
 	    private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-	        // in order for this button to even appear we know there must be at 
-	        // least 3 characters created already. 
+	        // in order for this button to even appear we know there must be at
+	        // least 3 characters created already.
 	        if (players.size() < 6 && nameTextInput.getText().length() != 0) {
-	            int saveChar = JOptionPane.showConfirmDialog(rootPane, 
+	            int saveChar = JOptionPane.showConfirmDialog(rootPane,
 	                "Would you like to include "+ nameTextInput.getText() +" in the game?","Wait!", JOptionPane.YES_NO_OPTION);
-	            
+
 	            if (saveChar == 0) { // user says 'yes, save'
 	                createCharacterAtState();
 	            }
@@ -395,7 +397,7 @@ public class GameSetupPanel extends CluedoPanel {
 	            progress.setString("");
 	        }
 	    }
-	    
+
 	    public void kill() {
 	    	if (hasSubmitted) {
 	        	dispose();
@@ -407,30 +409,30 @@ public class GameSetupPanel extends CluedoPanel {
 	        String gotName = nameTextInput.getText();
 	        String gotCharacter = null;
 
-	        // go through some elaborate error-checking on the name. 
+	        // go through some elaborate error-checking on the name.
 	        // 1. is it long enough?
 	        if (gotName.length() < 3 || gotName.length() >= 20) {
-	            JOptionPane.showMessageDialog(rootPane, 
+	            JOptionPane.showMessageDialog(rootPane,
 	                    "Please enter a name between 3 and 20 characters.","Invalid name!", JOptionPane.OK_OPTION);
 	            return;
 	        }
-	        // 2. which character have they selected? 
+	        // 2. which character have they selected?
 	        for (Map.Entry<String,JRadioButton> option : characters.entrySet()) {
 	            if (((JRadioButton)option.getValue()).isSelected()) {
 	                gotCharacter = option.getKey();
 	            }
 	        }
-	        // 3. does someone already have this name/character? 
+	        // 3. does someone already have this name/character?
 	        for (Map.Entry<String,String> player : players.entrySet()) {
 	            if (player.getKey().equals(gotName)) {
-		            JOptionPane.showMessageDialog(rootPane, 
+		            JOptionPane.showMessageDialog(rootPane,
 		                    "Someone is already called "+gotName+"! Do be more original with your epithet, please.","Invalid name!", JOptionPane.OK_OPTION);
 	                return;
 	            } else if (player.getValue().equals(gotCharacter)) {
-		            JOptionPane.showMessageDialog(rootPane, 
+		            JOptionPane.showMessageDialog(rootPane,
 		                    "Someone is already playing "+gotCharacter+"!","Invalid character!", JOptionPane.OK_OPTION);
 	                return;
-	            	
+
 	            }
 	        }
 	        // 4. or, wait, did they forget?
@@ -441,15 +443,15 @@ public class GameSetupPanel extends CluedoPanel {
 
 	        // great! now we have a currentPlayer that describes what the
 	        // player wants. Let's add it to the list of futurePlayers
-	        // and update the progress bar. 
+	        // and update the progress bar.
 	        players.put(gotName,gotCharacter);
 	        nameTextInput.setText("");
 	    }
-	    
+
 	    public SetupDialog getDialog() {
 	    	return setup;
 	    }
-	    
+
 	    private final Map<String,JRadioButton> characters = new java.util.concurrent.ConcurrentHashMap<String,JRadioButton>();
 	    // Variables declaration - do not modify//GEN-BEGIN:variables
 	    private javax.swing.JPanel NameSelection;
@@ -469,6 +471,6 @@ public class GameSetupPanel extends CluedoPanel {
 	    private javax.swing.JPanel textPanel;
 	    private javax.swing.JRadioButton white;
 	    // End of variables declaration//GEN-END:variables
-	    
+
 	}
 }
