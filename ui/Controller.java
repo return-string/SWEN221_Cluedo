@@ -29,12 +29,15 @@ public class Controller implements ActionListener, EventListener {
 		this.gameFrame = gameFrame;
 	}
 
+	/** Given a map from GameSetup of player names to player characters,
+	 * this method creates a new Game object and BoardDrawer and uses
+	 * these to show and start the game.
+	 * @param players
+	 */
 	public void startGame(Map<String,String> players){
-        this.cluedoGame = new Game(players);
-        this.boardDrawer = new BoardDrawer(this.cluedoGame);
         this.cluedoBoard = cluedoGame.getBoard();
 		System.err.println("got "+2);
-        gameFrame.showPanel(2);
+        gameFrame.showPanel(CluedoFrame.CARD_TURNS);
 		System.err.println("done");
 	}
 
@@ -70,19 +73,23 @@ public class Controller implements ActionListener, EventListener {
 			try {
 				cluedoGame.testAccusation(hypothesis);
 			} catch (ActingOutOfTurnException e) {
+				// we don't care! no-one needs to know!
 			}
 		}
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		System.out.println("Button press!");
 		if(e.getActionCommand().equals("New Game")){
-//			gameFrame.showPanel(CluedoFrame.GAMESETUP_PANEL);
-			//gameFrame.showGameSetup();
-			gameFrame.testingGameSetup(); // TODO fake demo method!
+
+			gameFrame.showPanel(CluedoFrame.CARD_SETUP);
+			gameFrame.showGameSetup();
+			//gameFrame.testingGameSetup(); // TODO fake demo method!
+
 		}
 		if(e.getActionCommand().equals("Rules")){
-			gameFrame.showPanel(CluedoFrame.RULES_PANEL);
+			gameFrame.showPanel(CluedoFrame.CARD_RULES);
 		}
 		if(e.getActionCommand().equals("Exit")){
 			gameFrame.dispose();
@@ -95,10 +102,10 @@ public class Controller implements ActionListener, EventListener {
 	}
 
 	public boolean checkGameState(){
-		if(cluedoGame != null){
+		if (cluedoGame != null){
 			return cluedoGame.isPlaying();
 		}
-		return true;
+		return false;
 	}
 
 	public Coordinate getBoardRowsCols(){
@@ -109,9 +116,8 @@ public class Controller implements ActionListener, EventListener {
 		try {
 			cluedoGame.movePlayer(boardCoord);
 		} catch (ActingOutOfTurnException e) {
-
+			// we don't care! not our responsibility!
 		}
-
 	}
 
 	public Player getCurrentPlayer() {
@@ -119,7 +125,11 @@ public class Controller implements ActionListener, EventListener {
 	}
 
 	public List<Player> getPlayers() {
-		return cluedoGame.getPlayers();
+		try {
+			return cluedoGame.getPlayers();
+		} catch (NullPointerException e) {
+			return new java.util.ArrayList<Player>();
+		}
 	}
 
 	public boolean coordinateInRoom(Coordinate boardCoord){
