@@ -55,6 +55,7 @@ public class BoardDrawer {
 	 * @param b
 	 */
 	public BoardDrawer(Board b){
+		System.out.println("BOARDDRAWER: I exist!" + this);
 		this.cluedoBoard = b;
 	}
 
@@ -247,7 +248,6 @@ public class BoardDrawer {
 			
 			g.drawString(room, nameXOffSet, nameYOffSet);
 		}
-
 	}
 	
 	/**

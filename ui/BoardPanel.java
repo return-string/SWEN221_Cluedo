@@ -16,6 +16,7 @@ public class BoardPanel extends CluedoPanel implements MouseListener, MouseMotio
 
 	public BoardPanel(Controller c) {
 		super(c);
+		System.out.println("MAKE NEW BOARDPANEL" +this);
 		this.setPreferredSize(new Dimension(400, 400));
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);

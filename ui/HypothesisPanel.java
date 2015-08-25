@@ -25,7 +25,7 @@ import javax.swing.JRadioButton;
  *
  * @author mckayvick
  */
-public class HypothesisPanel extends javax.swing.JPanel {
+public class HypothesisPanel extends CluedoPanel {
     static final String ELLIPSIS = "...";
     static final String THEORY = " theorise that it was ";
     static final String ACCUSE = " accuse the villain ";
@@ -432,6 +432,12 @@ public class HypothesisPanel extends javax.swing.JPanel {
         private javax.swing.JRadioButton study;
         // End of variables declaration
     }
+
+	@Override
+	public void nextTurn() {
+		// TODO Auto-generated method stub
+		
+	}
 
 
 }

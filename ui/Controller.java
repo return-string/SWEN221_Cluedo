@@ -57,7 +57,7 @@ public class Controller implements ActionListener, EventListener {
         this.cluedoBoard = cluedoGame.getBoard();
         this.boardDrawer = new BoardDrawer(cluedoGame);
         System.out.println("cluedoboard "+cluedoBoard+"\nboarddrawer "+boardDrawer);
-		gameFrame.showPanel(CluedoFrame.CARD_TURNS);
+		gameFrame.displayTurnPanel();
 	}
 
 	public void startTestGame(Map<String,String> players){
@@ -107,7 +107,7 @@ public class Controller implements ActionListener, EventListener {
 
 		}
 		if(e.getActionCommand().equals("Rules")){
-			gameFrame.showPanel(CluedoFrame.CARD_RULES);
+			gameFrame.displayRules();
 		}
 		if(e.getActionCommand().equals("Exit")){
 			gameFrame.dispose();
@@ -129,7 +129,7 @@ public class Controller implements ActionListener, EventListener {
 		}
 		if (e.getActionCommand().equalsIgnoreCase("Make accusation") ||
 				e.getActionCommand().equalsIgnoreCase("Make hypothesis")) {
-			gameFrame.showPanel(CluedoFrame.CARD_HYPOTHESIS);
+			gameFrame.displayHypothesis();
 		}
 	}
 

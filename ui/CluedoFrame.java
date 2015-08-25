@@ -25,17 +25,37 @@ import javax.swing.JOptionPane;
  */
 public class CluedoFrame extends JFrame {
 	private static final long serialVersionUID = 2171235413597916591L;
-
-	public static final int DEFAULT_WIDTH = 1200;
-	public static final int DEFAULT_HEIGHT = 800;
-
-	private Controller controller;
+	public static final int MENU_PANEL = 0;
+	public static final int GAMESETUP_PANEL = 1;
+	public static final int TURN_PANEL = 2;
+	public static final int GAMEOVER_PANEL = 3;
+	public static final int RULES_PANEL = 4;
+	public static final int HYPOTHESIS_PANEL = 5;
+	
+	public static final int DEFAULT_WIDTH = 800;
+	public static final int DEFAULT_HEIGHT = 600;
+	
+	private Controller controller; // need to be able to set this when starting new game
+	private CluedoPanel currentPanel;
+	private MenuPanel menu;
+	private GameOverPanel gameOver;
+	private RulesPanel rules;
+	private TurnPanel turnPanel;
+	private GameSetupPanel gameSetup;
+	private SuperSpecialAwesomeHypothesisPanel hypothesisPanel;
+	private CluedoPanel[] panels; 
 
 	public CluedoFrame() {
 		super("Cluedo");
 		this.controller = new Controller(this);
 
 		initComponents();
+		
+		setLayout(new BorderLayout()); // use border layout
+		// this.canvas = new CluedoCanvas(cluedoGame);
+		// add(canvas, BorderLayout.CENTER); // add canvas
+		
+		panels = new CluedoPanel[] { menu, gameSetup, turnPanel, gameOver, rules, hypothesisPanel};
 		
 		setIconImage(icon());
         setPreferredSize(new Dimension(DEFAULT_WIDTH,DEFAULT_HEIGHT)); // V: just added this for sizing!
@@ -66,12 +86,59 @@ public class CluedoFrame extends JFrame {
 		icon = kit.createImage(url);
 		return icon;
 	}
-
-	public void showPanel(int panelNo){
-		if (panelNo >= 0 && panelNo < panels.length) {
-			showPanel(panels[panelNo]);
+	
+	public void displayTurnPanel() {
+		if (turnPanel == null) {
+			turnPanel = new TurnPanel(controller);
 		}
+		displayPanel(turnPanel);
 	}
+	
+	public void displayMenu() {
+		if (menu == null) {
+			menu = new MenuPanel(controller);
+		}
+		displayPanel(menu);
+	}
+	
+	public void displayHypothesis() {
+		if (hypothesisPanel == null) {
+			hypothesisPanel = new SuperSpecialAwesomeHypothesisPanel(controller);
+		}
+		displayPanel(hypothesisPanel);
+	}
+	
+	public void displayGameOver() {
+		if (gameOver == null) {
+			gameOver = new GameOverPanel(controller);
+		}
+		displayPanel(gameOver);
+	}
+	
+	public void displaySetup() {
+		if (gameSetup == null) {
+			gameSetup = new GameSetupPanel(controller);
+		}
+		displayPanel(gameSetup);
+	}
+	
+	public void displayRules() {
+		if (rules == null) {
+			rules = new RulesPanel(controller);
+		}
+		displayPanel(rules);
+	}
+	
+	private void displayPanel(CluedoPanel toDisplay) {
+		//System.err.println(toDisplay == null);
+        this.getContentPane().removeAll();
+		this.currentPanel = toDisplay;
+		this.getContentPane().add(this.currentPanel, BorderLayout.CENTER);
+		pack();
+		repaint();
+	}
+	
+	
 
 	public void nextTurn(){
 		_turnpanel.nextTurn();
@@ -83,7 +150,7 @@ public class CluedoFrame extends JFrame {
 		try {
 			_setuppanel.getDialog().setLocation(getLocationToCenter(_setuppanel.getDialog().getWidth(),_setuppanel.getDialog().getHeight()));
 			_setuppanel.getDialog().addWindowListener(new java.awt.event.WindowAdapter() {
-
+			
 			    @Override
 			    public void windowClosing(java.awt.event.WindowEvent e) {
 			    	Map<String,String> players = _setuppanel.getResult();
@@ -116,14 +183,7 @@ public class CluedoFrame extends JFrame {
 
 	public void showHypothesisPanel(){
 		this.controller.startTestGame(Game.createDefaultMap());
-		SuperSpecialAwesomeHypothesisPanel hp = new SuperSpecialAwesomeHypothesisPanel(this.controller);
-		showPanel(CARD_HYPOTHESIS);
-	}
-
-    public void showPanel(String card) {
-		System.out.println("showing "+card);
-    	cardLayout.show(contents, card);
-    	repaint();
+		displayHypothesis();
 	}
 
 	private void initComponents() {
@@ -132,10 +192,8 @@ public class CluedoFrame extends JFrame {
         _setuppanel = new GameSetupPanel(controller);
         _hypopanel = new SuperSpecialAwesomeHypothesisPanel(controller);
         _turnpanel = new TurnPanel(controller);
-        _boardpanel = _turnpanel.getBoardPanel();
-        System.out.println("is this ok"+ _boardpanel == null);
-        _playerspanel = new PlayersPanel(controller);
-        _deckpanel = new DeckPanel(controller);
+        //_playerspanel = new PlayersPanel(controller);
+        //_deckpanel = new DeckPanel(controller);
 
         jMenuItem1 = new javax.swing.JMenuItem();
         contents = new javax.swing.JPanel();
@@ -146,17 +204,30 @@ public class CluedoFrame extends JFrame {
         frameChild_boardPanel = new javax.swing.JPanel();
         frameChild_playersPanel = new javax.swing.JPanel();
         frameChild_deckPanel = new javax.swing.JPanel();
+        deckPanelChild_deckContents = new javax.swing.JSplitPane();
+        playerHand = new javax.swing.JScrollPane();
+        handContents = new javax.swing.JPanel();
+        playerNotebook = new javax.swing.JPanel();
+
+        notesCharacter = new javax.swing.JPanel();
+        char1 = new javax.swing.JCheckBox();
+
+        notesWeapons = new javax.swing.JPanel();
+        weapon1 = new javax.swing.JCheckBox();
+
+        notesRooms = new javax.swing.JPanel();
+        room1 = new javax.swing.JCheckBox();
 
         gameover = new javax.swing.JPanel();
-        theEndPanel = new javax.swing.JPanel();
-        theEndTitle = new javax.swing.JPanel();
-        theEndText = new javax.swing.JLabel();
-        theEndContents = new javax.swing.JPanel();
-        winnerIcon = new javax.swing.JLabel();
-        playerHasSolvedTheMurder = new javax.swing.JLabel();
-        guiltyWeapon = new javax.swing.JLabel();
-        guiltyCharacter = new javax.swing.JLabel();
-        guiltyRoom = new javax.swing.JLabel();
+//        theEndPanel = new javax.swing.JPanel();
+//        theEndTitle = new javax.swing.JPanel();
+//        theEndText = new javax.swing.JLabel();
+//        theEndContents = new javax.swing.JPanel();
+//        winnerIcon = new javax.swing.JLabel();
+//        playerHasSolvedTheMurder = new javax.swing.JLabel();
+//        guiltyWeapon = new javax.swing.JLabel();
+//        guiltyCharacter = new javax.swing.JLabel();
+//        guiltyRoom = new javax.swing.JLabel();
         menubar = new javax.swing.JMenuBar();
         menu_h_game = new javax.swing.JMenu();
         menu_newgame = new javax.swing.JMenuItem();
@@ -172,14 +243,14 @@ public class CluedoFrame extends JFrame {
         setMinimumSize(new java.awt.Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
         setPreferredSize(new java.awt.Dimension(DEFAULT_WIDTH,DEFAULT_HEIGHT));
 
-        cardLayout = new java.awt.CardLayout();
-        contents.setLayout(cardLayout);
+//        cardLayout = new java.awt.CardLayout();
+//        contents.setLayout(cardLayout);
 
         frameLevelMenu.setMinimumSize(new java.awt.Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
         frameLevelMenu.setLayout(new java.awt.BorderLayout());
         frameLevelMenu.add(_menupanel);
         _menupanel.setPreferredSize(getPreferredSize());
-        contents.add(frameLevelMenu, CARD_MENU);
+        contents.add(frameLevelMenu);
 
         frameLevelSetup.setBackground(new java.awt.Color(10, 10, 10));
         frameLevelSetup.setLayout(new java.awt.BorderLayout());
@@ -196,7 +267,7 @@ public class CluedoFrame extends JFrame {
         );
         frameLevelSetup.add(_setuppanel, java.awt.BorderLayout.CENTER);
 
-        contents.add(frameLevelSetup, CARD_SETUP);
+        contents.add(frameLevelSetup);
 
         frameLevelTurn.setBackground(new java.awt.Color(200, 200, 100));
         java.awt.GridBagLayout turnLayout = new java.awt.GridBagLayout();
@@ -219,7 +290,7 @@ public class CluedoFrame extends JFrame {
             boardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 480, Short.MAX_VALUE)
         );
-        frameChild_boardPanel.add(_boardpanel);
+//        frameChild_boardPanel.add(_boardpanel);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -243,7 +314,7 @@ public class CluedoFrame extends JFrame {
             playersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
-        frameChild_playersPanel.add(_playerspanel);
+//        frameChild_playersPanel.add(_playerspanel);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -257,17 +328,60 @@ public class CluedoFrame extends JFrame {
 
         frameChild_deckPanel.setBackground(new java.awt.Color(80, 80, 10));
         frameChild_deckPanel.setMaximumSize(null);
-        frameChild_deckPanel.add(_deckpanel);
+        deckPanelChild_deckContents.setDividerLocation(300);
+        deckPanelChild_deckContents.setDividerSize(10);
+//        frameChild_deckPanel.add(_deckpanel);
+
+        playerHand.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+
+        handContents.setLayout(new java.awt.GridLayout(1, 0));
+        playerHand.setViewportView(handContents);
+
+        deckPanelChild_deckContents.setLeftComponent(playerHand);
+
+        playerNotebook.setLayout(new javax.swing.BoxLayout(playerNotebook, javax.swing.BoxLayout.X_AXIS));
+
+        notesCharacter.setLayout(new java.awt.GridLayout(3, 2));
+
+        for (String chara : game.Card.CHARACTERS) {
+        	char1 = new JCheckBox();
+	        char1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+	        char1.setText(chara);
+	        notesCharacter.add(char1);
+        }
+        playerNotebook.add(notesCharacter);
+
+        notesWeapons.setLayout(new java.awt.GridLayout(3, 2));
+
+        for (String wep : game.Card.WEAPONS) {
+        	weapon1 = new JCheckBox();
+	        weapon1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+	        weapon1.setText(wep);
+	        notesWeapons.add(weapon1);
+        }
+        playerNotebook.add(notesWeapons);
+
+        notesRooms.setLayout(new java.awt.GridLayout(4, 3));
+
+        for (String room : game.Card.ROOMS) {
+        	room1 = new JCheckBox();
+        	room1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        	room1.setText(room);
+        	notesRooms.add(room1);
+        }
+        playerNotebook.add(notesRooms);
+
+        deckPanelChild_deckContents.setRightComponent(playerNotebook);
 
         javax.swing.GroupLayout deckPanelLayout = new javax.swing.GroupLayout(frameChild_deckPanel);
         frameChild_deckPanel.setLayout(deckPanelLayout);
         deckPanelLayout.setHorizontalGroup(
             deckPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(_deckpanel.getContentsPanel())
+            .addComponent(deckPanelChild_deckContents)
         );
         deckPanelLayout.setVerticalGroup(
             deckPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(_deckpanel.getContentsPanel(), javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
+            .addComponent(deckPanelChild_deckContents, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -281,112 +395,17 @@ public class CluedoFrame extends JFrame {
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         frameLevelTurn.add(frameChild_deckPanel, gridBagConstraints);
 
-        contents.add(frameLevelTurn, CARD_TURNS);
+        contents.add(frameLevelTurn);
 
         gameover.setBackground(new java.awt.Color(200, 30, 30));
 
-        theEndText.setText("The End!");
+//        theEndText.setText("The End!");
 
-        javax.swing.GroupLayout theEndTitleLayout = new javax.swing.GroupLayout(theEndTitle);
-        theEndTitle.setLayout(theEndTitleLayout);
-        theEndTitleLayout.setHorizontalGroup(
-            theEndTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(theEndTitleLayout.createSequentialGroup()
-                .addGap(142, 142, 142)
-                .addComponent(theEndText)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        theEndTitleLayout.setVerticalGroup(
-            theEndTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(theEndText, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
-        );
+        
 
-        winnerIcon.setText("jLabel2");
+        contents.add(gameover);
 
-        playerHasSolvedTheMurder.setText("Player has solved the murder!");
-
-        guiltyWeapon.setText("jLabel4");
-
-        guiltyCharacter.setText("jLabel5");
-
-        guiltyRoom.setText("jLabel6");
-
-        javax.swing.GroupLayout theEndContentsLayout = new javax.swing.GroupLayout(theEndContents);
-        theEndContents.setLayout(theEndContentsLayout);
-        theEndContentsLayout.setHorizontalGroup(
-            theEndContentsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(theEndContentsLayout.createSequentialGroup()
-                .addGroup(theEndContentsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(theEndContentsLayout.createSequentialGroup()
-                        .addGap(84, 84, 84)
-                        .addGroup(theEndContentsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(winnerIcon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(playerHasSolvedTheMurder, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(theEndContentsLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(guiltyWeapon, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(guiltyCharacter, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(guiltyRoom, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        theEndContentsLayout.setVerticalGroup(
-            theEndContentsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(theEndContentsLayout.createSequentialGroup()
-                .addComponent(winnerIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(playerHasSolvedTheMurder)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(theEndContentsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(guiltyWeapon, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)
-                    .addComponent(guiltyCharacter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(guiltyRoom, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-
-        javax.swing.GroupLayout theEndPanelLayout = new javax.swing.GroupLayout(theEndPanel);
-        theEndPanel.setLayout(theEndPanelLayout);
-        theEndPanelLayout.setHorizontalGroup(
-            theEndPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(theEndPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(theEndPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(theEndTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(theEndContents, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        theEndPanelLayout.setVerticalGroup(
-            theEndPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(theEndPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(theEndTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(theEndContents, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-
-        javax.swing.GroupLayout gameoverLayout = new javax.swing.GroupLayout(gameover);
-        gameover.setLayout(gameoverLayout);
-        gameoverLayout.setHorizontalGroup(
-            gameoverLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(gameoverLayout.createSequentialGroup()
-                .addGap(199, 199, 199)
-                .addComponent(theEndPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(242, Short.MAX_VALUE))
-        );
-        gameoverLayout.setVerticalGroup(
-            gameoverLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(gameoverLayout.createSequentialGroup()
-                .addGap(129, 129, 129)
-                .addComponent(theEndPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(101, Short.MAX_VALUE))
-        );
-
-        contents.add(gameover, CARD_ENDGAME);
-
-        contents.add(_hypopanel,CARD_HYPOTHESIS);
+        contents.add(_hypopanel);
 
         menu_h_game.setText("Cluedo");
 
@@ -461,57 +480,56 @@ public class CluedoFrame extends JFrame {
     }// </editor-fold>
 
     private void menu_endturnActionPerformed(java.awt.event.ActionEvent evt) {
-    	showPanel(CARD_ENDGAME);
+    	displayTurnPanel();
     }
 
     private void menu_newgameActionPerformed(java.awt.event.ActionEvent evt) {
-    	controller = new Controller(this);
-    	showPanel(CARD_SETUP);
+    	displayMenu();
     }
 
     private void setupActionPerformed(java.awt.event.ActionEvent evt) {
-    	showPanel(CARD_SETUP);
+    	displaySetup();
     }
 
     private void showMenuActionPerformed(java.awt.event.ActionEvent evt) {
-        showPanel(CARD_MENU);
+        displayMenu();
     }
 
     private void showTurnsActionPerformed(java.awt.event.ActionEvent evt) {
-    	showPanel(CARD_TURNS);
+    	displayTurnPanel();
     }
 
     private void showHypothesisActionPerformed(java.awt.event.ActionEvent evt) {
-        showPanel(CARD_HYPOTHESIS);
+        displayHypothesis();
     }
 
-    public static final String CARD_MENU = "showMenuPanel";
-    public static final String CARD_SETUP = "showSetupPanel";
-    public static final String CARD_RULES = "showRulesPanel";
-    public static final String CARD_TURNS = "showTurnsPanel";
-    public static final String CARD_ENDGAME = "showEndGamePanel";
-    public static final String CARD_HYPOTHESIS = "showHypothesisPanel";
+//    public static final String CARD_MENU = "showMenuPanel";
+//    public static final String CARD_SETUP = "showSetupPanel";
+//    public static final String CARD_RULES = "showRulesPanel";
+//    public static final String CARD_TURNS = "showTurnsPanel";
+//    public static final String CARD_ENDGAME = "showEndGamePanel";
+//    public static final String CARD_HYPOTHESIS = "showHypothesisPanel";
 
-    private static final String[] panels = {CARD_MENU,CARD_SETUP,CARD_RULES,CARD_TURNS,CARD_HYPOTHESIS,CARD_ENDGAME};
+//    private static final String[] panels = {CARD_MENU,CARD_SETUP,CARD_RULES,CARD_TURNS,CARD_HYPOTHESIS,CARD_ENDGAME};
 
     private MenuPanel _menupanel;
     private GameSetupPanel _setuppanel;
     private SuperSpecialAwesomeHypothesisPanel _hypopanel;
     private TurnPanel _turnpanel;
     private BoardPanel _boardpanel;
-    private PlayersPanel _playerspanel;
-    private DeckPanel _deckpanel;
-
-    private CardLayout cardLayout;
+//    private PlayersPanel _playerspanel;
+//    private DeckPanel _deckpanel;
 
     // Variables declaration - do not modify
     private javax.swing.JPanel frameChild_boardPanel;
     private javax.swing.JPanel contents;
+    private javax.swing.JSplitPane deckPanelChild_deckContents;
     private javax.swing.JPanel frameChild_deckPanel;
     private javax.swing.JPanel gameover;
-    private javax.swing.JLabel guiltyCharacter;
-    private javax.swing.JLabel guiltyRoom;
-    private javax.swing.JLabel guiltyWeapon;
+//    private javax.swing.JLabel guiltyCharacter;
+//    private javax.swing.JLabel guiltyRoom;
+//    private javax.swing.JLabel guiltyWeapon;
+    private javax.swing.JPanel handContents;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel frameLevelMenu;
@@ -523,16 +541,24 @@ public class CluedoFrame extends JFrame {
     private javax.swing.JMenuItem menu_setup;
     private javax.swing.JMenuItem menu_turn;
     private javax.swing.JMenuBar menubar;
-    private javax.swing.JLabel playerHasSolvedTheMurder;
+    private javax.swing.JPanel notesCharacter;
+    private javax.swing.JPanel notesRooms;
+    private javax.swing.JPanel notesWeapons;
+    private javax.swing.JScrollPane playerHand;
+//    private javax.swing.JLabel playerHasSolvedTheMurder;
+    private javax.swing.JPanel playerNotebook;
     private javax.swing.JPanel frameChild_playersPanel;
+    private javax.swing.JCheckBox room1;
+    private javax.swing.JCheckBox char1;
+    private javax.swing.JCheckBox weapon1;
     private javax.swing.JPanel frameLevelSetup;
     private javax.swing.JPanel setupPanel;
-    private javax.swing.JPanel theEndContents;
-    private javax.swing.JPanel theEndPanel;
-    private javax.swing.JLabel theEndText;
-    private javax.swing.JPanel theEndTitle;
+//    private javax.swing.JPanel theEndContents;
+//    private javax.swing.JPanel theEndPanel;
+//    private javax.swing.JLabel theEndText;
+//    private javax.swing.JPanel theEndTitle;
     private javax.swing.JPanel frameLevelTurn;
-    private javax.swing.JLabel winnerIcon;
+//    private javax.swing.JLabel winnerIcon;
     // End of variables declaration
 
 	// ==============================================================================================
@@ -550,15 +576,7 @@ public class CluedoFrame extends JFrame {
 	 */
 	public void showBoardPanel(HashMap<String, String> players){
 		this.controller.startTestGame(players);
-		showPanel(CARD_TURNS);
-	}
-
-	public void showPanel(CluedoPanel p){
-		this.removeAll();
-		this.setLayout(new BorderLayout());
-		this.add(p, BorderLayout.CENTER);
-		pack();
-		System.out.println("Panel is visible: " + p.isVisible());
+		displayTurnPanel();
 	}
 
 
