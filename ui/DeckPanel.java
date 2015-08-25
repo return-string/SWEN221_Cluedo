@@ -11,8 +11,8 @@ import java.util.List;
 /** The deck panel is responsible for showing the
  * cards held by a player, show their notebook when requested, and
  * hold the textbox that will give a written representation of turn
- * events. 
- * 
+ * events.
+ *
  * @author Vicki
  *
  */
@@ -39,24 +39,24 @@ public class DeckPanel extends CluedoPanel {
                     cd.repaintCard(null, c);
                 }
             }
-            
+
 	}
-        
-        private Player getNextPlayer() {
-            if (controller().checkGameState()) {
-                // needs some way of getting access to players. 
-            }
-            
-            // FIXME for now, let's use a dummy player. 
-            List<Card> l = new ArrayList<Card>();
-            l.add(new CardImpl(Card.Type.CHARACTER,Card.SCARLET));
-            l.add(new CardImpl(Card.Type.CHARACTER,Card.PLUM));
-            l.add(new CardImpl(Card.Type.ROOM,Card.BALL));
-            l.add(new CardImpl(Card.Type.WEAPON,Card.DAGGER));
-            Player p = new Player(Card.MUSTARD,Card.MUSTARD,l,Card.getPlayerStart(Card.MUSTARD));
-            
-            return p;
-        }
-        
-	// contains player's hand, player's notebook and text output pane. 
+
+	private Player getNextPlayer() {
+		if (controller().checkGameState()) {
+			// needs some way of getting access to players.
+		}
+
+		// FIXME for now, let's use a dummy player.
+		List<Card> l = new ArrayList<Card>();
+		l.add(new CardImpl(Card.Type.CHARACTER,Card.SCARLET));
+		l.add(new CardImpl(Card.Type.CHARACTER,Card.PLUM));
+		l.add(new CardImpl(Card.Type.ROOM,Card.BALL));
+		l.add(new CardImpl(Card.Type.WEAPON,Card.DAGGER));
+		Player p = new Player(Card.MUSTARD,Card.MUSTARD,l,Card.getPlayerStart(Card.MUSTARD));
+
+		return p;
+	}
+
+	// contains player's hand, player's notebook and text output pane.
 }
