@@ -36,22 +36,9 @@ public class Controller implements ActionListener, EventListener {
 	 * @param players
 	 */
 	public void startGame(Map<String,String> players){
-        this.cluedoGame = new Game(players);
-        this.boardDrawer = new BoardDrawer(this.cluedoGame);
-<<<<<<< HEAD
-		System.err.println("got "+players);
-		try {
-			this.cluedoGame.startGame();
-		} catch (GameStateModificationException | ActingOutOfTurnException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        gameFrame.showPanel(CluedoFrame.TURN_PANEL);
-=======
         this.cluedoBoard = cluedoGame.getBoard();
 		System.err.println("got "+2);
         gameFrame.showPanel(2);
->>>>>>> origin/master
 		System.err.println("done");
 	}
 
