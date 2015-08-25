@@ -19,11 +19,9 @@ import javax.swing.JRadioButton;
  */
 public class GameSetupPanel extends CluedoPanel {
 	private static final long serialVersionUID = -620972152778453236L;
-<<<<<<< HEAD
+
 	private static final Map<String,String> players = new java.util.concurrent.ConcurrentHashMap<>();
-=======
-	private static final Map<String,String> players =new java.util.concurrent.ConcurrentHashMap<>();
->>>>>>> 1cecf3b03e757f523e9478d80086a1f6508c6b6c
+
     private SetupDialog setup;
     private volatile boolean hasSubmitted = false;
 
@@ -42,23 +40,9 @@ public class GameSetupPanel extends CluedoPanel {
         throw new UnsupportedOperationException("Not supported."); //To change body of generated methods, choose Tools | Templates.
     }
 
-<<<<<<< HEAD
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals(SetupDialog.START)) {
-
-        }
-        System.out.println("GameSetup is listening");
-    }
-
 
     /** makes no guarantees about whether this has been filled or not.
      *
-=======
-    
-    /** makes no guarantees about whether this has been filled or not. 
-     * 
->>>>>>> 1cecf3b03e757f523e9478d80086a1f6508c6b6c
      * @return
      */
 	public Map<String, String> getResult() {
@@ -96,12 +80,7 @@ public class GameSetupPanel extends CluedoPanel {
 		private static final long serialVersionUID = -8204809907341739549L;
 		static final String SUBMIT = "submitChars";
 	    static final String START = "startGame";
-<<<<<<< HEAD
-	    private final Map<String,String> futurePlayers;
 
-=======
-	    
->>>>>>> 1cecf3b03e757f523e9478d80086a1f6508c6b6c
 
 	    /** fix this */
 	    SetupDialog(Map<String,String> players) {
@@ -134,13 +113,8 @@ public class GameSetupPanel extends CluedoPanel {
 
 	        progress.setString("3 characters needed to play.");
 	        progress.setStringPainted(true);
-<<<<<<< HEAD
 
-	        if (futurePlayers.size() == 3) {
-=======
-	        
 	        if (players.size() == 3) {
->>>>>>> 1cecf3b03e757f523e9478d80086a1f6508c6b6c
 	            startButton.setVisible(true);
 	        }
 	        if (players.size() == 6) {
@@ -396,17 +370,10 @@ public class GameSetupPanel extends CluedoPanel {
 
 	    /** TODO comment */
 	    private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-<<<<<<< HEAD
 	        // in order for this button to even appear we know there must be at
 	        // least 3 characters created already.
-	        if (futurePlayers.size() < 6 && nameTextInput.getText().length() != 0) {
-	            int saveChar = JOptionPane.showConfirmDialog(rootPane,
-=======
-	        // in order for this button to even appear we know there must be at 
-	        // least 3 characters created already. 
 	        if (players.size() < 6 && nameTextInput.getText().length() != 0) {
-	            int saveChar = JOptionPane.showConfirmDialog(rootPane, 
->>>>>>> 1cecf3b03e757f523e9478d80086a1f6508c6b6c
+	            int saveChar = JOptionPane.showConfirmDialog(rootPane,
 	                "Would you like to include "+ nameTextInput.getText() +" in the game?","Wait!", JOptionPane.YES_NO_OPTION);
 
 	            if (saveChar == 0) { // user says 'yes, save'
@@ -430,7 +397,7 @@ public class GameSetupPanel extends CluedoPanel {
 	            progress.setString("");
 	        }
 	    }
-	    
+
 	    public void kill() {
 	    	if (hasSubmitted) {
 	        	dispose();
@@ -455,13 +422,8 @@ public class GameSetupPanel extends CluedoPanel {
 	                gotCharacter = option.getKey();
 	            }
 	        }
-<<<<<<< HEAD
 	        // 3. does someone already have this name/character?
-	        for (Map.Entry<String,String> player : futurePlayers.entrySet()) {
-=======
-	        // 3. does someone already have this name/character? 
 	        for (Map.Entry<String,String> player : players.entrySet()) {
->>>>>>> 1cecf3b03e757f523e9478d80086a1f6508c6b6c
 	            if (player.getKey().equals(gotName)) {
 		            JOptionPane.showMessageDialog(rootPane,
 		                    "Someone is already called "+gotName+"! Do be more original with your epithet, please.","Invalid name!", JOptionPane.OK_OPTION);
@@ -481,13 +443,8 @@ public class GameSetupPanel extends CluedoPanel {
 
 	        // great! now we have a currentPlayer that describes what the
 	        // player wants. Let's add it to the list of futurePlayers
-<<<<<<< HEAD
 	        // and update the progress bar.
-	        futurePlayers.put(gotName,gotCharacter);
-=======
-	        // and update the progress bar. 
 	        players.put(gotName,gotCharacter);
->>>>>>> 1cecf3b03e757f523e9478d80086a1f6508c6b6c
 	        nameTextInput.setText("");
 	    }
 
