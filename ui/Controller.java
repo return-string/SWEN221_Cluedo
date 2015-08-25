@@ -78,7 +78,7 @@ public class Controller implements ActionListener, EventListener {
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("New Game")){
 //			gameFrame.showPanel(CluedoFrame.GAMESETUP_PANEL);
-			// REAL gameFrame.showGameSetup();
+			//gameFrame.showGameSetup();
 			gameFrame.testingGameSetup(); // TODO fake demo method!
 		}
 		if(e.getActionCommand().equals("Rules")){
@@ -152,6 +152,15 @@ public class Controller implements ActionListener, EventListener {
 			cluedoBoard.highlightSquare(boardCoord);
 		} else {
 			cluedoBoard.unhighlightRooms();
+		}
+	}
+
+	public String getGameResult() {
+		if(cluedoGame.isPlaying()){
+			return "";
+		} else {
+			Player winner = cluedoGame.getWinner();
+			return "Congratulations " + winner.getName() + "!\n You have won!!";
 		}
 	}
 }

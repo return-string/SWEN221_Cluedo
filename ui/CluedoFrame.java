@@ -163,5 +163,9 @@ public class CluedoFrame extends JFrame {
 		SuperSpecialAwesomeHypothesisPanel hp = new SuperSpecialAwesomeHypothesisPanel(this.controller);
 		displayPanel(hp);
 	}
+	
+	public void showGameOverPanel(){
+		displayPanel(new GameOverPanel(this.controller));
+	}
 
 }
