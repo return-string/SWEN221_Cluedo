@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 744.09448819 1052.3622047"
+   id="svg4239"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   inkscape:export-filename="/u/students/jamesbadi/SWEN222/SWEN222_Cluedo/bin/cluedoview/images/rope.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90"
+   sodipodi:docname="rope.svg">
+  <defs
+     id="defs4241" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="-126.42857"
+     inkscape:cy="520"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1032"
+     inkscape:window-x="-3"
+     inkscape:window-y="-3"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata4244">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect4247"
+       width="1000"
+       height="1000"
+       x="-2157.1428"
+       y="-710.49493" />
+    <path
+       sodipodi:type="spiral"
+       style="fill:none;fill-rule:evenodd;stroke:#d4aa00;stroke-width:87.5;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:43.75, 43.75;stroke-dashoffset:0;stroke-opacity:1"
+       id="path4791"
+       sodipodi:cx="-1700"
+       sodipodi:cy="-190.49493"
+       sodipodi:expansion="1"
+       sodipodi:revolution="3"
+       sodipodi:radius="502.44302"
+       sodipodi:argument="-17.947285"
+       sodipodi:t0="0"
+       d="m -1700,-190.49493 c 15.6145,19.76884 -18.9443,30.80135 -32.8571,25.9524 -37.7028,-13.14034 -38.1043,-63.45614 -19.0477,-91.66665 34.0877,-50.46198 106.9657,-48.28598 150.4762,-12.14298 63.8533,53.04132 58.8482,151.09398 5.2382,209.28572 -71.4537,77.560436 -195.4456,69.577374 -268.0952,-1.666458 -91.4222,-89.653092 -80.3938,-239.904602 8.5712,-326.904772 107.7484,-105.36888 284.4242,-91.26091 385.7143,15.47589 119.3668,125.78561 102.1599,328.981741 -22.3806,444.523834 -143.787,133.397916 -373.5645,113.080146 -503.3334,-29.285324 -147.4516,-161.76469 -124.0153,-418.16499 36.19,-562.1429 179.7262,-161.52146 462.7784,-134.96115 620.9525,43.09476 175.6031,197.6758 145.9151,507.401544 -49.9995,679.76196" />
+  </g>
+</svg>

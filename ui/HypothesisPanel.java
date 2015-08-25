@@ -4,6 +4,7 @@ import game.Board;
 import game.Card;
 
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -14,13 +15,13 @@ import javax.swing.JFrame;
 import javax.swing.JRadioButton;
 
 
-/** The HypothesisPanel consists of a header panel, which contains a JLabel 
- * displaying the developing hypothesis, and a content JPanel, which at 
- * any time contains one of three subpanels: AccuseCharacter, AccuseRoom or 
- * AccuseWeapon. 
- * 
+/** The HypothesisPanel consists of a header panel, which contains a JLabel
+ * displaying the developing hypothesis, and a content JPanel, which at
+ * any time contains one of three subpanels: AccuseCharacter, AccuseRoom or
+ * AccuseWeapon.
+ *
  * It has three fields to remember the user's selection of a guilty character,
- * room and weapon, and will be able to return these as a Set or List. 
+ * room and weapon, and will be able to return these as a Set or List.
  *
  * @author mckayvick
  */
@@ -38,10 +39,10 @@ public class HypothesisPanel extends javax.swing.JPanel {
 
     /**
      * Creates new HypothesisPanel to collect user's hypothesis selections.
-     * 
-     * @param room If the player is making a guess, let 'room' be the room 
+     *
+     * @param room If the player is making a guess, let 'room' be the room
      * in which they are making the accusation, as defined by Card.ROOMS. If they
-     * are making a final accusation, let it be null. 
+     * are making a final accusation, let it be null.
      */
     public HypothesisPanel(String room) {
     	if (!room.equals(Board.HALLWAYSTRING)) {
@@ -52,13 +53,26 @@ public class HypothesisPanel extends javax.swing.JPanel {
     	}
         initComponents();
         doubleInit();
-    	nextPanel(Card.Type.CHARACTER);
+    	//nextPanel(Card.Type.CHARACTER);
     }
-    
+
     /** TODO comment */
     private void doubleInit() {
         /* will setup the currentHypothesis field with the required JPanel and
          display it.  */
+    	//B: I have no idea what im doing
+//    	this.currentHypothesis = new JPanel();
+//    	if(isAccusation){
+//    		this.currentHypothesis.setLayout(new GridLayout(1,3));
+//    		this.currentHypothesis.add(new AccuseCharacter());
+//    		this.currentHypothesis.add(new AccuseWeapon());
+//    		this.currentHypothesis.add(new AccuseRoom());
+//    	} else {
+//    		this.currentHypothesis.setLayout(new GridLayout(1,2));
+//    		this.currentHypothesis.add(new AccuseCharacter());
+//    		this.currentHypothesis.add(new AccuseWeapon());
+//    	}
+//    	add(this.currentHypothesis);
     }
 
     /**
@@ -94,7 +108,7 @@ public class HypothesisPanel extends javax.swing.JPanel {
             headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(headerText)
         );
-        
+
         add(contents);
         header.add(headerText);
         add(header);
@@ -116,7 +130,7 @@ public class HypothesisPanel extends javax.swing.JPanel {
     	f.setVisible(true);
     	System.out.println("--- all done!");
     }
-    
+
     /** TODO comment */
     public void nextPanel(Card.Type t) {
     	String name = "";
@@ -124,7 +138,7 @@ public class HypothesisPanel extends javax.swing.JPanel {
 			name = currentHypothesis.getName();
 			currentHypothesis.setVisible(false);
 		}
-    	
+
     	if (t == Card.Type.CHARACTER) {
     		currentHypothesis = new HypothesisPanel.AccuseCharacter(null, false);
     		System.out.println("making char");
@@ -137,7 +151,7 @@ public class HypothesisPanel extends javax.swing.JPanel {
     	} else {
     		throw new IllegalAccessError();
     	}
-    	
+
     	currentHypothesis.setAlignmentX(JPanel.CENTER_ALIGNMENT);
     	currentHypothesis.setAlignmentY(JPanel.CENTER_ALIGNMENT);
     	currentHypothesis.setPreferredSize(new Dimension(300,300));
@@ -164,7 +178,11 @@ public class HypothesisPanel extends javax.swing.JPanel {
 		public AccuseCharacter(java.awt.Frame parent, boolean modal) {
             initComponents();
         }
-                   
+
+		public AccuseCharacter(){
+			initComponents();
+		}
+
 		/* TODO comment */
         private void initComponents() {
         	setBackground(java.awt.Color.YELLOW);
@@ -184,7 +202,7 @@ public class HypothesisPanel extends javax.swing.JPanel {
             chars.add(mustard);
             characterSet.put("mustard",mustard);
             scarlet.setToolTipText(game.Card.MUSTARD);
-            
+
             chars.add(white);
             characterSet.put("white",white);
             scarlet.setToolTipText(game.Card.WHITE);
@@ -249,7 +267,7 @@ public class HypothesisPanel extends javax.swing.JPanel {
         }
 
         private Map<String,JRadioButton> characterSet = new HashMap<>();
-        // Variables declaration - do not modify                     
+        // Variables declaration - do not modify
         private javax.swing.ButtonGroup chars;
         private javax.swing.JRadioButton green;
         private javax.swing.JRadioButton mustard;
@@ -257,11 +275,11 @@ public class HypothesisPanel extends javax.swing.JPanel {
         private javax.swing.JRadioButton plum;
         private javax.swing.JRadioButton scarlet;
         private javax.swing.JRadioButton white;
-        // End of variables declaration 
-        
+        // End of variables declaration
+
     }
-    
-    /** ACCUSE WEAPON FORM 
+
+    /** ACCUSE WEAPON FORM
      *
      * TODO comment
      */
@@ -270,7 +288,11 @@ public class HypothesisPanel extends javax.swing.JPanel {
 		public AccuseWeapon(java.awt.Frame parent, boolean modal) {
             initComponents();
         }
-                         
+
+		public AccuseWeapon(){
+			initComponents();
+		}
+
 		/** TODO comment */
         private void initComponents() {
         	setBackground(java.awt.Color.GREEN);
@@ -301,7 +323,7 @@ public class HypothesisPanel extends javax.swing.JPanel {
             weapons.add(pipe);
             pipe.setText(game.Card.PIPE);
             weaponSet.add(pipe);
-            
+
             weapons.add(wrench);
             wrench.setText(game.Card.WRENCH);
             weaponSet.add(wrench);
@@ -314,7 +336,7 @@ public class HypothesisPanel extends javax.swing.JPanel {
         }
 
         private Set<JRadioButton> weaponSet = new HashSet<JRadioButton>();
-        // Variables declaration - do not modify                     
+        // Variables declaration - do not modify
         private javax.swing.JRadioButton candlestick;
         private javax.swing.JRadioButton dagger;
         private javax.swing.JRadioButton pipe;
@@ -322,10 +344,10 @@ public class HypothesisPanel extends javax.swing.JPanel {
         private javax.swing.JRadioButton rope;
         private javax.swing.ButtonGroup weapons;
         private javax.swing.JRadioButton wrench;
-        // End of variables declaration                   
+        // End of variables declaration
     }
 
-    /** ACCUSE ROOM FORM 
+    /** ACCUSE ROOM FORM
      * TODO comment
      *
      */
@@ -334,7 +356,11 @@ public class HypothesisPanel extends javax.swing.JPanel {
 		public AccuseRoom(java.awt.Frame parent, boolean modal) {
             initComponents();
         }
-                       
+
+		public AccuseRoom(){
+			initComponents();
+		}
+
 		/* TODO comment */
         private void initComponents() {
         	setBackground(java.awt.Color.BLUE);
@@ -393,7 +419,7 @@ public class HypothesisPanel extends javax.swing.JPanel {
         }
 
         private Set<JRadioButton> roomSet = new HashSet<JRadioButton>();
-        // Variables declaration - do not modify                     
+        // Variables declaration - do not modify
         private javax.swing.JRadioButton ballroom;
         private javax.swing.JRadioButton billiard;
         private javax.swing.JRadioButton conservatory;
@@ -404,6 +430,8 @@ public class HypothesisPanel extends javax.swing.JPanel {
         private javax.swing.JRadioButton lounge;
         private javax.swing.ButtonGroup rooms;
         private javax.swing.JRadioButton study;
-        // End of variables declaration                   
+        // End of variables declaration
     }
+
+
 }

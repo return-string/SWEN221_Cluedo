@@ -19,11 +19,16 @@ import java.util.Set;
 public class Board {
 
 	public static final String HALLWAYSTRING = "hallway";
-	
+
 	public enum Compass {NORTH, EAST, SOUTH, WEST}
-	
+
 	private BoardSquare[][] squares;
 	private File classic = new File("ClassicBoard.txt");
+	//BoardSquares representing rooms that are highlighted for any reason
+	private Set<BoardSquare> highlightedRooms = new HashSet<BoardSquare>();
+	//BoardSquares representing rooms that are highlighted because they can be reached in a move
+	private Set<BoardSquare> highlightedReachableRooms = new HashSet<BoardSquare>();
+
 
 	public Board() {
 		BoardParser bp = new BoardParser();
@@ -90,7 +95,7 @@ public class Board {
 		do{//polls square off fringe and highlights it
 			PathFringeEntry current = pathFringe.poll();
 			current.square.setVisited(true);
-			current.square.setHighlight(true);
+			highlightBoardSquare(current.square, true);
 			//If the current square is not at the end of the player's reach, and is
 			// either the start square or not a room, puts the current square's
 			//neighbours on the fringe
@@ -107,6 +112,23 @@ public class Board {
 	}
 
 	/**
+	 * Highlights the given board square. If board square is a room, adds to the list of
+	 * highlighted rooms. If reachable is true, as in was highlighted as part of finding
+	 * available moves, adds it to the list of highlighted reachable rooms
+	 * @param toHighlight
+	 * @param reachable
+	 */
+	private void highlightBoardSquare(BoardSquare toHighlight, boolean reachable){
+		if(toHighlight.isRoom()){
+			this.highlightedRooms.add(toHighlight);
+			if(reachable){
+				this.highlightedReachableRooms.add(toHighlight);
+			}
+		}
+		toHighlight.setHighlight(true);
+	}
+
+	/**
 	 * Goes through all the board squares in squares, unhighlighting them
 	 */
 	public void unhighlight(){
@@ -118,6 +140,8 @@ public class Board {
 				}
 			}
 		}
+		this.highlightedRooms = new HashSet<BoardSquare>();
+		this.highlightedReachableRooms = new HashSet<BoardSquare>();
 	}
 
 	/**
@@ -169,6 +193,7 @@ public class Board {
 			//if it finds the room it's currently looking for
 			if(current.square.getRoom().equals(rm)){
 				if(current.distance <= steps){//if can get to it this turn
+					//Shouldn't usually get here as room would have been highlighted anyway
 					moveCoord = current.square.getClosestCoordinate(start);
 				} else { //finds the square player can reach closest to room
 					PathFringeEntry roomEntry = current;
@@ -231,6 +256,10 @@ public class Board {
 		return newDescription;
 	}
 
+	/**
+	 * Sets all the board squares to unvisited. For clearing up for the next
+	 * board search
+	 */
 	private void clearVisits() {
 		for(int i = 0; i < this.squares.length; i++){
 			for(int j = 0; j < squares[0].length; j++){
@@ -300,7 +329,7 @@ public class Board {
 	public int height() {
 		return squares[0].length;
 	}
-	
+
 	/**
 	 * @param coord Coordinate of square to check
 	 * @return True of square at coordinate is highlighted
@@ -309,14 +338,14 @@ public class Board {
 		if(!isLegal(coord)) {throw new IllegalArgumentException();}
 		return squares[coord.getX()][coord.getY()].isHighlighted();
 	}
-	
+
 	/**
 	 * Methods for finding coordinates of hallway squares next to doors to rooms.
-	 * Compass direction refers to direction from hallway to door.  
+	 * Compass direction refers to direction from hallway to door.
 	 * @return List of coordinates of hallway squares next to doors in the relevant direction
 	 */
 	public List<Coordinate> getDoors(Compass dir){
-		
+
 		/* Determines the appropriate array access adjustments for looking at a square's
 		 * neighbour in the given direction.
 		 */
@@ -328,12 +357,12 @@ public class Board {
 		int startY = dir.equals(Compass.NORTH) ? 1 : 0;
 		int endX = dir.equals(Compass.EAST) ? width() - 1 : width();
 		int endY = dir.equals(Compass.SOUTH) ? height() - 1 : height();
-		
+
 		List<Coordinate> toReturn = new ArrayList<Coordinate>();
 		//goes through the array of board squares
 		for(int i = startX; i < endX; i++){
 			for(int j = startY; j < endY; j++){
-				/* if the current square is a hallway square, and its neighbour in the 
+				/* if the current square is a hallway square, and its neighbour in the
 				 * given direction is a room square the current square is connected to,
 				 * adds the current square's coordinates to the list of coordinates to
 				 * return
@@ -349,6 +378,9 @@ public class Board {
 		return toReturn;
 	}
 
+	/**
+	 * @return A map of string names of rooms with the coordinate that is at the room's center
+	 */
 	public Map<String, Coordinate> getRoomCenters(){
 		Map<String, Coordinate> toReturn = new HashMap<String, Coordinate>();
 		for(int i = 0; i < width(); i++){
@@ -361,6 +393,10 @@ public class Board {
 		return toReturn;
 	}
 
+	/**
+	 *
+	 * @return Sets of the coordinates of the secret passages between rooms
+	 */
 	public Set<Coordinate> getSecretPassages(){
 		Set<Coordinate> toReturn = new HashSet<Coordinate>();
 		for(int i = 0; i < width(); i++){
@@ -376,16 +412,25 @@ public class Board {
 		return toReturn;
 	}
 
+	/**
+	 * Highlight the board square at the given coordinate
+	 * @param boardCoord coordinate of square to highlight
+	 */
 	public void highlightSquare(Coordinate boardCoord) {
-		squares[boardCoord.getX()][boardCoord.getY()].setHighlight(true);
-		
+		highlightBoardSquare(squares[boardCoord.getX()][boardCoord.getY()], false);
+
 	}
 
+	/**
+	 * unhighlight all rooms except reachable rooms.
+	 */
 	public void unhighlightRooms() {
-		for(Coordinate center : getRoomCenters().values()){
-			squares[center.getX()][center.getY()].setHighlight(false);
+		for(BoardSquare room : this.highlightedRooms){
+			if(!this.highlightedReachableRooms.contains(room)) {
+				room.setHighlight(false);
+				this.highlightedRooms.remove(room);
+			}
 		}
-		
 	}
 
 }

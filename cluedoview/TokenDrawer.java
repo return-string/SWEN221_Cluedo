@@ -14,7 +14,9 @@ import game.Token;
 public class TokenDrawer {
 
 	private Token token;
-	private Image wepImg;
+	private Image masterImage;
+	private Image scaledImage;
+	private int currentSquareSize = 0;
 
 	private String imgPath = "images/";
 	private String imgType = ".png";
@@ -31,9 +33,9 @@ public class TokenDrawer {
 			System.out.println(imgPath + token.getTokenName() + imgType + " does not exist!!");
 			return;
 		}
-		
+
 		try {
-			wepImg = ImageIO.read(imageURL);
+			masterImage = ImageIO.read(imageURL);
 		} catch (IOException e) {
 			// we've encountered an error loading the image. There's not much we
 			// can actually do at this point, except to abort the game.
@@ -42,7 +44,10 @@ public class TokenDrawer {
 	}
 
 	public void drawImage(Graphics g, int squareSize){
-		Image scaledImage = wepImg.getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT);
+		if(squareSize != currentSquareSize){
+			currentSquareSize = squareSize;
+			scaledImage = masterImage.getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT);
+		}
 		Coordinate tokenPosition = token.getPosition();
 		int weaponX = tokenPosition.getX()*squareSize;
 		int weaponY = tokenPosition.getY()*squareSize;
@@ -50,7 +55,10 @@ public class TokenDrawer {
 	}
 
 	public void drawImage(Graphics g, int squareSize, Coordinate tokenPosition){
-		Image scaledImage = wepImg.getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT);
+		if(squareSize != currentSquareSize){
+			currentSquareSize = squareSize;
+			scaledImage = masterImage.getScaledInstance(squareSize, squareSize, Image.SCALE_DEFAULT);
+		}
 		int weaponX = tokenPosition.getX()*squareSize;
 		int weaponY = tokenPosition.getY()*squareSize;
 		g.drawImage(scaledImage, weaponX, weaponY, null);
