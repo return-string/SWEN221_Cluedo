@@ -66,6 +66,7 @@ public class Game {
 	}
 
 	public Game(Map<String,String> players) {
+		System.err.println("GAME INITIALISED \n\tBOARD: "+BOARD==null);
             if (players == null ^ (players.size() < 3 || players.size() > 6)) {
                     throw new IllegalArgumentException("Cannot initialise a game with these players. (size of playerNames must be 3-6)");
             }
@@ -101,11 +102,11 @@ public class Game {
 	 * @throws GameStateModificationException if the game already has players.
 	 */
 	public void addPlayers(Map<String,String> players) throws IllegalArgumentException, GameStateModificationException {
-		if (this.players.size() != 0) {
-			throw new GameStateModificationException("This game cannot add players.");
-		}
 		if (players == null || players.size() < 3 || players.size() > 6) {
 			throw new IllegalArgumentException("Cannot create a game with this many players.");
+		}
+		if (this.players.size() != 0) {
+			throw new GameStateModificationException("This game cannot add players.");
 		}
 		for (Map.Entry<String,String> e : players.entrySet()) {
 			if (e.getValue().length() != 0 && e.getKey().length() != 0) {
@@ -138,28 +139,34 @@ public class Game {
 	 * @throws InvalidAttributeValueException
 	 * @param game TODO
 	 * @throws ActingOutOfTurnException
+	 * 
+	 * FIXME THIS IS WRONG
 	 */
-	public void playGame() throws ActingOutOfTurnException {
-		activePlayer = 0;
-//		int roundCounter = 1;
-//
-//		/** the game plays at least one turn. */
-//		do {
-//			roundCounter = playTurn(roundCounter);
-//		} while (isPlaying());
-
-		/* once the game is over, work out who won and print the winning message.*/
-		Player winner = null;
-		for (Player p:players) {
-			if (p.isPlaying() && winner == null) {
-				winner = p;
-			} else if (p.isPlaying() && winner != null) {
-				throw new IllegalStateException();
+	public void playTurn() throws ActingOutOfTurnException {
+		System.out.println("active player:"+ activePlayer);
+		
+		if (!isPlaying()) {
+			Player winner = null;
+			for (Player p:players) {
+				if (p.isPlaying() && winner == null) {
+					winner = p;
+				}
 			}
+			this.winner = winner;
+			gameState = STATUS_GAME_OVER;
 		}
-		if (winner == null) { throw new IllegalStateException(); }
-		this.winner = winner;
-		gameState = STATUS_GAME_OVER;
+
+		if (gameState == STATUS_PLAYER_ROLLING) {
+			rollDice();
+		}
+		/* once the game is over, work out who won and print the winning message.*/
+	}
+	
+	/** must be called to end a player's turn */
+	public void endTurn() {
+		players.get(activePlayer).enableMovement();
+		gameState = STATUS_PLAYER_ROLLING;
+		activePlayer = (activePlayer+1)%players.size();
 	}
 
 	/** If it is a player's turn, this method will roll the dice and
@@ -172,6 +179,8 @@ public class Game {
 
 		roll = RNG.nextInt(5)+1;
 		BOARD.highlightMoves(p.getPosition(),roll);
+		
+		gameState = STATUS_PLAYER_MOVING;
 	}
 
 	/** Returns the last rolled dice value.
@@ -200,6 +209,7 @@ public class Game {
 		if (coord != null) {
 			p.move(coord);
 			roll = 0;
+			gameState = STATUS_PLAYER_NOACTIONS;
 		}
 	}
 
@@ -230,6 +240,9 @@ public class Game {
 	 *
 	 */
 	public void testHypothesis(Set<String> hypothesis) throws ActingOutOfTurnException {
+		if (gameState == STATUS_PLAYER_ROLLING || gameState == STATUS_PLAYER_MOVING) {
+			return;
+		}
 		Player p = players.get(activePlayer);
 		if (hypothesis.size() != 3) {
 			throw new IllegalArgumentException("Hypothesis must have exactly 3 parameters.");
@@ -303,12 +316,20 @@ public class Game {
 	 * ends.
 	 *
 	 * @param p
+	 * @return True if their accusation was successful, false if it was not made or
+	 * unsuccessful. 
 	 */
 	public boolean testAccusation(Set<String> hs) throws ActingOutOfTurnException {
+		if (gameState == STATUS_PLAYER_ROLLING || gameState == STATUS_PLAYER_MOVING) {
+			return false;
+		}
         Player p = players.get(activePlayer);
         if (!p.hasMoved() || !p.isPlaying()) {
         	throw new ActingOutOfTurnException();
         }
+        
+        gameState = STATUS_PLAYER_ACCUSING;
+        
 		Theory h = new Hypothesis(hs);
 		if (!h.equals(guilty)) { // player loses. kill them!
 //			textUI.printText(p.getName()+"'s accusation was proven false! "+ p.getName() +" has been barred from the investigation.");
@@ -499,6 +520,9 @@ public class Game {
 	 * player location etc.
 	 */
 	public Board getBoard() {
+		if (BOARD==null) {
+			System.err.println("impossible: game board is null!");
+		}
 		return BOARD;
 	}
 

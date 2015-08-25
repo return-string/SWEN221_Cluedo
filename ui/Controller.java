@@ -10,6 +10,7 @@ import game.ActingOutOfTurnException;
 import game.Board;
 import game.Coordinate;
 import game.Game;
+import game.GameStateModificationException;
 import game.Player;
 
 import java.util.EventListener;
@@ -26,6 +27,7 @@ public class Controller implements ActionListener, EventListener {
 	private BoardDrawer boardDrawer;
 
 	public Controller(CluedoFrame gameFrame){
+		System.err.println("CONTROLLER: INITIALISED");
 		this.gameFrame = gameFrame;
 	}
 
@@ -35,15 +37,27 @@ public class Controller implements ActionListener, EventListener {
 	 * @param players
 	 */
 	public void startGame(Map<String,String> players){
+		System.err.println("CONTROLLER: START GAME");
+		
         for (Map.Entry<String, String> p : players.entrySet()) {
         	System.err.println(p.getValue()+", "+p.getKey());
         }
-        if (cluedoGame == null) {
-        	cluedoGame = new Game(players);
-        }
+        // create a new game with the result of the players' input
+    	cluedoGame = new Game(players);
+        try {
+			cluedoGame.startGame();
+		} catch (GameStateModificationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ActingOutOfTurnException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	System.err.println("game playing: "+cluedoGame.isPlaying());
         this.cluedoBoard = cluedoGame.getBoard();
-        this.boardDrawer = new BoardDrawer(cluedoBoard);
-        gameFrame.showPanel(CluedoFrame.CARD_TURNS);
+        this.boardDrawer = new BoardDrawer(cluedoGame);
+        System.out.println("cluedoboard "+cluedoBoard+"\nboarddrawer "+boardDrawer);
+		gameFrame.showPanel(CluedoFrame.CARD_TURNS);
 	}
 
 	public void startTestGame(Map<String,String> players){
@@ -85,12 +99,11 @@ public class Controller implements ActionListener, EventListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("Button press!");
 		if(e.getActionCommand().equals("New Game")){
 
-			gameFrame.showPanel(CluedoFrame.CARD_SETUP);
-			gameFrame.showGameSetup();
-			//gameFrame.testingGameSetup(); // TODO fake demo method!
+//			gameFrame.showPanel(CluedoFrame.CARD_SETUP);
+//			gameFrame.showGameSetup();
+			gameFrame.testingGameSetup(); // TODO fake demo method!
 
 		}
 		if(e.getActionCommand().equals("Rules")){
@@ -103,6 +116,19 @@ public class Controller implements ActionListener, EventListener {
 			if(cluedoGame != null){
 				cluedoGame.rollDice();
 			}
+		}
+		if (e.getActionCommand().equalsIgnoreCase("End turn")) {
+			nextTurn();
+			try {
+				cluedoGame.playTurn();
+			} catch (ActingOutOfTurnException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		if (e.getActionCommand().equalsIgnoreCase("Make accusation") ||
+				e.getActionCommand().equalsIgnoreCase("Make hypothesis")) {
+			gameFrame.showPanel(CluedoFrame.CARD_HYPOTHESIS);
 		}
 	}
 

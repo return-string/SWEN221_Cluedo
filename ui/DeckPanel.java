@@ -104,7 +104,6 @@ public class DeckPanel extends CluedoPanel {
 		playerNotebook.add(notesRooms);
 
 		deckPanelChild_deckContents.setRightComponent(playerNotebook);
-
 	}
 
 	@Override
