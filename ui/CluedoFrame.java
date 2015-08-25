@@ -139,7 +139,7 @@ public class CluedoFrame extends JFrame {
 
 	/** dummy method; replaces need for _gamesetupPanel
 	 * (Default: 6 players, named "Player "+ 1-6 */
-	public void testing_gamesetup(){
+	public void testingGameSetup(){
 		controller.startGame(Game.createDefaultMap());
 	}
 
