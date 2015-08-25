@@ -95,6 +95,7 @@ public class BoardPanel extends CluedoPanel implements MouseListener, MouseMotio
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		Coordinate boardCoord = mousePosToCoordinate(e);
+		System.out.println("Mouse over " + boardCoord.toString());
 		//checks if mouse has moved out of or into a room
 		if(mouseInRoom != super.controller().coordinateInRoom(boardCoord)){
 			mouseInRoom = !mouseInRoom;//change to represent new mouse position

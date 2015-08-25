@@ -36,7 +36,7 @@ public class CluedoFrame extends JFrame {
 		this.controller = new Controller(this);
 
 		initComponents();
-		
+
 		setIconImage(icon());
         setPreferredSize(new Dimension(DEFAULT_WIDTH,DEFAULT_HEIGHT)); // V: just added this for sizing!
 		pack(); // pack components tightly together
@@ -116,13 +116,14 @@ public class CluedoFrame extends JFrame {
 
 	public void showHypothesisPanel(){
 		this.controller.startTestGame(Game.createDefaultMap());
-		SuperSpecialAwesomeHypothesisPanel hp = new SuperSpecialAwesomeHypothesisPanel(this.controller);
+		HypothesisPanel hp = new HypothesisPanel(this.controller);
 		showPanel(CARD_HYPOTHESIS);
 	}
 
     public void showPanel(String card) {
 		System.out.println("showing "+card);
     	cardLayout.show(contents, card);
+    	System.out.println("Board panel visible?: " +_boardpanel.isVisible());
     	repaint();
 	}
 
@@ -130,8 +131,9 @@ public class CluedoFrame extends JFrame {
         java.awt.GridBagConstraints gridBagConstraints;
         _menupanel = new MenuPanel(controller);
         _setuppanel = new GameSetupPanel(controller);
-        _hypopanel = new SuperSpecialAwesomeHypothesisPanel(controller);
+        _hypopanel = new HypothesisPanel(controller);
         _turnpanel = new TurnPanel(controller);
+        _turnpanel.setSize(getSize());
         _boardpanel = _turnpanel.getBoardPanel();
         System.out.println("is this ok"+ _boardpanel == null);
         _playerspanel = new PlayersPanel(controller);
@@ -143,9 +145,6 @@ public class CluedoFrame extends JFrame {
         frameLevelSetup = new javax.swing.JPanel();
         //setupPanel = new javax.swing.JPanel();
         frameLevelTurn = new javax.swing.JPanel();
-        frameChild_boardPanel = new javax.swing.JPanel();
-        frameChild_playersPanel = new javax.swing.JPanel();
-        frameChild_deckPanel = new javax.swing.JPanel();
 
         gameover = new javax.swing.JPanel();
         theEndPanel = new javax.swing.JPanel();
@@ -199,88 +198,8 @@ public class CluedoFrame extends JFrame {
         contents.add(frameLevelSetup, CARD_SETUP);
 
         frameLevelTurn.setBackground(new java.awt.Color(200, 200, 100));
-        java.awt.GridBagLayout turnLayout = new java.awt.GridBagLayout();
-        turnLayout.columnWidths = new int[] {610, 190};
-        turnLayout.columnWeights = new double[] {0.8, 0.2};
-        frameLevelTurn.setLayout(turnLayout);
 
-        frameChild_boardPanel.setBackground(new java.awt.Color(230, 230, 90));
-        frameChild_boardPanel.setMaximumSize(null);
-        frameChild_boardPanel.setMinimumSize(new java.awt.Dimension(610, 430));
-        frameChild_boardPanel.setPreferredSize(new java.awt.Dimension(610, 430));
-
-        javax.swing.GroupLayout boardPanelLayout = new javax.swing.GroupLayout(frameChild_boardPanel);
-        frameChild_boardPanel.setLayout(boardPanelLayout);
-        boardPanelLayout.setHorizontalGroup(
-            boardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 610, Short.MAX_VALUE)
-        );
-        boardPanelLayout.setVerticalGroup(
-            boardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 480, Short.MAX_VALUE)
-        );
-        frameChild_boardPanel.add(_boardpanel);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipady = 50;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        frameLevelTurn.add(frameChild_boardPanel, gridBagConstraints);
-
-        frameChild_playersPanel.setBackground(new java.awt.Color(180, 180, 40));
-        frameChild_playersPanel.setMaximumSize(null);
-        frameChild_playersPanel.setPreferredSize(new java.awt.Dimension(190, 480));
-
-        javax.swing.GroupLayout playersPanelLayout = new javax.swing.GroupLayout(frameChild_playersPanel);
-        frameChild_playersPanel.setLayout(playersPanelLayout);
-        playersPanelLayout.setHorizontalGroup(
-            playersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 184, Short.MAX_VALUE)
-        );
-        playersPanelLayout.setVerticalGroup(
-            playersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        frameChild_playersPanel.add(_playerspanel);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipadx = 184;
-        gridBagConstraints.ipady = 480;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 0, 0);
-        frameLevelTurn.add(frameChild_playersPanel, gridBagConstraints);
-
-        frameChild_deckPanel.setBackground(new java.awt.Color(80, 80, 10));
-        frameChild_deckPanel.setMaximumSize(null);
-        frameChild_deckPanel.add(_deckpanel);
-
-        javax.swing.GroupLayout deckPanelLayout = new javax.swing.GroupLayout(frameChild_deckPanel);
-        frameChild_deckPanel.setLayout(deckPanelLayout);
-        deckPanelLayout.setHorizontalGroup(
-            deckPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(_deckpanel.getContentsPanel())
-        );
-        deckPanelLayout.setVerticalGroup(
-            deckPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(_deckpanel.getContentsPanel(), javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
-        );
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipadx = 211;
-        gridBagConstraints.ipady = 28;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        frameLevelTurn.add(frameChild_deckPanel, gridBagConstraints);
-
+        frameLevelTurn.add(_turnpanel);
         contents.add(frameLevelTurn, CARD_TURNS);
 
         gameover.setBackground(new java.awt.Color(200, 30, 30));
@@ -496,7 +415,7 @@ public class CluedoFrame extends JFrame {
 
     private MenuPanel _menupanel;
     private GameSetupPanel _setuppanel;
-    private SuperSpecialAwesomeHypothesisPanel _hypopanel;
+    private HypothesisPanel _hypopanel;
     private TurnPanel _turnpanel;
     private BoardPanel _boardpanel;
     private PlayersPanel _playerspanel;
@@ -505,9 +424,7 @@ public class CluedoFrame extends JFrame {
     private CardLayout cardLayout;
 
     // Variables declaration - do not modify
-    private javax.swing.JPanel frameChild_boardPanel;
     private javax.swing.JPanel contents;
-    private javax.swing.JPanel frameChild_deckPanel;
     private javax.swing.JPanel gameover;
     private javax.swing.JLabel guiltyCharacter;
     private javax.swing.JLabel guiltyRoom;
@@ -524,7 +441,6 @@ public class CluedoFrame extends JFrame {
     private javax.swing.JMenuItem menu_turn;
     private javax.swing.JMenuBar menubar;
     private javax.swing.JLabel playerHasSolvedTheMurder;
-    private javax.swing.JPanel frameChild_playersPanel;
     private javax.swing.JPanel frameLevelSetup;
     private javax.swing.JPanel setupPanel;
     private javax.swing.JPanel theEndContents;
@@ -559,6 +475,7 @@ public class CluedoFrame extends JFrame {
 		this.add(p, BorderLayout.CENTER);
 		pack();
 		System.out.println("Panel is visible: " + p.isVisible());
+		repaint();
 	}
 
 
