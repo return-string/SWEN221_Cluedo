@@ -35,10 +35,15 @@ public class Controller implements ActionListener, EventListener {
 	 * @param players
 	 */
 	public void startGame(Map<String,String> players){
+        for (Map.Entry<String, String> p : players.entrySet()) {
+        	System.err.println(p.getValue()+", "+p.getKey());
+        }
+        if (cluedoGame == null) {
+        	cluedoGame = new Game(players);
+        }
         this.cluedoBoard = cluedoGame.getBoard();
-		System.err.println("got "+2);
+        this.boardDrawer = new BoardDrawer(cluedoBoard);
         gameFrame.showPanel(CluedoFrame.CARD_TURNS);
-		System.err.println("done");
 	}
 
 	public void startTestGame(Map<String,String> players){

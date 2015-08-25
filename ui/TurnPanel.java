@@ -17,9 +17,9 @@ import javax.swing.JPanel;
       * Creates new form ApplicationWindow
       */
      public TurnPanel(Controller c) {
-    	 super(c);
+    	super(c);
 		System.err.println("it's working");
-         initComponents();
+        initComponents();
      }
 
 	 public void resize() {
