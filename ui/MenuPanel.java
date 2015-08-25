@@ -67,7 +67,7 @@ public class MenuPanel extends CluedoPanel {
 	private void addButton(String buttonName, JPanel buttonPanel){
 		JButton newGame = new JButton(buttonName);
 		//Controller is the action listener
-		newGame.addActionListener(super.controller());
+		newGame.addActionListener(controller());
 		buttonPanel.add(newGame);
 	}
 	

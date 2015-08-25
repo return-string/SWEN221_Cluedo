@@ -10,7 +10,6 @@ import game.ActingOutOfTurnException;
 import game.Board;
 import game.Coordinate;
 import game.Game;
-import game.GameStateModificationException;
 import game.Player;
 
 import java.util.EventListener;
@@ -38,7 +37,7 @@ public class Controller implements ActionListener, EventListener {
 	public void startGame(Map<String,String> players){
         this.cluedoBoard = cluedoGame.getBoard();
 		System.err.println("got "+2);
-        gameFrame.showPanel(2);
+        gameFrame.showPanel(CluedoFrame.CARD_TURNS);
 		System.err.println("done");
 	}
 
@@ -81,13 +80,14 @@ public class Controller implements ActionListener, EventListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		System.out.println("Button press!");
 		if(e.getActionCommand().equals("New Game")){
-			// gameFrame.showPanel(CluedoFrame.GAMESETUP_PANEL);
-			// REAL gameFrame.showGameSetup();
-			gameFrame.testingGameSetup(); // TODO fake demo method!
+			gameFrame.showPanel(CluedoFrame.CARD_SETUP);
+			gameFrame.showGameSetup();
+			//gameFrame.testingGameSetup(); // TODO fake demo method!
 		}
 		if(e.getActionCommand().equals("Rules")){
-			gameFrame.showPanel(CluedoFrame.RULES_PANEL);
+			gameFrame.showPanel(CluedoFrame.CARD_RULES);
 		}
 		if(e.getActionCommand().equals("Exit")){
 			gameFrame.dispose();

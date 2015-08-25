@@ -6,7 +6,7 @@ import javax.swing.JPanel;
  public class TurnPanel extends CluedoPanel {
 	private static final long serialVersionUID = -8751878244555503503L;
 	int i = 0;
-	private JPanel playersPanel1;
+	private JPanel parentPlayersPanel;
 	private DeckPanel deckPanel1;
 	private PlayersPanel playersPanel;
 	private DeckPanel deckPanel;
@@ -44,26 +44,27 @@ import javax.swing.JPanel;
     	Controller c = controller();
         containerPanel = new JPanel();
         playersPanel = new ui.PlayersPanel(c);
-        playersPanel1 = new JPanel();
+        parentPlayersPanel = new JPanel();
         deckPanel1 = new ui.DeckPanel(c);
         boardPanel = new ui.BoardPanel(c);
 
         setPreferredSize(new java.awt.Dimension(800, 600));
 
-        playersPanel.setBackground(new java.awt.Color(255, 204, 0));
+        parentPlayersPanel.setBackground(new java.awt.Color(255, 204, 0));
 
-        javax.swing.GroupLayout playersPanelLayout = new javax.swing.GroupLayout(playersPanel);
-        playersPanel.setLayout(playersPanelLayout);
+        javax.swing.GroupLayout playersPanelLayout = new javax.swing.GroupLayout(parentPlayersPanel);
+        parentPlayersPanel.setLayout(playersPanelLayout);
         playersPanelLayout.setHorizontalGroup(
             playersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(playersPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(playersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         playersPanelLayout.setVerticalGroup(
             playersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, playersPanelLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(playersPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(playersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
+        parentPlayersPanel.add(playersPanel);
 
         deckPanel1.setBackground(new java.awt.Color(153, 204, 0));
 
@@ -91,6 +92,8 @@ import javax.swing.JPanel;
             boardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
+        
+        System.out.println("Board visible "+ boardPanel.isVisible());
 
         javax.swing.GroupLayout turnPanel1Layout = new javax.swing.GroupLayout(containerPanel);
         containerPanel.setLayout(turnPanel1Layout);

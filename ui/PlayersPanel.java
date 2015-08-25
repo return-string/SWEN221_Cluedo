@@ -84,7 +84,7 @@ public class PlayersPanel extends CluedoPanel {
 	public static void main(String[] args) {
 		CluedoFrame f = new CluedoFrame();
 		f.testingGameSetup();
-		f.showPanel(CluedoFrame.TURN_PANEL);
+		f.showPanel(CluedoFrame.CARD_MENU);
 	}
 	                 
     private void initComponents() {

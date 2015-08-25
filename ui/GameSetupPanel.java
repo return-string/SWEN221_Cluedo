@@ -7,7 +7,6 @@ package ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.Map;
 
 import game.Card;
@@ -22,12 +21,12 @@ import javax.swing.JRadioButton;
  */
 public class GameSetupPanel extends CluedoPanel implements ActionListener {
 	private static final long serialVersionUID = -620972152778453236L;
-	private final Map<String,String> players;
+	private static final Map<String,String> players;
     private SetupDialog setup;
 
     public GameSetupPanel(Controller c) {
         super(c);
-        this.players = new HashMap<String,String>();
+        this.players = new java.util.concurrent.ConcurrentHashMap<>();
     }
 /**
  * @param args the command line arguments
@@ -454,7 +453,7 @@ public class GameSetupPanel extends CluedoPanel implements ActionListener {
 	    	return setup;
 	    }
 	    
-	    private final Map<String,JRadioButton> characters = new HashMap<String,JRadioButton>();
+	    private final Map<String,JRadioButton> characters = new java.util.concurrent.ConcurrentHashMap<String,JRadioButton>();
 	    // Variables declaration - do not modify//GEN-BEGIN:variables
 	    private javax.swing.JPanel NameSelection;
 	    private javax.swing.ButtonGroup charSelect;

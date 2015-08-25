@@ -51,6 +51,8 @@ public class Game {
 		new Weapon(Card.WEAPONS[4],new Coordinate(2,23)),
 		new Weapon(Card.WEAPONS[5],new Coordinate(22,23))
 	};
+	
+	private Player winner; 
 	private Theory guilty;
 	private int gameState = STATUS_WAITING;
 	private int activePlayer = -1; /* used to check when play has begun also, instead
@@ -156,6 +158,7 @@ public class Game {
 			}
 		}
 		if (winner == null) { throw new IllegalStateException(); }
+		this.winner = winner;
 		gameState = STATUS_GAME_OVER;
 	}
 
@@ -575,4 +578,7 @@ public class Game {
 		return null;
 	}
 
+	public Player getWinner() {
+		return winner;
+	}
 }

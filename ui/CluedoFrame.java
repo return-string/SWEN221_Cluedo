@@ -1,33 +1,27 @@
 package ui;
 
-import game.Card;
 import game.Game;
 
-import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
 
-import javax.imageio.ImageIO;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+/** The CluedoFrame manages all panels in the game.
+ * 
+ * @author Vicki
+ *
+ */
 public class CluedoFrame extends JFrame {
 	private static final long serialVersionUID = 2171235413597916591L;
-	public static final int MENU_PANEL = 0;
-	public static final int _gamesetup_PANEL = 1;
-	public static final int TURN_PANEL = 2;
-	public static final int GAMEOVER_PANEL = 3;
-	public static final int RULES_PANEL = 4;
 
 	public static final int DEFAULT_WIDTH = 800;
 	public static final int DEFAULT_HEIGHT = 600;
@@ -38,33 +32,26 @@ public class CluedoFrame extends JFrame {
 		super("Cluedo");
 		this.controller = new Controller(this);
 
+		initComponents();
 		setIconImage(icon());
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setPreferredSize(new Dimension(DEFAULT_WIDTH,DEFAULT_HEIGHT)); // V: just added this for sizing!
 		pack(); // pack components tightly together
-		setResizable(false); // prevent us from being resizeable
+		//setResizable(false); // prevent us from being resizeable
 		setVisible(true); // make sure we are visible!
 		
-		initComponents();
-		// trying to center the window. will come back to this later.
-		setLocation(getLocationOnScreen());
-		// do something to make it redisplay in new position.
-		
-		
-		//TODO BEFORE SUBMITTING, UNCOMMENT
-//		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-//		addWindowListener(new WindowAdapter() {
-//		    @Override
-//		    public void windowClosing(WindowEvent we)
-//		    { 
-//		        String ObjButtons[] = {"Yes","No"};
-//		        int PromptResult = JOptionPane.showOptionDialog(null,"Are you sure you want to exit?","Online Examination System",JOptionPane.DEFAULT_OPTION,JOptionPane.WARNING_MESSAGE,null,ObjButtons,ObjButtons[1]);
-//		        if(PromptResult==JOptionPane.YES_OPTION)
-//		        {
-//		            System.exit(0);
-//		        }
-//		    }
-//		});
+		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+		    @Override
+		    public void windowClosing(WindowEvent we)
+		    { 
+		        String ObjButtons[] = {"Yes","No"};
+		        int PromptResult = JOptionPane.showOptionDialog(null,"Are you sure you want to exit?","Cluedo",JOptionPane.DEFAULT_OPTION,JOptionPane.WARNING_MESSAGE,null,ObjButtons,ObjButtons[1]);
+		        if(PromptResult==JOptionPane.YES_OPTION)
+		        {
+		            System.exit(0);
+		        }
+		    }
+		});
 
 	}
 
@@ -83,7 +70,7 @@ public class CluedoFrame extends JFrame {
 
 	public void showPanel(int panelNo){
 		if (panelNo >= 0 && panelNo < panels.length) {
-			displayPanel(panels[panelNo]);
+			showPanel(panels[panelNo]);
 		}
 	}
 
@@ -91,13 +78,8 @@ public class CluedoFrame extends JFrame {
 		_turnpanel.nextTurn();
 	}
 
-	/** Displays a popup dialog asking the user to input their information */
-	public void show_gamesetup(){
-//		if(this._gamesetup == null){
-//			this._gamesetup = new _gamesetupPanel(controller);
-//		}
-//		this.currentPanel = this._gamesetup;
-//		add(this.currentPanel);
+	/** Displays a popup dialog asking the users to input their player information */
+	public void showGameSetup(){
 		_setuppanel.showDialog();
 		try {
 			_setuppanel.getDialog().setLocation(getLocationToCenter(_setuppanel.getDialog().getWidth(),_setuppanel.getDialog().getHeight()));
@@ -105,13 +87,13 @@ public class CluedoFrame extends JFrame {
 			    @Override
 			    public void windowClosing(java.awt.event.WindowEvent e) {
 			    	Map<String,String> players = _setuppanel.getResult();
-//			        for (Map.Entry<String, String> p : players.entrySet()) {
-//			        	System.err.println(p.getValue()+", "+p.getKey());
-//			        }
+			        for (Map.Entry<String, String> p : players.entrySet()) {
+			        	System.err.println(p.getValue()+", "+p.getKey());
+			        }
 			        if (players != null && players.size() > 3) { // make sure the user finished entering info
 			        	controller.startGame(players);
 			        } else {
-			        	showPanel(MENU_PANEL);
+			        	showPanel(CARD_MENU);
 			        }
 			    }
 			});
@@ -132,38 +114,26 @@ public class CluedoFrame extends JFrame {
 		return new java.awt.Point(dim.width/2 - windowWidth/2, dim.height/2 - windowHeight/2);
 	}
 
-
-	// ==============================================================================================
-	// TESTING METHODS BELOW THIS POINT
-	// ==============================================================================================
-
-	/** dummy method; replaces need for _gamesetupPanel
-	 * (Default: 6 players, named "Player "+ 1-6 */
-	public void testingGameSetup(){
-		controller.startGame(Game.createDefaultMap());
-	}
-
-	/**
-	 * FOR TESTING ONLY
-	 */
-	public void showBoardPanel(HashMap<String, String> players){
-		this.controller.startTestGame(players);
-		BoardPanel bp = new BoardPanel(this.controller);
-		displayPanel(CARD_TURNS);
-	}
-
 	public void showHypothesisPanel(){
 		this.controller.startTestGame(Game.createDefaultMap());
 		SuperSpecialAwesomeHypothesisPanel hp = new SuperSpecialAwesomeHypothesisPanel(this.controller);
-		displayPanel(CARD_HYPOTHESIS);
+		showPanel(CARD_HYPOTHESIS);
 	}
 	
-    private void displayPanel(String card) {
-    	((CardLayout)getContentPane().getLayout()).show(contents, card);
+    public void showPanel(String card) {
+		System.out.println("showing "+card);
+    	cardLayout.show(contents, card);
 	}
 
 	private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
+        java.awt.GridBagConstraints gridBagConstraints; 
+        _menupanel = new MenuPanel(controller);
+        _setuppanel = new GameSetupPanel(controller);
+        _hypopanel = new SuperSpecialAwesomeHypothesisPanel(controller);
+        _turnpanel = new TurnPanel(controller);
+        _boardpanel = new BoardPanel(controller);
+        _playerspanel = new PlayersPanel(controller);
+        _deckpanel = new DeckPanel(controller);
 
         jMenuItem1 = new javax.swing.JMenuItem();
         contents = new javax.swing.JPanel();
@@ -202,7 +172,6 @@ public class CluedoFrame extends JFrame {
         menu_h_game = new javax.swing.JMenu();
         menu_newgame = new javax.swing.JMenuItem();
         menu_endturn = new javax.swing.JMenuItem();
-        menu_quit = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         menu_main = new javax.swing.JMenuItem();
         menu_setup = new javax.swing.JMenuItem();
@@ -211,10 +180,11 @@ public class CluedoFrame extends JFrame {
 
         jMenuItem1.setText("jMenuItem1");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
         setPreferredSize(new java.awt.Dimension(DEFAULT_WIDTH,DEFAULT_HEIGHT));
-        contents.setLayout(new java.awt.CardLayout());
+        
+        cardLayout = new java.awt.CardLayout();
+        contents.setLayout(cardLayout);
 
         frameLevelMenu.setMinimumSize(new java.awt.Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
         frameLevelMenu.setLayout(new java.awt.BorderLayout());
@@ -469,10 +439,12 @@ public class CluedoFrame extends JFrame {
         );
 
         contents.add(gameover, CARD_ENDGAME);
+        
+        contents.add(_hypopanel,CARD_HYPOTHESIS);
 
         menu_h_game.setText("Cluedo");
 
-        menu_newgame.setText("New game");
+        menu_newgame.setText("New Game");
         menu_newgame.setEnabled(false);
         menu_newgame.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -481,7 +453,7 @@ public class CluedoFrame extends JFrame {
         });
         menu_h_game.add(menu_newgame);
 
-        menu_endturn.setText("End frameLevelTurn");
+        menu_endturn.setText("End Turn");
         menu_endturn.setEnabled(false);
         menu_endturn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -489,14 +461,6 @@ public class CluedoFrame extends JFrame {
             }
         });
         menu_h_game.add(menu_endturn);
-
-        menu_quit.setText("Quit");
-        menu_quit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menu_quitActionPerformed(evt);
-            }
-        });
-        menu_h_game.add(menu_quit);
 
         menubar.add(menu_h_game);
 
@@ -557,20 +521,16 @@ public class CluedoFrame extends JFrame {
     }// </editor-fold>                        
 
     private void menu_endturnActionPerformed(java.awt.event.ActionEvent evt) {                                             
-        ((CardLayout)(contents.getLayout())).show(contents, CARD_ENDGAME);
+    	showPanel(CARD_ENDGAME);
     }                                            
 
     private void menu_newgameActionPerformed(java.awt.event.ActionEvent evt) {
     	controller = new Controller(this);
-        ((CardLayout)(contents.getLayout())).show(contents, CARD_SETUP);
-    }                                            
-
-    private void menu_quitActionPerformed(java.awt.event.ActionEvent evt) {                                          
-        System.exit(0);
-    }                                 
+    	showPanel(CARD_SETUP);
+    }
 
     private void setupActionPerformed(java.awt.event.ActionEvent evt) {                                           
-        ((CardLayout)(contents.getLayout())).show(contents, CARD_SETUP);
+    	showPanel(CARD_SETUP);
     }                                          
 
     private void endTurnActionPerformed(java.awt.event.ActionEvent evt) {                                             
@@ -578,11 +538,15 @@ public class CluedoFrame extends JFrame {
     }                                            
 
     private void showMenuActionPerformed(java.awt.event.ActionEvent evt) {                                          
-        ((CardLayout)(contents.getLayout())).show(contents, CARD_MENU);
-    }                                         
+        showPanel(CARD_MENU);
+    }                                     
 
     private void showTurnsActionPerformed(java.awt.event.ActionEvent evt) {                                          
-        ((CardLayout)(contents.getLayout())).show(contents, CARD_TURNS);
+    	showPanel(CARD_TURNS);
+    }                                           
+
+    private void showHypothesisActionPerformed(java.awt.event.ActionEvent evt) {                                          
+        showPanel(CARD_HYPOTHESIS);
     }
         
     public static final String CARD_MENU = "showMenuPanel";
@@ -592,15 +556,17 @@ public class CluedoFrame extends JFrame {
     public static final String CARD_ENDGAME = "showEndGamePanel";
     public static final String CARD_HYPOTHESIS = "showHypothesisPanel";
     
-    private static final String[] panels = {CARD_MENU,CARD_SETUP,CARD_RULES,CARD_TURNS,CARD_ENDGAME};
+    private static final String[] panels = {CARD_MENU,CARD_SETUP,CARD_RULES,CARD_TURNS,CARD_HYPOTHESIS,CARD_ENDGAME};
     
-    private MenuPanel _menupanel = new MenuPanel(controller);
-    private GameSetupPanel _setuppanel = new GameSetupPanel(controller);
-    private SuperSpecialAwesomeHypothesisPanel _hypopanel = new SuperSpecialAwesomeHypothesisPanel(controller);
-    private TurnPanel _turnpanel = new TurnPanel(controller);
-    private BoardPanel _boardpanel = new BoardPanel(controller);
-    private PlayersPanel _playerspanel = new PlayersPanel(controller);
-    private DeckPanel _deckpanel = new DeckPanel(controller);
+    private MenuPanel _menupanel;
+    private GameSetupPanel _setuppanel;
+    private SuperSpecialAwesomeHypothesisPanel _hypopanel;
+    private TurnPanel _turnpanel;
+    private BoardPanel _boardpanel;
+    private PlayersPanel _playerspanel;
+    private DeckPanel _deckpanel;
+    
+    private CardLayout cardLayout;
     
     // Variables declaration - do not modify                     
     private javax.swing.JPanel frameChild_boardPanel;
@@ -620,7 +586,6 @@ public class CluedoFrame extends JFrame {
     private javax.swing.JMenu menu_h_game;
     private javax.swing.JMenuItem menu_main;
     private javax.swing.JMenuItem menu_newgame;
-    private javax.swing.JMenuItem menu_quit;
     private javax.swing.JMenuItem menu_setup;
     private javax.swing.JMenuItem menu_turn;
     private javax.swing.JMenuBar menubar;
@@ -642,5 +607,25 @@ public class CluedoFrame extends JFrame {
     private javax.swing.JPanel theEndTitle;
     private javax.swing.JPanel frameLevelTurn;
     private javax.swing.JLabel winnerIcon;
-    // End of variables declaration      
+    // End of variables declaration    
+
+	// ==============================================================================================
+	// TESTING METHODS BELOW THIS POINT
+	// ==============================================================================================
+
+	/** dummy method; replaces need for _gamesetupPanel
+	 * (Default: 6 players, named "Player "+ 1-6 */
+	public void testingGameSetup(){
+		controller.startGame(Game.createDefaultMap());
+	}
+
+	/**
+	 * FOR TESTING ONLY
+	 */
+	public void showBoardPanel(HashMap<String, String> players){
+		this.controller.startTestGame(players);
+		BoardPanel bp = new BoardPanel(this.controller);
+		showPanel(CARD_TURNS);
+	}
+  
 }
