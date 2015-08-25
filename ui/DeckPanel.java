@@ -28,6 +28,7 @@ public class DeckPanel extends CluedoPanel {
             setAlignmentY(TOP_ALIGNMENT);
             cd = new CardDrawer(200,20,20);
             setBackground(new Color(34,34,94)); // need a way of passing colours around from the frame, ideally.
+            System.out.println("NOT A LIE");
 	}
 
 	@Override

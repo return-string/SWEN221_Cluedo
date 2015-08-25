@@ -52,7 +52,7 @@ public class GameTests {
 			fail();
 		}
 		try {
-			g1.playGame();
+			g1.playTurn();
 		} catch (ActingOutOfTurnException e) {
 			fail();
 		}

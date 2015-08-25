@@ -300,5 +300,4 @@ public class BoardDrawer {
 	private void calculateSquareSize(Dimension d) {
 		squareSize = (int) Math.min((d.getWidth()/cluedoBoard.width()), (d.getHeight()/cluedoBoard.height()));
 	}
-
 }

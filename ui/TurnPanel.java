@@ -18,7 +18,6 @@ import javax.swing.JPanel;
       */
      public TurnPanel(Controller c) {
     	super(c);
-		System.err.println("it's working");
         initComponents();
      }
 
@@ -92,8 +91,6 @@ import javax.swing.JPanel;
             boardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
-        
-        System.out.println("Board visible "+ boardPanel.isVisible());
 
         javax.swing.GroupLayout turnPanel1Layout = new javax.swing.GroupLayout(containerPanel);
         containerPanel.setLayout(turnPanel1Layout);
@@ -114,5 +111,9 @@ import javax.swing.JPanel;
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(deckPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
+    }
+    
+    public BoardPanel getBoardPanel() {
+    	return boardPanel;
     }
 }
